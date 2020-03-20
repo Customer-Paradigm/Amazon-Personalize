@@ -1,0 +1,29 @@
+<style>
+
+#train_steps tr {
+	height: 10px;
+}
+</style>
+
+<button id="train_button" title="Start Process" type="button" class="action-default scalable" data-bind=", click: startProcess, css: buttonStatus"> 
+        <span>Start Process</span>
+</button>
+
+<div class="training-indicator" id="train_div"  afterRender="showProgress()">
+    <div id="train_message_div" html="mssg()"></div>
+
+    <table id="train_steps">
+          <tbody data-bind="foreach: steps">
+            <tr>
+              <td>
+                <img width="16px" height="16px" data-bind="attr:{src: imgUrl}" />
+              </td>
+              <td data-bind="text: step_name"></td>
+            </tr>
+          </tbody>
+    </table>
+</div>
+
+<button id="reset_button" title="Reset Process" type="button" class="action-default scalable" data-bind=", click: resetProcess, css: resetStatus"> 
+        <span>reset Process</span>
+</button>

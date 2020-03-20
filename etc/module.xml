@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Customer Paradigm Team
+ * @copyright Copyright (c) 2018 Customer Paradigm (https://www.customerparadigm.com)
+ * @package CustomerParadigm_Schematics
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+	<module name="CustomerParadigm_AmazonPersonalize" setup_version="1.0.5">
+		<sequence>
+		    <module name="Magento_Widget" />
+		</sequence>
+	</module>
+</config>

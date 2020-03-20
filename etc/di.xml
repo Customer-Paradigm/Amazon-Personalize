@@ -1,0 +1,52 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+<!--        
+    <virtualType name="aws_runtime" type="Aws\PersonalizeRuntime\PersonalizeRuntimeClient">
+        <arguments>
+            <argument name="args" xsi:type="array">
+                <item name="profile" xsi:type="string">default</item>
+                <item name="version" xsi:type="string">2018-05-22</item>
+                <item name="region" xsi:type="string">us-east-1</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Aws\PersonalizeRuntime\PersonalizeRuntimeClient" shared="true">
+        <arguments>
+            <argument name="args" xsi:type="array">
+                <item name="profile" xsi:type="string">default</item>
+                <item name="version" xsi:type="string">2018-05-22</item>
+                <item name="region" xsi:type="string">us-east-1</item>
+            </argument>
+		</arguments>
+	</type>
+
+    <type name="CustomerParadigm\AmazonPersonalize\Model\Result">
+        <arguments>
+            <argument name="pRuntimeClient" xsi:type="object">Aws\PersonalizeRuntime\PersonalizeRuntimeClient</argument>
+        </arguments>
+	</type>
+-->
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="commandGenerateInteractions" xsi:type="object">CustomerParadigm\AmazonPersonalize\Console\Command\GenerateInteractionsCommand</item>
+            </argument>
+            <argument name="commands" xsi:type="array">
+                <item name="commandGenerateItems" xsi:type="object">CustomerParadigm\AmazonPersonalize\Console\Command\GenerateItemsCommand</item>
+            </argument>
+            <argument name="commands" xsi:type="array">
+                <item name="commandGenerateUsers" xsi:type="object">CustomerParadigm\AmazonPersonalize\Console\Command\GenerateUsersCommand</item>
+            </argument>
+            <argument name="commands" xsi:type="array">
+                <item name="commandPruneAbTracking" xsi:type="object">CustomerParadigm\AmazonPersonalize\Console\Command\PruneAbTrackingTable</item>
+            </argument>
+        </arguments>
+    </type>
+    <virtualType name="Magento\Sales\Model\ResourceModel\Order\Grid" type="Magento\Sales\Model\ResourceModel\Grid">
+        <arguments>
+            <argument name="columns" xsi:type="array">
+                <item name="ab_customer_type" xsi:type="string">sales_order.ab_customer_type</item>
+            </argument>
+        </arguments>
+    </virtualType>
+</config>

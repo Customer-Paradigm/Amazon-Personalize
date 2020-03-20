@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_quote_product_add_after">
+        <observer name="awsEventProductQuoteAdd" instance="CustomerParadigm\AmazonPersonalize\Observer\ProductQuoteAddObserver" />
+	</event>
+    <event name="layout_render_before">
+        <observer name="awsEventPageView" instance="CustomerParadigm\AmazonPersonalize\Observer\PageViewObserver" />
+	</event>
+</config>

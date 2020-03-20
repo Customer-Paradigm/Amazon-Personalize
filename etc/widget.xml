@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
+            <widget class="CustomerParadigm\AmazonPersonalize\Block\Widget\Display" id="cp_amazonpersonalize_display">
+				<label>Personalize Display</label>
+				<description>Display Amazon Personalize data</description>
+				<parameters>
+					<parameter name="heading" xsi:type="text" required="true" visible="true" sort_order="10">
+						<label>Heading</label>
+						<value>We Also Suggest...</value>
+					</parameter>
+					<parameter name="count" xsi:type="text" required="true" visible="true" sort_order="15">
+						<label>Number of items to display</label>
+						<value>5</value>
+					</parameter>
+				</parameters>
+            </widget>
+</widgets>

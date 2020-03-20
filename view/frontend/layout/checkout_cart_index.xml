@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <block class="CustomerParadigm\AmazonPersonalize\Block\Widget\Display"
+		    name="personalize_display" template="CustomerParadigm_AmazonPersonalize::widget/recommendations.phtml">
+                                <arguments>
+                                   <argument name="heading" xsi:type="string">We also suggest...</argument>
+                                   <argument name="count" xsi:type="number">3</argument>
+                                </arguments>
+	    </block>
+        </referenceContainer>
+    </body>
+</page>
+

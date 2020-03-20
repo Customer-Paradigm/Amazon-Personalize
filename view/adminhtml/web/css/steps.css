@@ -1,0 +1,43 @@
+#train_button, 
+#train_button.notStarted {
+	background-color:#007bdb;
+	color:#EEEEEE;
+}
+
+#train_button.ready,
+#train_button.inProgress {
+	background-color:green;
+	color:#000000;
+}
+
+#train_button.hasError {
+	background-color:#e22626b0;
+	color:#000000;
+}
+
+#train_steps > tbody > tr > td {
+	padding: 0;
+	padding-top: 3px;
+}
+
+#train_div {
+	padding-top: 5px;
+}
+
+#train_message_div > p:first-child {
+	color: red;
+	font-weight: bold;
+}
+
+#train_message_div > p:nth-child(2) {
+	position: relative;
+	left: -80px;
+	height: 38px;
+	width: 500px;
+	color: #333333;
+	font-weight: bold;
+	overflow-y: scroll;
+	background: #DDDDDD;
+	padding: 3px;
+	padding-left: 5px;
+}

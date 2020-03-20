@@ -1,0 +1,28 @@
+<?php 
+// Check if enabled, only display if true
+if (! $block->getGaAbEnabled() ) { return false; }
+?>
+
+<?php if(! $block->hasGlobalSiteTag()) { ?>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo($block->getGaAccountNum()) ?>"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '<?php echo($block->getGaAccountNum()) ?>');
+
+<?php
+} else { ?> 
+	
+<script>
+
+<?php // End global site tag check
+} ?>
+
+	gtag('config', '<?php echo($block->getGaAccountNum()) ?>');
+	gtag('event', 'personalize_abtest', {'event_category' : '<?php echo( $block->getAbTrackingType() ) . "_user" ?>'});
+</script>
+
+

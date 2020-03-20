@@ -1,0 +1,18 @@
+<?php
+$id = $block->getId();
+$price = $block->getPrice();
+?>
+<div class="price-box price-final_price" data-product-id="<?php echo($id) ?>" 
+     data-price-box="product-id-<?php echo($id)?>">
+	
+	<span class="price-container price-final_price tax weee" itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
+		<span id="product-price-<?php echo($id) ?>" data-price-amount="<?php echo($price) ?>" 
+		      data-price-type="finalPrice" class="price-wrapper " from-price="<?php echo($price) ?>" 
+		      data-base-price-present="">
+			<span class="price"><?php echo($price) ?></span>
+		</span>
+		<meta itemprop="price" content="<?php echo($price) ?>">
+		<meta itemprop="priceCurrency" content="USD">
+    	</span>
+</div>
+

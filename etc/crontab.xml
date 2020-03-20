@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @author Customer Paradigm Team
+ * @copyright Copyright (c) 2018 Customer Paradigm (https://www.customerparadigm.com)
+ * @package CustomerParadigm_Schematics
+ */
+-->
+<config>
+    <group id="aws_setup">
+        <job name="aws_set_cli" instance="CustomerParadigm\AmazonPersonalize\Cron\AwscliInstall" method="execute">
+			<config_path>awsp_settings/crontab/aws_set_cli</config_path>
+        </job>
+        <job name="aws_data_setup" instance="CustomerParadigm\AmazonPersonalize\Controller\Adminhtml\Config\Train" method="execute">
+			<config_path>awsp_settings/crontab/aws_data_setup</config_path>
+        </job>
+	</group>
+	<group id="default">
+		<job name="aws_prune_ab_table" instance="CustomerParadigm\AmazonPersonalize\Model\AbTracking" method="pruneData">
+			<!-- every 2 days at 1:05 am -->
+			<schedule>5 1 */2 * *</schedule>
+		</job>
+	</group>
+</config>

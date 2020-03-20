@@ -1,0 +1,28 @@
+<script type="text/x-magento-init">
+        {
+            "*": {
+                "Magento_Ui/js/core/app": {
+                    "components": {
+                        "wizardprogress": {
+                            "component": "CustomerParadigm_AmazonPersonalize/js/wizardprogress",
+							"template" : "CustomerParadigm_AmazonPersonalize/wizardtemplate",
+							"errUrl" : "<?php echo($block->getImageUrl('error'))?>",
+							"mediaUrl" : "<?php echo($block->getImageUrl('media'))?>",
+							"successUrl" : "<?php echo($block->getImageUrl('success'))?>",
+							"processingUrl" : "<?php echo($block->getImageUrl('processing'))?>",
+							"pendingUrl" : "<?php echo($block->getImageUrl('pending'))?>",
+							"ajaxDisplayUrl": "<?php echo($block->getAjaxDisplayUrl()) ?>",
+							"ajaxRunUrl": "<?php echo($block->getAjaxRunUrl()) ?>",
+							"ajaxResetUrl": "<?php echo($block->getAjaxResetUrl()) ?>",
+							"processStatus": "<?php echo($block->getProcessStatus()) ?>",
+							"buttonMssg": "Start Process",
+							"steps": []
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<div data-bind="scope: 'wizardprogress'">
+    <!-- ko template: getTemplate() --><!-- /ko -->
+</div>

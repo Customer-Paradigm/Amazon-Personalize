@@ -1,0 +1,16 @@
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.573.0.min.js"></script>
+
+<script type="text/javascript">
+
+	// Initialize the Amazon Cognito credentials provider
+	AWS.config.region = 'us-east-1'; // Region
+	AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+		 IdentityPoolId: 'us-east-1:e153e5f9-2dfe-44c0-a847-038a4f644647',
+	});
+
+	var cognitoidentity = new AWS.CognitoIdentity();
+	cognitoidentity.createIdentityPool(params, function (err, data) {
+		  if (err) console.log(err, err.stack); // an error occurred
+			else     console.log(data);           // successful response
+	});
+</script>
