@@ -41,7 +41,7 @@ class RuntimeClient implements RuntimeClientInterface {
      */
     public function getRecommendations($campaignArn, $userId = null, $count = 30, $itemId = null) {
         $data = array();
-        if( $this->pHelper->isEnabled() ) {
+        if( $this->pHelper->canDisplay() ) {
 	        $count = intval($count);
             $data = $this->pRuntimeClient->getRecommendations([
                 'campaignArn' => $campaignArn, // REQUIRED

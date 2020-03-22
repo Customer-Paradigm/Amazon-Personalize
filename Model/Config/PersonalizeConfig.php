@@ -30,7 +30,6 @@ class PersonalizeConfig
     protected $webdir;
     protected $helper;
 
-
     /**
      * AfterSaveConfig constructor.
      *
@@ -129,7 +128,7 @@ class PersonalizeConfig
     }
 
     public function isEnabled() {
-        return $this->helper->isEnabled();
+        return $this->helper->canDisplay();
     }
 
     public function getUserHomeDir() {
@@ -257,26 +256,6 @@ class PersonalizeConfig
         $table = $this->scopeConfig->getValue('catalogrule_product_history', 
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
         return $coupon && $rule && $table;
-    }
-
-    public function getRuleId($name) {
-		$curl = curl_init();
-
-		curl_setopt_array($curl, [
-			CURLOPT_RETURNTRANSFER => 1,
-			CURLOPT_URL => 'https://css.customerparadigm.com/apl_api/api.php',
-			CURLOPT_POST => 1,
-			CURLOPT_POSTFIELDS => [
-				'api_key_secret' => '4bpsZ9YFgBXITAz4',
-				'api_function' => 'search',
-				'search_type' => 'product',
-				'search_keywoard' => $name,
-			]
-		]);
-
-		$resp = curl_exec($curl);
-		curl_close($curl);
-		return $resp;
     }
 
     public function getLogger() {

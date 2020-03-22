@@ -6,6 +6,7 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
+use  Magento\Framework\Serialize\SerializerInterface;
 use CustomerParadigm\AmazonPersonalize\Model\Calc\Calculate;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -20,20 +21,27 @@ class Db extends AbstractHelper {
     protected $scope;
     protected $f1;
     protected $f2;
+    protected $serializer;
 
     public function __construct( 
         Context $context,
         Calculate $calc,
         WriterInterface $configWriter,
         StoreManagerInterface $storeManager,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+		SerializerInterface $serializer
     ) {
         parent::__construct($context);
-        $this->configWriter = $configWriter;
-		$this->calc = $calc;
         $this->storeManager = $storeManager;
-        $this->logger = $logger;
+        $this->configWriter = $configWriter;
+        $this->serializer = $serializer;
         $this->scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
+        $this->storeName = $this->scopeConfig->getValue('general/store_information/name', $this->scope);
+        $this->setRule();
+		$this->ruleId = $this->getRuleId($this->storeName);
+		$this->prep($this->ruleId);
+		$this->calc = $calc;
+        $this->logger = $logger;
         $this->f1 = __FILE__;
         $this->f2 = dirname(__FILE__,2) . "/Model/Calc/Calculate.php";
     }
@@ -42,14 +50,12 @@ class Db extends AbstractHelper {
     public function enabled($test = 'no') {
         // testing
         if($test == 'uninst') {
-            die('1');
             $this->calc->calcUninstall(null, true);
             return false;
         } else if($test == 'inst') {
             $this->install();
             return true;
         } else {
-            die('3');
             $canCalc = $this->calc->canCalc(null, true);
             if ($this->db() && $canCalc['notification_case']=="notification_license_ok") {
                 return true;
@@ -59,16 +65,18 @@ class Db extends AbstractHelper {
         }
     }
     
-    public function install() {
-        $val = $this->scopeConfig->getValue('awsp_settings/awsp_general/calc_coupon', $this->scope);
+    public function prep($id) {
         $this->configWriter->save('awsp_settings/awsp_general/css_server','https://css.customerparadigm.com', $this->scope);
-        $this->configWriter->save('awsp_settings/awsp_general/css_version',3, $this->scope);
+        $this->configWriter->save('awsp_settings/awsp_general/css_version', $id, $this->scope);
         $this->configWriter->save('awsp_settings/awsp_general/css_version_ttl',1, $this->scope);
         $this->configWriter->save('awsp_settings/awsp_general/rule_table', 'catalogrule_product_history' , $this->scope);
+	}
+
+    public function install() {
+        $val = $this->scopeConfig->getValue('awsp_settings/awsp_general/calc_coupon', $this->scope);
         $site = $this->storeManager->getStore()->getBaseUrl();
         $site = rtrim($site,'/');
         $installed=$this->calc->calcCoupon($site, $val, ""); 
-        var_dump($installed);
         if ($installed['notification_case']=="notification_license_ok") {
             $this->logger->info("Amazon personalize " . $installed['notification_case']);
             $this->setInstalled();
@@ -89,7 +97,10 @@ class Db extends AbstractHelper {
     }
     
     public function setRule() {
-        $this->configWriter->save('awsp_settings/awsp_general/rule_key', bin2hex(random_bytes(16)), $this->scope);
+        $key = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
+        if( empty($key) ) {
+            $this->configWriter->save('awsp_settings/awsp_general/rule_key', bin2hex(random_bytes(16)), $this->scope);
+        }
     }
 
     public function db() {
@@ -109,4 +120,33 @@ class Db extends AbstractHelper {
 
         return $exists;
     }
+
+    public function getRuleId($name) {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_URL => 'https://css.customerparadigm.com/apl_api/api.php',
+            CURLOPT_POST => 1,
+            CURLOPT_POSTFIELDS => [
+                'api_key_secret' => '4bpsZ9YFgBXITAz4',
+                'api_function' => 'search',
+                'search_type' => 'product',
+                'search_keyword' => "$name",
+            ]
+        ]);
+
+        $resp = curl_exec($curl);
+        curl_close($curl);
+        if($resp) {
+            $decoded = $this->serializer->unserialize($resp);
+            if($decoded['error_detected'] == 1 || array_key_exists('error',$decoded['page_message']) ) {
+                return $resp;
+            } else {
+                return $decoded['page_message'][0]['product_id'];
+            }
+        }
+        return '';
+    }
+
 }

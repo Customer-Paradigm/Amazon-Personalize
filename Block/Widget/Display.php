@@ -56,13 +56,12 @@ class Display  extends \Magento\Catalog\Block\Product\AbstractProduct implements
     }
     
     public function canDisplay() {
-	$display = true;
-
-    	if( ! $this->isEnabled() ) { 
-	    $display = false; 
-    	} elseif($this->pConfig->getGaAbEnabled() && $this->isControlUser() ) { 
-	    $display = false; 
-	}
+        $display = true;
+        if( ! $this->isEnabled() ) { 
+            $display = false; 
+        } elseif($this->pConfig->getGaAbEnabled() && $this->isControlUser() ) { 
+            $display = false; 
+        }
         return $display;
     }
 

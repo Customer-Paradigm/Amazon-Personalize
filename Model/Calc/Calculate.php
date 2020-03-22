@@ -30,6 +30,7 @@ define("APL_CORE_NOTIFICATION_INVALID_DNS", "License error: actual IP address an
 
 use \Magento\Framework\Stdlib\DateTime\DateTime;
 use \Magento\Framework\App\Config\ScopeConfigInterface;
+use Psr\Log\LoggerInterface;
 
 class Calculate 
 {
@@ -45,12 +46,14 @@ class Calculate
     protected $cssVersionTtl;
     protected $ruleKey;
     protected $ruleTable;
+    protected $logger;
 
 	public function __construct(
 		\Magento\Framework\App\ResourceConnection $resource,
         \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone,
         \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
-        ScopeConfigInterface $scopeConfig
+        ScopeConfigInterface $scopeConfig,
+        LoggerInterface $logger
 	) {
 		$this->resource = $resource;
 		$this->connection = $this->resource->getConnection();
@@ -59,6 +62,8 @@ class Calculate
         $this->moddir = __DIR__;
         $this->scopeConfig = $scopeConfig;
         $this->scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
+        $this->logger = $logger;
+
         $this->cssServer = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_server', $this->scope);
         $this->cssVersion = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_version', $this->scope);
         $this->cssVersionTtl = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_version_ttl', $this->scope);
@@ -287,7 +292,6 @@ class Calculate
 			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 			curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
 
-			//this public function is called by curl for each header received - https://stackoverflow.com/questions/9183178/can-php-curl-retrieve-response-headers-and-body-in-a-single-request
 			curl_setopt($ch, CURLOPT_HEADERFUNCTION,
 				function($curl, $header) use (&$formatted_headers_array)
 				{
@@ -304,8 +308,12 @@ class Calculate
 			);
 
 			$result=curl_exec($ch);
-			$curl_error=curl_error($ch); //returns a human readable error (if any)
-			curl_close($ch);
+            $curl_error=curl_error($ch); 
+            if( $curl_error ) {
+                $this->logger()->error( "\nCalc curl post error" . $curl_error);
+            }
+            
+            curl_close($ch);
 
 			$server_response_array['headers']=$formatted_headers_array;
 			$server_response_array['error']=$curl_error;
@@ -766,6 +774,7 @@ class Calculate
 		{
 			$notifications_array['notification_case']="notification_script_corrupted";
 			$notifications_array['notification_text']=implode("; ", $apl_core_notifications);
+            $this->logger->error( "\nCalc config error:  " . print_r($notifications_array,true));
 		}
 
 		return $notifications_array;

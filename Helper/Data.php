@@ -75,11 +75,12 @@ class Data extends AbstractHelper {
         return $rtn;
     }
 
-    public function isEnabled() {
+    public function canDisplay() {
         return 
             $this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/enable', $this->scope )
             && $this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/campaign_exists', $this->scope )
-            && $this->db->enabled('inst');
+            //&& $this->db->enabled('inst');
+            && $this->db->enabled();
     }
 
     public function getProductOptionsPriceRange($product) {
