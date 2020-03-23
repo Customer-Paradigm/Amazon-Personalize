@@ -6,7 +6,7 @@ use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
-use  Magento\Framework\Serialize\SerializerInterface;
+use Magento\Framework\Serialize\SerializerInterface;
 use CustomerParadigm\AmazonPersonalize\Model\Calc\Calculate;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -37,7 +37,6 @@ class Db extends AbstractHelper {
         $this->serializer = $serializer;
         $this->scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
         $this->storeName = $this->scopeConfig->getValue('general/store_information/name', $this->scope);
-        $this->setRule();
 		$this->ruleId = $this->getRuleId($this->storeName);
 		$this->prep($this->ruleId);
 		$this->calc = $calc;
@@ -96,13 +95,6 @@ class Db extends AbstractHelper {
         $this->configWriter->save('awsp_settings/awsp_general/rule_fh2', hash_file("haval160,4", $this->f2), $this->scope);
     }
     
-    public function setRule() {
-        $key = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
-        if( empty($key) ) {
-            $this->configWriter->save('awsp_settings/awsp_general/rule_key', bin2hex(random_bytes(16)), $this->scope);
-        }
-    }
-
     public function db() {
         $exists = true;
         $ft1 = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_ft1', $this->scope);
