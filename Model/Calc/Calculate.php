@@ -64,15 +64,22 @@ class Calculate
         $this->scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
         $this->logger = $logger;
 
-		$this->setRule();
         $this->cssServer = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_server', $this->scope);
         $this->cssVersion = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_version', $this->scope);
         $this->cssVersionTtl = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_version_ttl', $this->scope);
-        $this->ruleKey = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
+        //$this->ruleKey = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
+        $this->ruleKey = $this->setRule();
        // $this->ruleKey = 'awequei909aezn';
         $this->ruleTable = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_table', $this->scope);
 	}
 
+    public function setRule() {
+        $key = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
+        if( empty($key) ) {
+            $this->configWriter->save('awsp_settings/awsp_general/rule_key', bin2hex(random_bytes(16)));
+        }
+		return $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
+    }
 
 	public function aplCustomEncrypt($string, $key)
 	{
@@ -984,14 +991,6 @@ class Calculate
 		}
 		return $notifications_array;
     }
-
-    public function setRule() {
-        $key = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
-        if( empty($key) ) {
-            $this->configWriter->save('awsp_settings/awsp_general/rule_key', bin2hex(random_bytes(16)), $this->scope);
-        }
-    }
-
 
 	public function calcTableExists() {
 		$check_qry = "SHOW TABLES LIKE '%" . $this->ruleTable . "%'";

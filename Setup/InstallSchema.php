@@ -35,16 +35,12 @@ class InstallSchema implements InstallSchemaInterface
     ) {
         $this->pConfig = $pConfig;
         $this->db = $db;
-		// initialize aws cred directory cron on install
-		$this->pConfig->setCron('aws_set_cli','on');
-
-    //    $this->db->setRule();
-    //    $storename = $this->pConfig->getStoreName();
-    //    $this->ruleId = $this->db->getRuleId($storename);
     }
 
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
+		// initialize aws cred directory cron on install
+		$this->pConfig->setCron('aws_set_cli','on');
         $installer = $setup;
         $installer->startSetup();
 
