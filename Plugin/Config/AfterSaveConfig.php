@@ -8,6 +8,7 @@ use CustomerParadigm\AmazonPersonalize\Model\AbTracking;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 use CustomerParadigm\AmazonPersonalize\Helper\Db;
+use CustomerParadigm\AmazonPersonalize\Model\Calc\Calculate;
 
 class AfterSaveConfig
 {
@@ -41,6 +42,11 @@ class AfterSaveConfig
      */
 	protected $dbHelper;
     
+    /**
+     * @var CustomerParadigm\AmazonPersonalize\Model\Calc\Calculate
+     */
+	protected $calc;
+    
 
     /**
      * AfterSaveConfig constructor.
@@ -51,7 +57,8 @@ class AfterSaveConfig
         AbTracking $abTracking,
         WizardTracking $wizardTracking,
         Data $pHelper,
-        Db $dbHelper
+        Db $dbHelper,
+        Calculate $calc
     ) {
         $this->logger = $logger;
         $this->pConfig = $pConfig;
@@ -59,6 +66,7 @@ class AfterSaveConfig
         $this->wizardTracking = $wizardTracking;
         $this->pHelper = $pHelper;
         $this->dbHelper = $dbHelper;
+        $this->calc = $calc;
     }
 
     public function afterSave( \Magento\Config\Model\Config $subject, $result) {
@@ -130,7 +138,7 @@ class AfterSaveConfig
                 $output = shell_exec($cmd);
 
                 $this->pConfig->saveKeys('saved','saved');
-                $this->dbHelper->setRule();
+                $this->calc->setRule();
 
                 $procStatus =  $this->wizardTracking->getProcessStatus()['status'];
                 // Enable/disable cron based on process status
