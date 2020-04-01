@@ -12,19 +12,22 @@ class Result extends \Magento\Framework\Model\AbstractModel
     protected $_cacheTag = 'customerparadigm_amazonpersonalize_result';
     protected $_eventPrefix = 'customerparadigm_amazonpersonalize_result';
     protected $campaignArn;
+    protected $nameConfig;
 
     public function __construct(
         \CustomerParadigm\AmazonPersonalize\Api\Personalize\RuntimeClient $rtClient,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+	\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+	\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
         array $data = []
     )
     {
         $this->rtClient = $rtClient;
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
-        $this->campaignArn = 'arn:aws:personalize:us-east-1:138144570375:campaign/fireside-hrnn-coldstart-campaign';
+	$this->nameConfig = $nameConfig;
+	$this->campaignArn = $this->nameConfig->getArn('campaignArn');
     }
 
     protected function _construct() { 

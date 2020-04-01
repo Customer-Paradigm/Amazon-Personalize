@@ -33,11 +33,6 @@ class AfterSaveConfig
     protected $wizardTracking;
 
     /**
-     * @var CustomerParadigm\AmazonPersonalize\Helper\Data
-     */
-	protected $pHelper;
-    
-    /**
      * @var CustomerParadigm\AmazonPersonalize\Helper\Db
      */
 	protected $dbHelper;
@@ -56,7 +51,6 @@ class AfterSaveConfig
         PersonalizeConfig $pConfig,
         AbTracking $abTracking,
         WizardTracking $wizardTracking,
-        Data $pHelper,
         Db $dbHelper,
         Calculate $calc
     ) {
@@ -64,7 +58,6 @@ class AfterSaveConfig
         $this->pConfig = $pConfig;
         $this->abTracking = $abTracking;
         $this->wizardTracking = $wizardTracking;
-        $this->pHelper = $pHelper;
         $this->dbHelper = $dbHelper;
         $this->calc = $calc;
     }
@@ -142,7 +135,7 @@ class AfterSaveConfig
 
                 $procStatus =  $this->wizardTracking->getProcessStatus()['status'];
                 // Enable/disable cron based on process status
-                if( $this->pHelper->isEnabled() == false || $procStatus == 'hasError' || $procStatus == 'finished') {
+                if( $this->pConfig->isEnabled() == false || $procStatus == 'hasError' || $procStatus == 'finished') {
                     $this->logger->info('Aws plugin data create Cron off -------------');
                     $this->pConfig->setCron('aws_data_setup','off');
                 } else {

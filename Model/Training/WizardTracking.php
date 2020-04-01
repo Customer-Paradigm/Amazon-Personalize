@@ -36,7 +36,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
 
         $this->steps = array(
             // 'create_personalize_user',
-//            'create_csv_files',
+            'create_csv_files',
             'create_s3_bucket',
             'upload_csv_files',
             'create_schemas',

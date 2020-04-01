@@ -19,14 +19,14 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
     {
         $this->baseName = (new \ReflectionClass($this))->getShortName();
         $this->apiCreate = 'create' . $this->baseName . 'Async';
-        //$this->apiDescribe = 'describe' . $this->baseName . 'Async';
         $this->apiDescribe = 'describe' . $this->baseName;
         $this->nameConfig = $nameConfig;
-		$this->region = $this->nameConfig->getAwsRegion();
-		$this->personalizeClient = new PersonalizeClient(
-			[ 'profile' => 'default',
-			'version' => 'latest',
-			'region' => "$this->region" ]
-		);
+	$this->region = $this->nameConfig->getAwsRegion();
+	
+	$this->personalizeClient = new PersonalizeClient(
+		[ 'profile' => 'default',
+		'version' => 'latest',
+		'region' => "$this->region" ]
+	);
     }
 }

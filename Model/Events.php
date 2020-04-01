@@ -42,7 +42,7 @@ class Events
         $this->queryFactory = $queryFactory;
         $this->directoryList = $directoryList;
         $this->logger = $logger;
-        $this->trackingId = 'cf2af3ab-2adf-4b21-933b-baa306bfd22f';
+        $this->trackingId = 'c61e8b60-0fee-44e3-867a-660d77d45e20';
         $this->debugLog = false && $this->pConfig->isEnabled();
         $this->debugLogFile = $this->directoryList->getRoot() . "/var/log/event-debug.log";
     }

@@ -52,7 +52,7 @@ class Display  extends \Magento\Catalog\Block\Product\AbstractProduct implements
     }
 
     public function isEnabled() {
-        return $this->pHelper->isEnabled();
+        return $this->pHelper->canDisplay();
     }
     
     public function canDisplay() {
@@ -67,7 +67,7 @@ class Display  extends \Magento\Catalog\Block\Product\AbstractProduct implements
 
     public function getRecommendationHtml() {
         $user_id = $this->getUserId();
-        $recommend_result = $this->awsResultFactory->create()->getRecommendation($user_id);
+	$recommend_result = $this->awsResultFactory->create()->getRecommendation($user_id);
         $productCollection = $this->prodViewModel->getViewableProducts($recommend_result, $this->getCount());
         $resultPage = $this->resultPageFactory->create();
 

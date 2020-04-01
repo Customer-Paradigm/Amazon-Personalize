@@ -19,6 +19,7 @@ class Wizard
     protected $solutionVersion;
     protected $campaign;
     protected $eventTracker;
+    protected $pConfig;
 
     public function __construct(
         \CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
@@ -35,7 +36,8 @@ class Wizard
         \CustomerParadigm\AmazonPersonalize\Model\Training\Solution $solution,
         \CustomerParadigm\AmazonPersonalize\Model\Training\SolutionVersion $solutionVersion,
         \CustomerParadigm\AmazonPersonalize\Model\Training\Campaign $campaign,
-        \CustomerParadigm\AmazonPersonalize\Model\Training\EventTracker $eventTracker
+        \CustomerParadigm\AmazonPersonalize\Model\Training\EventTracker $eventTracker,
+        \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig
     )
     {
         $this->wizardTracking = $wizardTracking;
@@ -53,6 +55,7 @@ class Wizard
         $this->solutionVersion = $solutionVersion;
         $this->campaign = $campaign;
         $this->eventTracker = $eventTracker;
+        $this->pConfig = $pConfig;
     }
     
     public function execute() {
@@ -67,12 +70,12 @@ class Wizard
 
     public function createCsvFiles() {
         try {
-            $generator = $this->userGenerator->generateCsv();
+	    $generator = $this->userGenerator->generateCsv();
             $this->nameConfig->saveName("csvUserFile", $generator->getFilePath());
             $generator = $this->itemGenerator->generateCsv();
             $this->nameConfig->saveName("itemUserFile", $generator->getFilePath());
             $generator = $this->interactionGenerator->generateCsv();
-            $this->nameConfig->saveName("interactionUserFile", $generator->getFilePath());
+	    $this->nameConfig->saveName("interactionUserFile", $generator->getFilePath());
         } catch (AwsException $e) {
             $this->setStepError('create_csv_files',$e->getMessage());
         } catch (\Exception $e) {

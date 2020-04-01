@@ -42,8 +42,8 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 
     public function generateCsv()
     {
-        $reportInteractions = $this->interactionReportCollectionFactory->create();
-        $purchaseInteractions = $this->interactionPurchaseCollectionFactory->create();
+        $reportInteractions = $this->interactionReportCollectionFactory->create()->addFieldToFilter('last_visit_at', array('gt' => '2019-01-01'));
+        $purchaseInteractions = $this->interactionPurchaseCollectionFactory->create()->addFieldToFilter('sales_order.updated_at', array('gt' =>  '2018-02-01'));
 
         $this->createWriter()
             ->writeHeadersToCsv()
