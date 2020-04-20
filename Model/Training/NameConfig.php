@@ -45,6 +45,8 @@ class NameConfig extends PersonalizeConfig
 
     public function buildName($type) {
         $storeName = $this->scopeConfig->getValue( 'general/store_information/name', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->store->getId() );
+        $storeName = trim($storeName); // clean leading/trailing spaces
+        $storeName = preg_replace('/[^A-Za-z0-9\-\s]/', '', $storeName); // Removes special chars.
         $storeName = explode(' ', $storeName);
         $storeName = array_slice($storeName, 0, 3);
         $storeName = implode('-', $storeName);
