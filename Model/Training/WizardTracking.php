@@ -14,6 +14,8 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     protected $logger;
     protected $nameConfig;
     protected $pConfig;
+    protected $attempts;
+    protected $maxAttempts;
 
     public function __construct(
         \Magento\Framework\Model\Context $context,
@@ -33,21 +35,22 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $this->pHelper = $pHelper;
             $this->logger = $logger;
             $this->pConfig = $pConfig;
-
-        $this->steps = array(
-            // 'create_personalize_user',
-            'create_csv_files',
-            'create_s3_bucket',
-            'upload_csv_files',
-            'create_schemas',
-            'create_dataset_group',
-            'create_datasets',
-            'create_import_jobs',
-            'create_solution',
-            'create_solution_version',
-            'create_campaign',
-            'create_event_tracker'
-        );
+            $this->attempts = array();
+            $this->maxAttempts = 3;
+            $this->steps = array(
+                // 'create_personalize_user',
+                'create_csv_files',
+                'create_s3_bucket',
+                'upload_csv_files',
+                'create_schemas',
+                'create_dataset_group',
+                'create_datasets',
+                'create_import_jobs',
+                'create_solution',
+                'create_solution_version',
+                'create_campaign',
+                'create_event_tracker'
+            );
     }
 
     protected function _construct() { 
@@ -68,6 +71,11 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     public function saveStepData($step_name, $set_column, $value) {
         $sql = "update aws_wizard_steps set $set_column = '$value' where step_name = '$step_name'";
         $this->connection->exec($sql);
+    }
+    
+    public function getStepData($step_name, $column) {
+        $sql = "select $column value from aws_wizard_steps where step_name = '$step_name'";
+        return $this->connection->query($sql)->fetch();
     }
     
     public function stepsInitialized() {
@@ -93,8 +101,9 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         $rtn['mssg'] = $process['mssg'];
         $rtn['state'] = $process['state'];
         switch($process['state']) {
-			case 'error':
-				return $rtn;
+        case 'error':
+            file_put_contents('/home/scott/public_html/bdjeffries233/var/log/test.log','---------error', FILE_APPEND);
+                return $this->tryAgain($step);
 			case 'step ready':
 			case 'not started':
 				$fname = $this->stepToFuncName($step);
@@ -126,6 +135,15 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
 			}
         $this->pHelper->flushAllCache();
 		return $rtn;
+    }
+
+    public function tryAgain($step) {
+        $rtn = array();
+        $this->setStepRetry($step);
+        $rtn['steps'] = $this->displayProgress();
+        $rtn['mssg'] = $process['mssg'];
+        $rtn['state'] = $process['state'];
+        return $rtn;
     }
 
     public function validateSteps() {
@@ -317,8 +335,25 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     protected function setStepInprogress($step) {
         $this->saveStepData($step,'in_progress', true);
     }
-
+    
     protected function setStepError($step,$message) {
         $this->saveStepData($step,'error',$message);
     }
+   
+    protected function setStepRetry($step,$attempt) {
+        $attempt = $this->getAttemptNum($step);
+        if( $attempt >= $this->maxAttempts ) {
+            return array();
+        } else {
+            $this->saveStepData($step,'in_progress',$attempt);
+            $this->saveStepData($step,'is_completed',null);
+            $this->saveStepData($step,'error',null);
+            return $step;
+        }
+    }
+
+    protected function getAttemptNum($step) {
+        return $this->getStepData($step, 'in_progress');
+    }
+
 }
