@@ -14,6 +14,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     protected $logger;
     protected $nameConfig;
     protected $pConfig;
+    protected $eventMgrInterface;
     protected $attempts;
     protected $maxAttempts;
 
@@ -26,6 +27,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         \CustomerParadigm\AmazonPersonalize\Model\ResourceModel\WizardTracking\Collection $trackingCollection,
         \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
         \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
+        \Magento\Framework\Event\ManagerInterface $eventMgrInterface,
         array $data = []
     )
     {
@@ -35,6 +37,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $this->pHelper = $pHelper;
             $this->logger = $logger;
             $this->pConfig = $pConfig;
+            $this->eventMgrInterface = $eventMgrInterface;
             $this->attempts = array();
             $this->maxAttempts = 3;
             $this->steps = array(
@@ -96,13 +99,14 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     public function runSteps($wizard) {
         $rtn = array();
         $process = $this->getProcessStepState();
+        file_put_contents('/home/scott/public_html/bdjeffries233/var/log/test.log',"\hit runSteps" . print_r($process, true), FILE_APPEND);
         $step = $process['step'];
         $rtn['steps'] = $this->displayProgress();
         $rtn['mssg'] = $process['mssg'];
         $rtn['state'] = $process['state'];
         switch($process['state']) {
         case 'error':
-            file_put_contents('/home/scott/public_html/bdjeffries233/var/log/test.log','---------error', FILE_APPEND);
+            file_put_contents('/home/scott/public_html/bdjeffries233/var/log/test.log','try again---------error', FILE_APPEND);
                 return $this->tryAgain($step);
 			case 'step ready':
 			case 'not started':
@@ -341,6 +345,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     }
    
     protected function setStepRetry($step,$attempt) {
+        file_put_contents('/home/scott/public_html/bdjeffries233/var/log/test.log',"\hit retry" . print_r($step, true), FILE_APPEND);
         $attempt = $this->getAttemptNum($step);
         if( $attempt >= $this->maxAttempts ) {
             return array();
