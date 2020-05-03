@@ -14,7 +14,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     protected $logger;
     protected $nameConfig;
     protected $pConfig;
-    protected $eventMgrInterface;
+    protected $eventManager;
     protected $attempts;
     protected $maxAttempts;
 
@@ -27,7 +27,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         \CustomerParadigm\AmazonPersonalize\Model\ResourceModel\WizardTracking\Collection $trackingCollection,
         \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
         \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
-        \Magento\Framework\Event\ManagerInterface $eventMgrInterface,
+        \Magento\Framework\Event\ManagerInterface $eventManager,
         array $data = []
     )
     {
@@ -37,7 +37,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $this->pHelper = $pHelper;
             $this->logger = $logger;
             $this->pConfig = $pConfig;
-            $this->eventMgrInterface = $eventMgrInterface;
+            $this->eventManager = $eventManager;
             $this->attempts = array();
             $this->maxAttempts = 3;
             $this->steps = array(
