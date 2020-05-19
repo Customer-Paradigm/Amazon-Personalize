@@ -6,4 +6,10 @@
     <event name="sales_order_save_before">
         <observer name="awsEventOrderSaveBefore" instance="CustomerParadigm\AmazonPersonalize\Observer\OrderAttributeObserver" />
     </event>
+    <event name="awsp_wizard_runsteps_before">
+        <observer name="awspWizardRunStepsBefore" instance="CustomerParadigm\AmazonPersonalize\Observer\WizardRunStepsBeforeObserver" />
+    </event>
+    <event name="awsp_wizard_runsteps_after">
+        <observer name="awspWizardRunStepsAfter" instance="CustomerParadigm\AmazonPersonalize\Observer\WizardRunStepsAfterObserver" />
+    </event>
 </config>

@@ -9,21 +9,6 @@ use Magento\Framework\Setup\SchemaSetupInterface;
 class UpgradeSchema implements  UpgradeSchemaInterface
 {
 
-	/**
-	 * @var \Magento\Sales\Setup\SalesSetupFactory
-	 */
-//	protected $salesSetupFactory;
-	/**
-	 * @param \Magento\Sales\Setup\SalesSetupFactory $salesSetupFactory
-     */
-    /*
-	public function __construct(
-		\Magento\Sales\Setup\SalesSetupFactory $salesSetupFactory
-	) {
-		$this->salesSetupFactory = $salesSetupFactory;
-    }
-     */
-
 	public function upgrade(SchemaSetupInterface $setup,
 		ModuleContextInterface $context){
 		$setup->startSetup();
@@ -160,5 +145,99 @@ class UpgradeSchema implements  UpgradeSchemaInterface
             $installer->getConnection()->createTable($table);
             $installer->endSetup();
         }
+
+        /**
+         * Create table to track errors
+         */
+        if (version_compare($context->getVersion(), '1.0.6') < 0) {
+            $installer = $setup;
+            $installer->startSetup();
+
+            $table = $installer->getConnection()->newTable($installer->getTable('aws_errors')
+            )->addColumn(
+                'error_id',
+                Table::TYPE_INTEGER,
+                null,
+                ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                'Error table index id'
+            )->addColumn(
+                'name',
+                Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Aws operation name'
+            )->addColumn(
+                'type',
+                Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Aws operation type'
+            )->addColumn(
+                'aws_id',
+                Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Aws operation id'
+            )->addColumn(
+                'arn',
+                Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Aws arn'
+            )->addColumn(
+                'role_arn',
+                Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Aws role arn'
+            )->addColumn(
+                'aws_message',
+                Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Aws error message'
+            )->addColumn(
+                'magento_class_info',
+                Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Magento class/function call'
+            )->addColumn(
+                'magento_message',
+                Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Magento error message'
+            )->addColumn(
+                'created_at',
+                Table::TYPE_TIMESTAMP,
+                null,
+                ['nullable' => false, 'default' => Table::TIMESTAMP_INIT],
+                'Created At'
+            );
+            $installer->getConnection()->createTable($table);
+            $installer->endSetup();
+        }
+
+        /**
+         * Create sales_order columns for ab test user type attribute
+         */
+        if (version_compare($context->getVersion(), '1.0.7') < 0) {
+            $installer = $setup;
+            $installer->startSetup();
+            $installer->getConnection()->addColumn(
+                $installer->getTable('aws_wizard_steps'),
+                'attempt_number',
+                [
+                    'type' => \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    'length' => 255,
+                    'comment' =>'Number of attempts for this step'
+                ]
+            );
+
+            $installer->endSetup();
+        }
+
+
 	}
 }

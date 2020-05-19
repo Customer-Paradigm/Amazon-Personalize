@@ -77,11 +77,10 @@ class Wizard
         $this->nameConfig->saveName("itemUserFile", $generator->getFilePath());
         $generator = $this->interactionGenerator->generateCsv();
         $this->nameConfig->saveName("interactionUserFile", $generator->getFilePath());
-//      file_put_contents('/home/scott/public_html/wallstreetgreetings/var/log/test.log',"\n --gen return" . print_r($generator,true), FILE_APPEND);  
+//      file_put_contents('/home/demo/public_html/pargolf/var/log/test.log',"\n --gen return" . print_r($generator,true), FILE_APPEND);  
         if( $generator->getDataError() === 'too_few_interactions' ) {
             $this->setStepError('create_csv_files',"Interaction data error: you need at least 1000 interactions to train your model");
-                        file_put_contents('/home/scott/public_html/wallstreetgreetings/var/log/test.log',"\n  --- hit error ", FILE_APPEND);  
-
+                        file_put_contents('/home/demo/public_html/pargolf/var/log/test.log',"\n  --- hit error ", FILE_APPEND);  
         }
 
         } catch (AwsException $e) {

@@ -140,7 +140,9 @@ class AfterSaveConfig
                     $this->pConfig->setCron('aws_data_setup','off');
                 } else {
                     $this->logger->info('Aws plugin data create Cron on -------------');
-                    $this->pConfig->setCron('aws_data_setup','on');
+/* TODO debug */
+                    //$this->pConfig->setCron('aws_data_setup','on');
+                    $this->pConfig->setCron('aws_data_setup','off');
                 }
                 } catch (\Exception $e) {
                     $this->logger->critical('Aws Creds Save Error:', ['exception' => $e]);

@@ -95,50 +95,59 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             }
         } 
 	}
-    
+
     public function runSteps($wizard) {
         $rtn = array();
-        $process = $this->getProcessStepState();
-        file_put_contents('/home/scott/public_html/wallstreetgreetings/var/log/test.log',"\hit runSteps" . print_r($process, true), FILE_APPEND);
-        $step = $process['step'];
-        $rtn['steps'] = $this->displayProgress();
-        $rtn['mssg'] = $process['mssg'];
-        $rtn['state'] = $process['state'];
-        switch($process['state']) {
-        case 'error':
-            file_put_contents('/home/scott/public_html/wallstreetgreetings/var/log/test.log','try again---------error', FILE_APPEND);
-                return $this->tryAgain($step);
-			case 'step ready':
-			case 'not started':
-				$fname = $this->stepToFuncName($step);
-				$this->setStepInprogress($step);
-				try {
-					$rtn = $wizard->{$fname}();
-					$check = $wizard->checkStatus($step);
-					if($check == 'complete') {
-						$this->setStepComplete($step);
-        				$rtn['steps'] = $this->displayProgress();
-						$rtn['mssg'] = 'success';
-						$rtn['state'] = 'complete';
-					}
-				} catch(\Exception $e) {
-					$this->setStepError($step, $e->getMessage());
-					$this->logger->critical($e);
-					$rtn['mssg'] = 'run step error';
-					$rtn['is_success'] = false;
-				}
-				break;
-			case 'in progress':
-				$rtn['steps'] = $this->displayProgress();
-				$rtn['mssg'] = 'success';
-				$rtn['state'] = 'complete';
-				$check = $wizard->checkStatus($step);
-				if($check == 'complete') {
-					$this->setStepComplete($step);
-				}
-			}
-        $this->pHelper->flushAllCache();
-		return $rtn;
+        $this->eventManager->dispatch('awsp_wizard_runsteps_before', ['obj' => $this]);
+        try {
+            $process = $this->getProcessStepState();
+            /* TODO debug */
+            file_put_contents('/home/demo/public_html/pargolf/var/log/test.log',"\hit runSteps" . print_r($process, true), FILE_APPEND);
+            $step = $process['step'];
+            $rtn['steps'] = $this->displayProgress();
+            $rtn['mssg'] = $process['mssg'];
+            $rtn['state'] = $process['state'];
+            switch($process['state']) {
+                case 'error':
+                    file_put_contents('/home/demo/public_html/pargolf/var/log/test.log','try again---------error', FILE_APPEND);
+                    return $this->tryAgain($step);
+                case 'step ready':
+                case 'not started':
+                    $fname = $this->stepToFuncName($step);
+                    $this->setStepInprogress($step);
+                    try {
+                        $rtn = $wizard->{$fname}();
+                        $check = $wizard->checkStatus($step);
+                        if($check == 'complete') {
+                            $this->setStepComplete($step);
+                            $rtn['steps'] = $this->displayProgress();
+                            $rtn['mssg'] = 'success';
+                            $rtn['state'] = 'complete';
+                        }
+                    } catch(\Exception $e) {
+                        $this->setStepError($step, $e->getMessage());
+                        $this->logger->critical($e);
+                        $rtn['mssg'] = 'run step error';
+                        $rtn['is_success'] = false;
+                    }
+                    break;
+                case 'in progress':
+                    $rtn['steps'] = $this->displayProgress();
+                    $rtn['mssg'] = 'success';
+                    $rtn['state'] = 'complete';
+                    $check = $wizard->checkStatus($step);
+                    if($check == 'complete') {
+                        $this->setStepComplete($step);
+                    }
+            }
+            $this->pHelper->flushAllCache();
+        } catch(Exception $e) {
+            /* TODO stub */
+            var_dump($e->getMessage());
+            die('========ERROR=========');
+        }
+        $this->eventManager->dispatch('awsp_wizard_runsteps_after', ['obj' => $this]);
+        return $rtn;
     }
 
     public function tryAgain($step) {
@@ -345,7 +354,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     }
    
     protected function setStepRetry($step,$attempt) {
-        file_put_contents('/home/scott/public_html/wallstreetgreetings/var/log/test.log',"\hit retry" . print_r($step, true), FILE_APPEND);
+        file_put_contents('/home/demo/public_html/pargolf/var/log/test.log',"\hit retry" . print_r($step, true), FILE_APPEND);
         $attempt = $this->getAttemptNum($step);
         if( $attempt >= $this->maxAttempts ) {
             return array();
