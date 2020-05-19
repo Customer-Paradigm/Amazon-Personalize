@@ -118,7 +118,10 @@ class UserGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
     public function generateCsv()
     {
         /** @var \Magento\Customer\Model\ResourceModel\Customer\Collection $customers */
-	    $customers = $this->customerCollectionFactory->create()->addFieldToFilter('created_at', array('gt' =>  '2017-09-15'));
+	    //$customers = $this->customerCollectionFactory->create()->addFieldToFilter('created_at', array('gt' =>  '2017-09-15'));
+        $customers = $this->customerCollectionFactory->create();
+        $count = count($customers);
+        file_put_contents('/home/scott/public_html/wallstreetgreetings/var/log/test.log',"\n Cust Count: $count", FILE_APPEND);  
 
         $this->createWriter()
             ->writeHeadersToCsv()
