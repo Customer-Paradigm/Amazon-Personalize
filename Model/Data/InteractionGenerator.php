@@ -43,19 +43,20 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
     public function generateCsv()
     {
         try {
-            $rstart_date =  date("Y-m-d", strtotime("-7 months"));
-            $pstart_date =  date("Y-m-d", strtotime("-7 months"));
+            $rstart_date =  date("Y-m-d", strtotime("-6 months"));
+            $pstart_date =  date("Y-m-d", strtotime("-6 months"));
             $max_records = 2000;
-            $reportInteractions = $this->interactionReportCollectionFactory->create()->addFieldToFilter('last_visit_at', array('gt' => $rstart_date));
+            $reportInteractions = $this->interactionReportCollectionFactory->create()->addFieldToFilter('last_visit_at', array('gt' => $rstart_date))->setOrder('event_id','desc')->setPageSize($max_records);
             $purchaseInteractions = $this->interactionPurchaseCollectionFactory->create()->addFieldToFilter('sales_order.updated_at', array('gt' =>  $pstart_date))->setOrder('order_id','desc')->setPageSize($max_records);
 
 
             $rcount = count($reportInteractions);
             $pcount = count($purchaseInteractions);
+            $total = (int)$rcount + (int)$pcount;
 
-            file_put_contents('/home/demo/public_html/pargolf/var/log/test.log',"\n Report Count: $rcount", FILE_APPEND); 
-            file_put_contents('/home/demo/public_html/pargolf/var/log/test.log',"\n Purchase Count: $pcount", FILE_APPEND); 
-            file_put_contents('/home/demo/public_html/pargolf/var/log/test.log',"\n Total: " . $rcount + $pcount, FILE_APPEND); 
+            file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n Report Count: $rcount", FILE_APPEND); 
+            file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n Purchase Count: $pcount", FILE_APPEND); 
+            file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n Total: $total", FILE_APPEND); 
 
             $this->createWriter()
                 ->writeHeadersToCsv()
@@ -63,13 +64,13 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
                 ->writeCollectionToCsv($purchaseInteractions)
                 ->closeWriter();
             // Aws needs at least 1000 interactions
-            if((int)$rcount + (int)$pcount < 1000) {
-                file_put_contents('/home/demo/public_html/pargolf/var/log/test.log',"\n Hit return -------------", FILE_APPEND); 
+            if($total < 1000) {
+                file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n Too few interactions-------------", FILE_APPEND); 
                 $this->setDataError( "too_few_interactions");
             }
         } catch(Exception $e) {
             $mssg = $e->getMessage();
-            file_put_contents('/home/demo/public_html/pargolf/var/log/test.log',"\n  interaction gen message: $mssg", FILE_APPEND);
+            file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n  interaction gen message: $mssg", FILE_APPEND);
         }
 
         return $this;
