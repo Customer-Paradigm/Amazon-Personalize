@@ -142,9 +142,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             }
             $this->pHelper->flushAllCache();
         } catch(Exception $e) {
-            /* TODO stub */
-            var_dump($e->getMessage());
-            die('========ERROR=========');
+            $this->eventManager->dispatch('awsp_wizard_runsteps_error', ['obj' => $e]);
         }
         $this->eventManager->dispatch('awsp_wizard_runsteps_after', ['obj' => $this]);
         return $rtn;

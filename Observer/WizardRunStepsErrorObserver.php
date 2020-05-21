@@ -3,7 +3,7 @@ namespace CustomerParadigm\AmazonPersonalize\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
 
-class WizardRunStepsBeforeObserver implements ObserverInterface
+class WizardRunStepsErrorObserver implements ObserverInterface
 {
     protected $awsEvents;
     protected $request;
@@ -20,6 +20,6 @@ class WizardRunStepsBeforeObserver implements ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-file_put_contents('/home/demo/public_html/hoopologie/var/log/obs.log',"\n Wizard before", FILE_APPEND);
+file_put_contents('/home/demo/public_html/hoopologie/var/log/obs.log',"\n Wizard error", FILE_APPEND);
     }
 }

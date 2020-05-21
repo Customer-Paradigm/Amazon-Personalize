@@ -12,4 +12,7 @@
     <event name="awsp_wizard_runsteps_after">
         <observer name="awspWizardRunStepsAfter" instance="CustomerParadigm\AmazonPersonalize\Observer\WizardRunStepsAfterObserver" />
     </event>
+    <event name="awsp_wizard_runsteps_error">
+        <observer name="awspWizardRunStepsAfter" instance="CustomerParadigm\AmazonPersonalize\Observer\WizardRunStepsErrorObserver" />
+    </event>
 </config>
