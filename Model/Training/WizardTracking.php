@@ -20,14 +20,14 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
 
     public function __construct(
         \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Psr\Log\LoggerInterface $logger,
         \CustomerParadigm\AmazonPersonalize\Model\ResourceModel\WizardTracking\Collection $trackingCollection,
         \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
         \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
         \Magento\Framework\Event\ManagerInterface $eventManager,
+        \Magento\Framework\Registry $registry,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         array $data = []
     )
     {
