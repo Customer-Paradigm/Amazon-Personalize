@@ -17,6 +17,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         $this->getSelect()
             ->from(['main_table' => $this->getMainTable()],
                 [
+                    'order_id' => 'sales_order.entity_id',
                     'user_id' => 'sales_order.customer_id',
                     'item_id' => 'main_table.product_id',
                     'item_type' => 'main_table.product_type',

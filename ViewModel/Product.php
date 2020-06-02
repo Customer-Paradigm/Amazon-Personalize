@@ -35,7 +35,7 @@ class Product extends DataObject implements ArgumentInterface
     public function __construct(
         ProductCollectionFactory $productCollectionFactory,
         ProductRepositoryInterface $productRepository,
-	Configurable $configurable,
+	    Configurable $configurable,
         Data $dataHelper
     ) {
         parent::__construct();

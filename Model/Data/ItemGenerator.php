@@ -70,6 +70,9 @@ class ItemGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
     {
         $products = $this->productCollectionFactory->create()->addAttributeToSelect('*');
 
+        $count = count($products);
+        file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n Product Count: $count", FILE_APPEND);
+
         $this->createWriter()
             ->writeHeadersToCsv()
             ->writeProductsToCsv($products)

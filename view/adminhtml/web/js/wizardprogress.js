@@ -61,7 +61,9 @@ define([
 			self = this;
 			var url = self.ajaxDisplayUrl;
 			var imgUrl = self.successUrl;
-			self.displayRstBttn('none');
+/* TODO -- debug */
+			//self.displayRstBttn('none');
+			self.displayRstBttn('block');
 		
 			if(typeof startProcess !== "undefined") { 
 				url = self.ajaxRunUrl; 

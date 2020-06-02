@@ -17,6 +17,8 @@ abstract class AbstractGenerator
 
     protected $csvHeaders = [];
 
+    protected $dataError = '';
+
     private $exportDir;
 
     private $writeFactory;
@@ -99,6 +101,16 @@ abstract class AbstractGenerator
         $this->writer->writeCsv($this->csvHeaders);
 
         return $this;
+    }
+
+    protected function setDataError($err)
+    {
+        $this->dataError = $err;
+    }
+
+    protected function getDataError()
+    {
+        return $this->dataError;
     }
 
     abstract function generateCsv();

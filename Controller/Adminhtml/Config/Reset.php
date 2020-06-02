@@ -9,6 +9,7 @@ use Psr\Log\LoggerInterface;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 use CustomerParadigm\AmazonPersonalize\Model\Training\StepsReset;
 use CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig;
+use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
  
 class Reset extends Action
@@ -19,6 +20,7 @@ class Reset extends Action
     protected $helper;
     protected $stepsReset;
     protected $nameConfig;
+    protected $pConfig;
     protected $wizardTracking;
  
     /**
@@ -35,6 +37,7 @@ class Reset extends Action
         Data $helper,
         StepsReset $stepsReset,
         NameConfig $nameConfig,
+        PersonalizeConfig $pConfig,
         WizardTracking $wizardTracking
     )
     {
@@ -43,6 +46,7 @@ class Reset extends Action
         $this->helper = $helper;
         $this->stepsReset = $stepsReset;
         $this->nameConfig = $nameConfig;
+        $this->pConfig = $pConfig;
         $this->wizardTracking = $wizardTracking;
         parent::__construct($context);
     }
@@ -53,8 +57,8 @@ class Reset extends Action
     public function execute()
     {
         try {
-                $this->loggerInterface->info('Aws data reset Cron off -------------');
-                $this->pConfig->setCron('aws_data_setup','off');
+            $this->loggerInterface->info('Aws data reset Cron off -------------');
+            $this->pConfig->setCron('aws_data_setup','off');
         } catch (\Exception $e) {
             $this->loggerInterface->critical($e);
             $err_mssg = "AWS reset disable cron error: " . $e->getMessage();

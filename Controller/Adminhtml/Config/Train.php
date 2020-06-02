@@ -66,7 +66,9 @@ class Train extends Action
 				$this->pConfig->setCron('aws_data_setup','off');
 			} else {
 				$this->loggerInterface->info('Aws data setup Cron on -------------');
+/* TODO debug */
 				$this->pConfig->setCron('aws_data_setup','on');
+			//	$this->pConfig->setCron('aws_data_setup','off');
 			}
             $rtn = $this->wizard->execute();
         } catch (\Exception $e) {
