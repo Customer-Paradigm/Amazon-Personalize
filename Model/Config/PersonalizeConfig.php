@@ -6,7 +6,8 @@ use \Magento\Framework\App\Config\Storage\WriterInterface;
 use \Magento\Framework\App\Config\ScopeConfigInterface;
 use \Magento\Store\Model\StoreManagerInterface;
 use Aws\PersonalizeRuntime\PersonalizeRuntimeClient;
-use Psr\Log\LoggerInterface;
+use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
+use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
 use \Magento\Framework\App\Filesystem\DirectoryList;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 
@@ -21,7 +22,8 @@ class PersonalizeConfig
     protected $pRuntimeClient;
     protected $region;
     protected $homedir;
-    protected $logger;
+    protected $errorLogger;
+    protected $infoLogger;
     protected $clientAccessKey;
     protected $clientSecretKey;
     protected $storeManager;
@@ -37,14 +39,16 @@ class PersonalizeConfig
     public function __construct(
         WriterInterface $configWriter,
         ScopeConfigInterface $scopeConfig,
-        LoggerInterface $logger,
+        InfoLogger $infoLogger,
+        ErrorLogger $errorLogger,
         StoreManagerInterface $storeManager,
         DirectoryList $directoryList,
         Data $helper
     ) {
         $this->configWriter = $configWriter;
         $this->scopeConfig = $scopeConfig;
-        $this->logger = $logger;
+        $this->infoLogger = $infoLogger;
+        $this->errorLogger= $errorLogger;
         $this->storeManager = $storeManager;
         $this->directoryList = $directoryList;
         $this->helper = $helper;
@@ -73,8 +77,7 @@ class PersonalizeConfig
         if( $onoff == 'off' ) {
             $schedule = '';
         }
-        $this->logger->info($schedule);
-        $this->configWriter->save("awsp_settings/crontab/$name", $schedule);
+        $this->configWriter->save("awsp_settings/rontab/$name", $schedule);
         $this->helper->flushAllCache();
     }
 
@@ -153,8 +156,8 @@ class PersonalizeConfig
     }
 
     public function decryptAwsAccount() {
-        $acctencrypted = $this->getAwsAccount();
-        return $this->encrypt_decrypt('decrypt',$acctencrypted);
+        return $this->getAwsAccount();
+        //return $this->encrypt_decrypt('decrypt',$acctencrypted);
     }
 
     public function getAwsRegion() {
@@ -173,7 +176,7 @@ class PersonalizeConfig
             $status = $cred_class->getState();
 
             if($status === 'rejected' ) {
-                $this->logger->error("Aws Credentials failed. Looks like home/.aws file is missing or can't be read");
+                $this->errorLogger->error("Aws Credentials failed. Looks like home/.aws file is missing or can't be read");
             }
 
             if($status === 'fulfilled' ) {
@@ -195,12 +198,12 @@ class PersonalizeConfig
                 ) {
                     $config_valid = array('client_key'=>$client_key, 'client_secret'=>$client_secret);
                 } else {
-                    $this->logger->error('Aws Credentials failed. Looks like home/.aws creds were overwritten');
+                    $this->errorLogger->error('Aws Credentials failed. Looks like home/.aws creds were overwritten');
                 }
             }
 
         } catch( Exception $e ) {
-            $this->logger->critical('Error checking Aws Creds: ', ['exception' => $e]);
+            $this->errorLogger->error('Error checking Aws Creds: ', ['exception' => $e]);
             return false;
         }
         return $config_valid;
@@ -264,8 +267,13 @@ class PersonalizeConfig
         return $coupon && $rule && $table;
     }
 
-    public function getLogger() {
-        return $this->logger;
+    public function getLogger($type='error') {
+        $rtn = $this->errorLogger;
+        if($type == 'info') {
+            $rtn = $this->infoLogger;
+
+        }
+        return $rtn;
     }
 
 }

@@ -36,7 +36,7 @@ class SolutionVersion extends PersonalizeBase
 					'solutionVersionArn' => $arn,
                 ]);
         } catch (\Exception $e) {
-            $this->nameConfig->getLogger()->error( "\ncampaignVersion getStatus error: " . $e->getMessage());
+            $this->nameConfig->getLogger('error')->error( "\ncampaignVersion getStatus error: " . $e->getMessage());
             return $e->getMessage();
         }
         if(empty($rslt)) {

@@ -51,7 +51,7 @@ class s3
 			// a \RuntimeException if the waiter fails.
 			$promise->wait();
         } catch(\Exception $e) {
-			$this->nameConfig->getLogger()->error( "\ncreate bucket async error : \n" . $e->getMessage());
+			$this->nameConfig->getLogger('error')->error( "\ncreate bucket async error : \n" . $e->getMessage());
         }
     }
 */
@@ -67,7 +67,7 @@ class s3
                 ],
             ]);
 		} catch(\Exception $e) {
-			$this->nameConfig->getLogger()->error( "\ncreate bucket error : \n" . $e->getMessage());
+			$this->nameConfig->getLogger('error')->error( "\ncreate bucket error : \n" . $e->getMessage());
 		}
 		$this->nameConfig->saveName('s3BucketName', $this->s3BucketName);
         $this->addS3BucketPolicy();

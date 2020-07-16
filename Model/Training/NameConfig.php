@@ -7,7 +7,8 @@ use \Magento\Framework\App\Config\Storage\WriterInterface;
 use \Magento\Framework\App\Config\ScopeConfigInterface;
 use \Magento\Store\Model\StoreManagerInterface;
 use Aws\PersonalizeRuntime\PersonalizeRuntimeClient;
-use Psr\Log\LoggerInterface;
+use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
+use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
 use \Magento\Framework\App\Filesystem\DirectoryList;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 
@@ -19,7 +20,8 @@ class NameConfig extends PersonalizeConfig
     protected $configWriter;
     protected $scopeConfig;
     protected $pRuntimeClient;
-    protected $logger;
+    protected $errorLogger;
+    protected $infoLogger;
     protected $storeManager;
     protected $store;
     protected $directoryList;
@@ -28,19 +30,19 @@ class NameConfig extends PersonalizeConfig
     public function __construct(
         WriterInterface $configWriter,
         ScopeConfigInterface $scopeConfig,
-        LoggerInterface $logger,
+        InfoLogger $infoLogger,
+        ErrorLogger $errorLogger,
         StoreManagerInterface $storeManager,
         DirectoryList $directoryList,
         Data $helper
     ) {
         $this->configWriter = $configWriter;
         $this->scopeConfig = $scopeConfig;
-        $this->logger = $logger;
         $this->storeManager = $storeManager;
         $this->directoryList = $directoryList;
         $this->helper = $helper;
         $this->store = $this->storeManager->getStore();
-        parent::__construct($configWriter, $scopeConfig, $logger, $storeManager, $directoryList, $helper);
+        parent::__construct($configWriter, $scopeConfig, $infoLogger, $errorLogger, $storeManager, $directoryList, $helper);
     }
 
     public function buildName($type) {
@@ -52,12 +54,10 @@ class NameConfig extends PersonalizeConfig
         $storeName = implode('-', $storeName);
         $storeName = strtolower($storeName);
         
-        return $storeName . '-' . $type;
+        return 'cprdgm-' . $storeName . '-' . $type;
     }
     
     public function buildArn($type,$name,$suffix = null) {
-        // identify this a cparadigm arn
-        $name = 'cparadigm-' . $name;
         $prefix = "arn:aws:personalize:";
         $region = $this->getAwsRegion();
         $acct = $this->decryptAwsAccount();

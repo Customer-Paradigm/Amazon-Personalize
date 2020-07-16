@@ -11,6 +11,7 @@ use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Filesystem\File\WriteFactory;
 use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
 use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
+use CustomerParadigm\AmazonPersonalize\Helper\Data;
 
 class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\AbstractGenerator
 {
@@ -27,6 +28,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
     protected $filename = "interactions";
     protected $infoLogger;
     protected $errorLogger;
+    protected $pHelper;
 
 
     private $interactionPurchaseCollectionFactory;
@@ -39,6 +41,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
         DirectoryList $directoryList,
         InfoLogger $infoLogger,
         ErrorLogger $errorLogger,
+        Data $pHelper,
         File $file
     ){
         $this->interactionReportCollectionFactory = $interactionReportCollectionFactory;
@@ -46,13 +49,15 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
         parent::__construct($writeFactory, $directoryList, $file);
         $this->infoLogger = $infoLogger;
         $this->errorLogger = $errorLogger;
+        $this->pHelper = $pHelper;
     }
 
     public function generateCsv()
     {
         try {
-            $rstart_date =  date("Y-m-d", strtotime("-6 months"));
-            $pstart_date =  date("Y-m-d", strtotime("-6 months"));
+            $months = $this->pHelper->getConfigValue('awsp_settings/awsp_general/data_range');
+            $rstart_date =  date("Y-m-d", strtotime("-$months months"));
+            $pstart_date =  date("Y-m-d", strtotime("-$months months"));
             $max_records = 2000;
             $reportInteractions = $this->interactionReportCollectionFactory->create()->addFieldToFilter('last_visit_at', array('gt' => $rstart_date))->setOrder('event_id','desc')->setPageSize($max_records);
             $purchaseInteractions = $this->interactionPurchaseCollectionFactory->create()->addFieldToFilter('sales_order.updated_at', array('gt' =>  $pstart_date))->setOrder('order_id','desc')->setPageSize($max_records);

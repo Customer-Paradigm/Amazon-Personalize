@@ -52,7 +52,7 @@ class Solution extends PersonalizeBase
 					'solutionArn' => $arn,
                 ]);
         } catch (\Exception $e) {
-            $this->nameConfig->getLogger()->error( "\nsolution getStatus error: " . $e->getMessage());
+            $this->nameConfig->getLogger('error')->error( "\nsolution getStatus error: " . $e->getMessage());
             return $e->getMessage();
         }
     

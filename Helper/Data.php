@@ -9,7 +9,9 @@ use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Cache\Frontend\Pool;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use CustomerParadigm\AmazonPersonalize\Helper\Db;
-use Psr\Log\LoggerInterface;
+use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
+use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
+
 
 
 class Data extends AbstractHelper {
@@ -18,7 +20,8 @@ class Data extends AbstractHelper {
     protected $cacheTypeList;
     protected $cacheFrontendPool;
     protected $db;
-    protected $logger;
+    protected $infoLogger;
+    protected $errorLogger;
     protected $scope;
 
     public function __construct( 
@@ -27,14 +30,16 @@ class Data extends AbstractHelper {
 		TypeListInterface $cacheTypeList, 
         Pool $cacheFrontendPool,
         Db $db,
-        LoggerInterface $logger
+        InfoLogger $infoLogger,
+        ErrorLogger $errorLogger
     ) {
         parent::__construct($context);
         $this->optionFactory = $optionFactory;
 		$this->cacheTypeList = $cacheTypeList;
         $this->cacheFrontendPool = $cacheFrontendPool;
         $this->db = $db;
-        $this->logger = $logger;
+        $this->infoLogger = $infoLogger;
+        $this->errorLogger = $errorLogger;
         $this->scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
     }
 
@@ -129,6 +134,14 @@ class Data extends AbstractHelper {
             $rtn['min'] = "0";
         }
         return $rtn;
+    }
+
+    public function getConfigValue($config_path){
+		$rtn = $this->scopeConfig->getValue(
+            $config_path,
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+       ); 
+       return $rtn;
     }
 
 }

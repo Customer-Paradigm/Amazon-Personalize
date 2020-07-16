@@ -20,8 +20,23 @@
 	padding-top: 3px;
 }
 
+#train_steps tr {
+	  height: 10px; 
+  } 
+
 #train_div {
-	padding-top: 5px;
+    float: left;
+    left: -70%;
+    position: relative;
+    padding-top: 20px;
+    width: 280px;
+}
+
+#train_message_div {
+    width: 200px;
+    float: right;
+    position: relative;
+    top: -200px;
 }
 
 #train_message_div > p:first-child {
@@ -30,10 +45,6 @@
 }
 
 #train_message_div > p:nth-child(2) {
-	position: relative;
-	left: -80px;
-	height: 38px;
-	width: 500px;
 	color: #333333;
 	font-weight: bold;
 	overflow-y: scroll;
@@ -41,3 +52,8 @@
 	padding: 3px;
 	padding-left: 5px;
 }
+
+#reset_button {
+	float:left;
+}
+	
