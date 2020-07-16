@@ -20,6 +20,5 @@ class WizardRunStepsBeforeObserver implements ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-file_put_contents('/home/demo/public_html/hoopologie/var/log/obs.log',"\n Wizard before", FILE_APPEND);
     }
 }

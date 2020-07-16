@@ -48,5 +48,31 @@
                 <item name="ab_customer_type" xsi:type="string">sales_order.ab_customer_type</item>
             </argument>
         </arguments>
-    </virtualType>
+	</virtualType>
+    <type name="CustomerParadigm\AmazonPersonalize\Logger\InfoHandler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="CustomerParadigm\AmazonPersonalize\Logger\InfoLogger">
+        <arguments>
+            <argument name="name" xsi:type="string">awsInfoLogger</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">CustomerParadigm\AmazonPersonalize\Logger\InfoHandler</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="CustomerParadigm\AmazonPersonalize\Logger\ErrorHandler">
+        <arguments>
+            <argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+        </arguments>
+    </type>
+    <type name="CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger">
+        <arguments>
+            <argument name="name" xsi:type="string">awsErrorLogger</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="system" xsi:type="object">CustomerParadigm\AmazonPersonalize\Logger\ErrorHandler</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

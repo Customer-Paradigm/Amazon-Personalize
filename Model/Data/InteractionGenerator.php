@@ -9,6 +9,8 @@ use CustomerParadigm\AmazonPersonalize\Model\ResourceModel\Data\Interaction\Purc
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Filesystem\File\WriteFactory;
+use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
+use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
 
 class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\AbstractGenerator
 {
@@ -23,21 +25,27 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
     ];
 
     protected $filename = "interactions";
+    protected $infoLogger;
+    protected $errorLogger;
 
-    private $interactionReportCollectionFactory;
 
     private $interactionPurchaseCollectionFactory;
+    private $interactionReportCollectionFactory;
 
     public function __construct(
         InteractionReportCollectionFactory $interactionReportCollectionFactory,
         IinteractionPurchaseCollectionFactory $interactionPurchaseCollectionFactory,
         WriteFactory $writeFactory,
         DirectoryList $directoryList,
+        InfoLogger $infoLogger,
+        ErrorLogger $errorLogger,
         File $file
     ){
         $this->interactionReportCollectionFactory = $interactionReportCollectionFactory;
         $this->interactionPurchaseCollectionFactory = $interactionPurchaseCollectionFactory;
         parent::__construct($writeFactory, $directoryList, $file);
+        $this->infoLogger = $infoLogger;
+        $this->errorLogger = $errorLogger;
     }
 
     public function generateCsv()
@@ -54,10 +62,6 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
             $pcount = count($purchaseInteractions);
             $total = (int)$rcount + (int)$pcount;
 
-            file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n Report Count: $rcount", FILE_APPEND); 
-            file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n Purchase Count: $pcount", FILE_APPEND); 
-            file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n Total: $total", FILE_APPEND); 
-
             $this->createWriter()
                 ->writeHeadersToCsv()
                 ->writeCollectionToCsv($reportInteractions)
@@ -65,14 +69,15 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
                 ->closeWriter();
             // Aws needs at least 1000 interactions
             if($total < 1000) {
-                file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n Too few interactions-------------", FILE_APPEND); 
-                $this->setDataError( "too_few_interactions");
+                $this->setDataError("too_few_interactions");
+				$this->errorLogger->error("Not enough interactions in csv. Total: $total");
             }
         } catch(Exception $e) {
             $mssg = $e->getMessage();
-            file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n  interaction gen message: $mssg", FILE_APPEND);
+			$this->errorLogger->error("InteractionGenerator Processing error: $mssg");
         }
 
         return $this;
-    }
+	}
+
 }

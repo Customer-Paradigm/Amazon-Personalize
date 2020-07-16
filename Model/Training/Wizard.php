@@ -19,6 +19,8 @@ class Wizard
     protected $solutionVersion;
     protected $campaign;
     protected $eventTracker;
+    protected $infoLogger;
+    protected $errorLogger;
     protected $pConfig;
 
     public function __construct(
@@ -37,6 +39,8 @@ class Wizard
         \CustomerParadigm\AmazonPersonalize\Model\Training\SolutionVersion $solutionVersion,
         \CustomerParadigm\AmazonPersonalize\Model\Training\Campaign $campaign,
         \CustomerParadigm\AmazonPersonalize\Model\Training\EventTracker $eventTracker,
+        \CustomerParadigm\AmazonPersonalize\Logger\InfoLogger $infoLogger,
+        \CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger $errorLogger,
         \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig
     )
     {
@@ -55,6 +59,8 @@ class Wizard
         $this->solutionVersion = $solutionVersion;
         $this->campaign = $campaign;
         $this->eventTracker = $eventTracker;
+        $this->infoLogger = $infoLogger;
+        $this->errorLogger = $errorLogger;
         $this->pConfig = $pConfig;
     }
     
@@ -77,10 +83,8 @@ class Wizard
         $this->nameConfig->saveName("itemUserFile", $generator->getFilePath());
         $generator = $this->interactionGenerator->generateCsv();
         $this->nameConfig->saveName("interactionUserFile", $generator->getFilePath());
-//      file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n --gen return" . print_r($generator,true), FILE_APPEND);  
-        if( $generator->getDataError() === 'too_few_interactions' ) {
-            $this->setStepError('create_csv_files',"Interaction data error: you need at least 1000 interactions to train your model");
-                        file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n  --- hit error ", FILE_APPEND);  
+        if( $generator->getDataError() == 'too_few_interactions' ) {
+            $this->setStepError('create_csv_files',"Interaction csv file error: you need at least 1000 interactions to train your model");
         }
 
         } catch (AwsException $e) {

@@ -11,7 +11,8 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     protected $trackingCollection;
     protected $steps;
     protected $pHelper;
-    protected $logger;
+    protected $infoLogger;
+    protected $errorLogger;
     protected $nameConfig;
     protected $pConfig;
     protected $eventManager;
@@ -20,7 +21,8 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
 
     public function __construct(
         \Magento\Framework\Model\Context $context,
-        \Psr\Log\LoggerInterface $logger,
+		\CustomerParadigm\AmazonPersonalize\Logger\InfoLogger $infoLogger,
+		\CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger $errorLogger,
         \CustomerParadigm\AmazonPersonalize\Model\ResourceModel\WizardTracking\Collection $trackingCollection,
         \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
         \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
@@ -35,7 +37,8 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $this->connection = $this->getResource()->getConnection();
             $this->trackingCollection = $trackingCollection;
             $this->pHelper = $pHelper;
-            $this->logger = $logger;
+			$this->infoLogger = $infoLogger;
+			$this->errorLogger = $errorLogger;
             $this->pConfig = $pConfig;
             $this->eventManager = $eventManager;
             $this->attempts = array();
@@ -101,15 +104,13 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         $this->eventManager->dispatch('awsp_wizard_runsteps_before', ['obj' => $this]);
         try {
             $process = $this->getProcessStepState();
-            /* TODO debug */
-            file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\hit runSteps" . print_r($process, true), FILE_APPEND);
             $step = $process['step'];
             $rtn['steps'] = $this->displayProgress();
             $rtn['mssg'] = $process['mssg'];
             $rtn['state'] = $process['state'];
             switch($process['state']) {
                 case 'error':
-                    file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log','try again---------error', FILE_APPEND);
+					$this->infoLoger->info("WizardTracking runSteps() try again error");
                     return $this->tryAgain($step);
                 case 'step ready':
                 case 'not started':
@@ -126,7 +127,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                         }
                     } catch(\Exception $e) {
                         $this->setStepError($step, $e->getMessage());
-                        $this->logger->critical($e);
+                        $this->errorLoger->error("WizardTracking runSteps() error:  " . $e);
                         $rtn['mssg'] = 'run step error';
                         $rtn['is_success'] = false;
                     }
@@ -352,8 +353,8 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     }
    
     protected function setStepRetry($step,$attempt) {
-        file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\hit retry" . print_r($step, true), FILE_APPEND);
         $attempt = $this->getAttemptNum($step);
+		$this->errorLoger->error("WizardTracking setStepRetry()-- step: " . $step . " -- attempt #: " . $attemp);
         if( $attempt >= $this->maxAttempts ) {
             return array();
         } else {

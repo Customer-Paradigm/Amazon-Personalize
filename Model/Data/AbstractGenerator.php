@@ -103,12 +103,12 @@ abstract class AbstractGenerator
         return $this;
     }
 
-    protected function setDataError($err)
+    public function setDataError($err)
     {
         $this->dataError = $err;
     }
 
-    protected function getDataError()
+    public function getDataError()
     {
         return $this->dataError;
     }

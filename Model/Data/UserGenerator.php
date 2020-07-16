@@ -7,6 +7,9 @@ use \Magento\Customer\Api\GroupRepositoryInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Filesystem\File\WriteFactory;
+use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
+use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
+
 
 class UserGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\AbstractGenerator
 {
@@ -25,6 +28,9 @@ class UserGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
     ];
 
     protected $filename = "users";
+    protected $infoLogger;
+    protected $errorLogger;
+
 
     private $customerCollectionFactory;
 
@@ -35,11 +41,15 @@ class UserGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
         GroupRepositoryInterface $groupRepository,
         WriteFactory $writeFactory,
         DirectoryList $directoryList,
+        InfoLogger $infoLogger,
+        ErrorLogger $errorLogger,
         File $file
     ){
         $this->customerCollectionFactory = $customerCollectionFactory;
         $this->groupRepository = $groupRepository;
         parent::__construct($writeFactory, $directoryList, $file);
+        $this->infoLogger = $infoLogger;
+        $this->errorLogger = $errorLogger;
     }
 
     /**
@@ -117,16 +127,20 @@ class UserGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
 
     public function generateCsv()
     {
-        /** @var \Magento\Customer\Model\ResourceModel\Customer\Collection $customers */
-	    //$customers = $this->customerCollectionFactory->create()->addFieldToFilter('created_at', array('gt' =>  '2017-09-15'));
-        $customers = $this->customerCollectionFactory->create();
-        $count = count($customers);
-        file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n Cust Count: $count", FILE_APPEND);  
+		try {
+			/** @var \Magento\Customer\Model\ResourceModel\Customer\Collection $customers */
+			//$customers = $this->customerCollectionFactory->create()->addFieldToFilter('created_at', array('gt' =>  '2017-09-15'));
+			$customers = $this->customerCollectionFactory->create();
+			$count = count($customers);
 
-        $this->createWriter()
-            ->writeHeadersToCsv()
-            ->writeCustomersToCsv($customers)
-            ->closeWriter();
+			$this->createWriter()
+				->writeHeadersToCsv()
+				->writeCustomersToCsv($customers)
+				->closeWriter();
+		} catch(Exception $e) {
+            $mssg = $e->getMessage();
+            $this->errorLogger->error("UserGenerator Processing error: $mssg");
+		}
 
         return $this;
     }

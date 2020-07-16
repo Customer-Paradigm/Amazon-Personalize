@@ -6,6 +6,8 @@ use \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Filesystem\File\WriteFactory;
+use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
+use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
 
 class ItemGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\AbstractGenerator
 {
@@ -20,6 +22,8 @@ class ItemGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
     ];
 
     protected $filename = "items";
+    protected $infoLogger;
+    protected $errorLogger;
 
     private $productCollectionFactory;
 
@@ -27,10 +31,14 @@ class ItemGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
         CollectionFactory $productCollectionFactory,
         WriteFactory $writeFactory,
         DirectoryList $directoryList,
+        InfoLogger $infoLogger,
+        ErrorLogger $errorLogger,
         File $file
     ){
         $this->productCollectionFactory = $productCollectionFactory;
         parent::__construct($writeFactory, $directoryList, $file);
+        $this->infoLogger = $infoLogger;
+        $this->errorLogger = $errorLogger;
     }
 
     private function getItemDataFromProduct($product)
@@ -68,15 +76,20 @@ class ItemGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
 
     public function generateCsv()
     {
-        $products = $this->productCollectionFactory->create()->addAttributeToSelect('*');
+        try {
+            $products = $this->productCollectionFactory->create()->addAttributeToSelect('*');
 
-        $count = count($products);
-        file_put_contents('/home/demo/public_html/hoopologie/var/log/test.log',"\n Product Count: $count", FILE_APPEND);
+            $count = count($products);
 
-        $this->createWriter()
-            ->writeHeadersToCsv()
-            ->writeProductsToCsv($products)
-            ->closeWriter();
+            $this->createWriter()
+                ->writeHeadersToCsv()
+                ->writeProductsToCsv($products)
+                ->closeWriter();
+        } catch(Exception $e) {
+            $mssg = $e->getMessage();
+            $this->errorLogger->error("Items Generator Processing error: $mssg");
+
+        }
 
         return $this;
     }

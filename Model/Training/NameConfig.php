@@ -57,7 +57,7 @@ class NameConfig extends PersonalizeConfig
     
     public function buildArn($type,$name,$suffix = null) {
         // identify this a cparadigm arn
-        $name  'cparadigm-' . $name;
+        $name = 'cparadigm-' . $name;
         $prefix = "arn:aws:personalize:";
         $region = $this->getAwsRegion();
         $acct = $this->decryptAwsAccount();
