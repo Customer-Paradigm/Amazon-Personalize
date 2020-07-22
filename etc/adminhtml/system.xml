@@ -9,8 +9,12 @@
             <label>Settings</label>
             <tab>amazonpersonalize</tab>
             <resource>CustomParadigm_AmazonPersonalize::aws_personalize_config</resource>
+           <group id="personalize_information" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Amazon Personalize</label>
+                <frontend_model>CustomerParadigm\AmazonPersonalize\Block\Adminhtml\Config\Information</frontend_model>
+            </group>
             <group id="awsp_general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
-                <label>General Configuration</label>
+                <label>Setup</label>
                 <field id="calc_coupon" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>License Key</label>
                 </field>
