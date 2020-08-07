@@ -97,7 +97,7 @@ class StepsReset extends PersonalizeBase
         $ucname = ucfirst($name);
         $lcname = lcfirst($name);
         $rtn = false;
-        if(strpos($name, 'File')) {
+        if(strpos($name, 'File') !== false) {
             return $rtn;
         }
         $fname = 'list' . $ucname . 's';

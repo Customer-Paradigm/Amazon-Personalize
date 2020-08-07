@@ -3,6 +3,7 @@
 namespace CustomerParadigm\AmazonPersonalize\Plugin\Config;
 
 use Psr\Log\LoggerInterface;
+use \Magento\Framework\ShellInterface;
 use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 use CustomerParadigm\AmazonPersonalize\Model\AbTracking;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
@@ -16,6 +17,11 @@ class AfterSaveConfig
      * @var Psr\Log\LoggerInterface
      */
     protected $logger;
+    
+    /**
+     * @var \Magento\Framework\ShellInterface
+     */
+    protected $shell;
     
     /**
      * @var CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig
@@ -48,6 +54,7 @@ class AfterSaveConfig
      */
     public function __construct(
         LoggerInterface $logger,
+        ShellInterface $shell,
         PersonalizeConfig $pConfig,
         AbTracking $abTracking,
         WizardTracking $wizardTracking,
@@ -55,6 +62,7 @@ class AfterSaveConfig
         Calculate $calc
     ) {
         $this->logger = $logger;
+        $this->shell = $shell;
         $this->pConfig = $pConfig;
         $this->abTracking = $abTracking;
         $this->wizardTracking = $wizardTracking;
@@ -112,23 +120,23 @@ class AfterSaveConfig
                 $cred_file = $home_dir . '/.aws/credentials';
                 $config_file = $home_dir . '/.aws/config';
                 $cmd = "mkdir -p $config_dir && touch $config_file";
-                $output = shell_exec($cmd);
+                $output = $this->shell($cmd);
                 $cmd = "touch $cred_file";
-                $output = shell_exec($cmd);
+                $output = $this->shell($cmd);
 
                 $cred_entry = "[default]
                     aws_access_key_id = $save_key
                     aws_secret_access_key = $save_secret";
 
                 $cmd = 'echo "'. $cred_entry . '" >' . $cred_file;
-                $output = shell_exec($cmd);
+                $output = $this->shell($cmd);
 
                 $config_entry = "[default]
                     region=$region
                     output=json";
 
                 $cmd = 'echo "'. $config_entry . '" >' . $config_file;
-                $output = shell_exec($cmd);
+                $output = $this->shell($cmd);
 
                 $this->pConfig->saveKeys('saved','saved');
                 $this->calc->setRule();

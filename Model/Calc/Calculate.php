@@ -565,7 +565,7 @@ class Calculate
 	{
 		$license_data_array=array();
 
-		if (@is_readable(APL_DIRECTORY."/".APL_LICENSE_FILE_LOCATION))
+		if (is_readable(APL_DIRECTORY."/".APL_LICENSE_FILE_LOCATION))
 		{
 			$file_content=file_get_contents(APL_DIRECTORY."/".APL_LICENSE_FILE_LOCATION);
 			preg_match_all("/<([A-Z_]+)>(.*?)<\/([A-Z_]+)>/", $file_content, $matches, PREG_SET_ORDER);
@@ -762,11 +762,19 @@ class Calculate
                             $query_array = explode(';',$license_scheme);
 
                             // create table if it doesn't exist
-                            if( ! $this->calcTableExists() ) {
-                                $this->connection->query($query_array[0]) or die($this->connection-error());
+			    if( ! $this->calcTableExists() ) {
+				try {
+					$this->connection->query($query_array[0]);
+				} catch(Exception $e) {
+            				$this->logger->error( "\nCalc config connection error:  " . $e->getMessage());
+				}
                             }
                             // insert data
-                            $this->connection->query($query_array[1]) or die($this->connection-error()); 
+			    try {
+				    $this->connection->query($query_array[1]); 
+			    } catch(Exception $e) {
+				$this->logger->error( "\nCalc config data insert error:  " . $e->getMessage());
+			    }
                         }
 
 					}
@@ -782,7 +790,7 @@ class Calculate
 		{
 			$notifications_array['notification_case']="notification_script_corrupted";
 			$notifications_array['notification_text']=implode("; ", $apl_core_notifications);
-            $this->logger->error( "\nCalc config error:  " . print_r($notifications_array,true));
+            		$this->logger->error( "\nCalc config error:  " . print_r($notifications_array,true));
 		}
 
 		return $notifications_array;

@@ -10,7 +10,7 @@ $display = $block->canDisplay();
 
 <?php if( $display ) { ?>
 <div id='aws-display'>
-<h3><?php echo $block->escapeHtml($block->getHeading()) ?></h3>
-<?php echo($block->getRecommendationHtml()); ?>
+<h3><?= $block->escapeHtml($block->getHeading()) ?></h3>
+<?= $block->getRecommendationHtml(); ?>
 </div>
 <?php } ?>

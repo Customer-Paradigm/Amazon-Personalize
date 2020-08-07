@@ -185,12 +185,6 @@ class PersonalizeConfig
                 $client_secret = $response->getSecretKey();
                 $saved_key = $this->getAccessKey();
                 $saved_secret = $this->getSecretKey();
-                /*
-                var_dump($response);
-                var_dump($saved_key);
-                var_dump($saved_secret);
-                die('----');
-                 */
                 if( !empty($client_key) &&
                     ($client_key != $saved_key) &&
                     !empty($client_secret) &&

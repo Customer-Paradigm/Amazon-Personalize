@@ -82,7 +82,7 @@ class Db extends AbstractHelper {
         } else {
             $this->logger->error("Amazon personalize " . $installed['notification_case']);
             if( ! $installed['notification_text'] == 'Script is already installed (or database not empty).' ) {
-                echo "Amazon Personalize Installation failed: ".$installed['notification_text'];
+            	 $this->logger->error("Amazon personalize Installation failed: " . $installed['notification_text']);
             }
         }
     }
