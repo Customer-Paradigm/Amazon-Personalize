@@ -11,7 +11,7 @@ namespace CustomerParadigm\AmazonPersonalize\Cron;
 use Psr\Log\LoggerInterface;
 use \Magento\Framework\Filesystem\DirectoryList;
 use \Magento\Framework\App\Config\ScopeConfigInterface;
-use \Magento\Framework\ShellInterface;
+use \Magento\Framework\Shell;
 use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 
 
@@ -39,7 +39,7 @@ class AwscliInstall
         DirectoryList $directoryList,
         ScopeConfigInterface $scopeConfig,
 	PersonalizeConfig $pConfig,
-	ShellInterface $shell
+	Shell $shell
     )
     {
         $this->logger = $logger;
@@ -58,13 +58,13 @@ class AwscliInstall
         try {
             // Create aws creds directory
             $cmd = 'cd';
-            $this->shell($cmd);
+            $this->shell->execute($cmd);
             $cmd = "ls -la | grep '\.aws'";
-            $output = $this->shell($cmd);
+            $output = $this->shell->execute($cmd);
             if(empty($output)) { 
                 $this->logger->info('Creating aws directory');
                 $cmd = 'mkdir .aws';
-                $this->shell($cmd);
+                $this->shell->execute($cmd);
                 $this->logger->info('Aws directory created');
             } else {
                 // Disable cron that calls this once aws directory is created
