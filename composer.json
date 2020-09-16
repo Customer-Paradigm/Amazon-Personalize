@@ -3,12 +3,12 @@
     "description": "Amazon Personalize Customer Suggestions by Customer Paradigm",
     "require": {
         "php": "7.0.2|7.0.4|~7.0.6|^7.1.0",
-    	"aws/aws-sdk-php": "^3.107"
+    	"aws/aws-sdk-php": "^3.107",
     },
     "type": "magento2-module",
     "version": "1.0.0",
     "license": [
-        "Commercial"
+        "OSL-3.0"
     ],
 	"authors": [
 		{
@@ -23,7 +23,7 @@
             "registration.php"
         ],
         "psr-4": {
-            "CustomerParadigm\\AmazonPersonalize\\": ""
+            "CustomerParadigm\\AmazonPersonalize\\": "",
         }
     }
 }
