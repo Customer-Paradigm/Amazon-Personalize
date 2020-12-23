@@ -82,7 +82,7 @@ class PersonalizeConfig
         if( $onoff == 'off' ) {
             $schedule = '';
         }
-        $this->configWriter->save("awsp_settings/rontab/$name", $schedule);
+        $this->configWriter->save("awsp_settings/crontab/$name", $schedule);
         $this->helper->flushAllCache();
     }
 
