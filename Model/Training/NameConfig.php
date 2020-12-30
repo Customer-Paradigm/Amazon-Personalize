@@ -77,7 +77,7 @@ class NameConfig extends PersonalizeConfig
     }
     
     public function getConfigVal($config_path) {
-        return $this->scopeConfig->getValue($config_path, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE);
+        return $this->scopeConfig->getValue($config_path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
     
     public function getArn($arn_name) {
