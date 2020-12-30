@@ -58,10 +58,18 @@ class AwscliInstall
         try {
             // Create aws creds directory
             $cmd = 'cd';
-            $this->shell->execute($cmd);
-            $cmd = "ls -la | grep '\.aws'";
-            $output = $this->shell->execute($cmd);
-            if(empty($output)) { 
+            $rtn = $this->shell->execute($cmd);
+            //$cmd = "ls -la | grep '\.aws'";
+            $cmd = "ls -a";
+	$output = $this->shell->execute($cmd);
+	$lines = explode("\n",$output);
+	$dirExists = false;
+	foreach($lines as $line) {
+		if($line == '.aws') {
+			$dirExists = true;
+		}
+	}
+            if(! $dirExists) { 
                 $this->logger->info('Creating aws directory');
                 $cmd = 'mkdir .aws';
                 $this->shell->execute($cmd);
