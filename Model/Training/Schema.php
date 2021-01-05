@@ -166,7 +166,7 @@ class Schema extends PersonalizeBase
 			$this->nameConfig->saveArn('usersSchemaArn', $result['schemaArn']);
 			$this->usersSchemaArn = $result['schemaArn'];
 			$check = $this->personalizeClient->{$this->apiDescribe}([
-				'schemaArn' => $this->usersSchemaSchemaArn,
+				'schemaArn' => $this->usersSchemaArn,
 			]);
 			$this->infoLogger->info( "\ncheck users schema: \n" . $check);
 		} catch( \Exception $e ) {
@@ -185,7 +185,7 @@ class Schema extends PersonalizeBase
 			$this->nameConfig->saveArn('itemsSchemaArn', $result['schemaArn']);
 			$this->itemsSchemaArn = $result['schemaArn'];
 			$check = $this->personalizeClient->{$this->apiDescribe}([
-				'schemaArn' => $this->itemsSchemaSchemaArn,
+				'schemaArn' => $this->itemsSchemaArn,
 			]);
 			$this->infoLogger->info( "\ncheck items schema: \n" . $check);
 		} catch( \Exception $e ) {
@@ -201,9 +201,9 @@ class Schema extends PersonalizeBase
 			$this->infoLogger->info($result);
 			$this->nameConfig->saveName('interactionsSchemaName', $this->interactionsSchemaName);
 			$this->nameConfig->saveArn('interactionsSchemaArn', $result['schemaArn']);
-			$this->interactionsSchemaSchemaArn = $result['schemaArn'];
+			$this->interactionsSchemaArn = $result['schemaArn'];
 			$check = $this->personalizeClient->{$this->apiDescribe}([
-				'schemaArn' => $this->interactionsSchemaSchemaArn,
+				'schemaArn' => $this->interactionsSchemaArn,
 			]);
 			$this->infoLogger->info( "\ncheck interaction schema: \n" . $check);
 		} catch( \Exception $e ) {

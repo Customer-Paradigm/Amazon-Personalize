@@ -75,6 +75,7 @@ class Wizard
     }
 
     public function createCsvFiles() {
+	    /*
         try {
 	    $generator = $this->userGenerator->generateCsv();
         
@@ -91,7 +92,8 @@ class Wizard
             $this->setStepError('create_csv_files',$e->getMessage());
         } catch (\Exception $e) {
             $this->setStepError('create_csv_files',$e->getMessage());
-        }
+	}
+	     */
         return false;
     }
     
@@ -118,9 +120,11 @@ class Wizard
 
     public function createSchemas() {
         try {
+	    $this->infoLogger->info("\nCreate Schemas top: \n" );
             $this->schema->createSchemas();
             $this->setStepError('create_schemas','');
-        } catch (\Exception $e) {
+	} catch (\Exception $e) {
+	    $this->errorLogger->error("\nCreate Schemas error: \n" . $e->getMessage());
             $this->setStepError('create_schemas',$e->getMessage());
         }
     }
@@ -198,32 +202,32 @@ class Wizard
 				$rtn = $this->s3->checkBucketExists();
 				break;
 			case 'upload_csv_files':
-                $rtn = $this->s3->getUploadStatus();
-                break;
+				$rtn = $this->s3->getUploadStatus();
+				break;
 			case 'create_schemas':
-                $rtn = $this->schema->getStatus();
-                break;
+				$rtn = $this->schema->getStatus();
+				break;
 			case 'create_dataset_group':
-                $rtn = $this->datasetGroup->getStatus();
+				$rtn = $this->datasetGroup->getStatus();
 				break;
 			case 'create_datasets':
-                $rtn = $this->dataset->getStatus();
+				$rtn = $this->dataset->getStatus();
 				break;
 			case 'create_import_jobs':
-                $rtn = $this->importJob->getStatus();
+				$rtn = $this->importJob->getStatus();
 				break;
-            case 'create_solution':
-                $rtn = $this->solution->getStatus();
+			case 'create_solution':
+				$rtn = $this->solution->getStatus();
 				break;
 			case 'create_solution_version':
-                $rtn = $this->solutionVersion->getStatus();
+				$rtn = $this->solutionVersion->getStatus();
 				break;
 			case 'create_campaign':
-                $rtn = $this->campaign->getStatus();
+				$rtn = $this->campaign->getStatus();
 				break;
 			case 'create_event_tracker':
-                $rtn = $this->eventTracker->getStatus();
-                break;
+				$rtn = $this->eventTracker->getStatus();
+				break;
         }
 		return $rtn;
     }

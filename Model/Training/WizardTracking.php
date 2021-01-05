@@ -21,8 +21,8 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
 
     public function __construct(
         \Magento\Framework\Model\Context $context,
-		\CustomerParadigm\AmazonPersonalize\Logger\InfoLogger $infoLogger,
-		\CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger $errorLogger,
+	\CustomerParadigm\AmazonPersonalize\Logger\InfoLogger $infoLogger,
+	\CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger $errorLogger,
         \CustomerParadigm\AmazonPersonalize\Model\ResourceModel\WizardTracking\Collection $trackingCollection,
         \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
         \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
@@ -37,11 +37,11 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $this->connection = $this->getResource()->getConnection();
             $this->trackingCollection = $trackingCollection;
             $this->pHelper = $pHelper;
-			$this->infoLogger = $infoLogger;
-			$this->errorLogger = $errorLogger;
+	    $this->infoLogger = $infoLogger;
+	    $this->errorLogger = $errorLogger;
             $this->pConfig = $pConfig;
             $this->eventManager = $eventManager;
-            $this->attempts = array();
+            $this->attempts = 0;
             $this->maxAttempts = 3;
             $this->steps = array(
                 // 'create_personalize_user',
@@ -100,6 +100,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
 	}
 
     public function runSteps($wizard) {
+	$this->attempts = 1;
         $rtn = array();
         $this->eventManager->dispatch('awsp_wizard_runsteps_before', ['obj' => $this]);
         try {
@@ -110,12 +111,14 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $rtn['state'] = $process['state'];
             switch($process['state']) {
                 case 'error':
-					$this->infoLoger->info("WizardTracking runSteps() try again error");
+		    $this->infoLogger->info("WizardTracking runSteps() error -- try again");
                     return $this->tryAgain($step);
                 case 'step ready':
                 case 'not started':
+		    $this->infoLogger->info("WizardTracking runSteps() not started/ready");
                     $fname = $this->stepToFuncName($step);
                     $this->setStepInprogress($step);
+        	    $this->saveStepData($step,'attempt_number',$this->attempts);
                     try {
                         $rtn = $wizard->{$fname}();
                         $check = $wizard->checkStatus($step);
@@ -127,16 +130,18 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                         }
                     } catch(\Exception $e) {
                         $this->setStepError($step, $e->getMessage());
-                        $this->errorLoger->error("WizardTracking runSteps() error:  " . $e);
+                        $this->errorLogger->error("WizardTracking runSteps() error:  " . $e);
                         $rtn['mssg'] = 'run step error';
                         $rtn['is_success'] = false;
                     }
                     break;
                 case 'in progress':
+		    $this->infoLogger->info("WizardTracking runSteps() in progress");
                     $rtn['steps'] = $this->displayProgress();
                     $rtn['mssg'] = 'success';
                     $rtn['state'] = 'complete';
                     $check = $wizard->checkStatus($step);
+		    $this->infoLogger->info("\nWizardTracking runSteps() checkStatus: \n" . $check);
                     if($check == 'complete') {
                         $this->setStepComplete($step);
                     }
@@ -150,8 +155,11 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     }
 
     public function tryAgain($step) {
-        $rtn = array();
+	$rtn = array();
+	$this->attempts +=1;
         $this->setStepRetry($step);
+        $process = $this->getProcessStepState();
+        $step = $process['step'];
         $rtn['steps'] = $this->displayProgress();
         $rtn['mssg'] = $process['mssg'];
         $rtn['state'] = $process['state'];
@@ -352,13 +360,16 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         $this->saveStepData($step,'error',$message);
     }
    
-    protected function setStepRetry($step,$attempt) {
+    protected function setStepRetry($step) {
         $attempt = $this->getAttemptNum($step);
-		$this->errorLoger->error("WizardTracking setStepRetry()-- step: " . $step . " -- attempt #: " . $attemp);
+	$this->errorLogger->error("WizardTracking setStepRetry()-- step: " . $step . " -- attempt #: " . $attempt);
         if( $attempt >= $this->maxAttempts ) {
+            $this->saveStepData($step,'in_progress',true);
+            $this->saveStepData($step,'is_completed',false);
+            $this->saveStepData($step,'error',"unknown error after $attempt tries");
             return array();
         } else {
-            $this->saveStepData($step,'in_progress',$attempt);
+            $this->saveStepData($step,'attempt_number',$attempt);
             $this->saveStepData($step,'is_completed',null);
             $this->saveStepData($step,'error',null);
             return $step;
@@ -366,7 +377,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     }
 
     protected function getAttemptNum($step) {
-        return $this->getStepData($step, 'in_progress');
+        return $this->getStepData($step, 'attempt_number');
     }
 
 }

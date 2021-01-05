@@ -16,6 +16,7 @@ class DatasetGroup extends PersonalizeBase
     }
 
     public function createDatasetGroup() {
+	$result = array();
         try {
 			//$result = $this->personalizeClient->createDatasetGroupAsync([
 			$result = $this->personalizeClient->{$this->apiCreate}([

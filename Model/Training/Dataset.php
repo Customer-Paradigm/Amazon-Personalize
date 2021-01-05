@@ -16,12 +16,16 @@ class Dataset extends PersonalizeBase
 	protected $usersSchemaArn;
 	protected $itemsSchemaArn;
 	protected $interactionsSchemaArn;
+	protected $infoLogger;
+	protected $errorLogger;
 
 	public function __construct(
 		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig
 	)
 	{
 		parent::__construct($nameConfig);
+		$this->infoLogger = $this->nameConfig->getLogger('info');
+                $this->errorLogger = $this->nameConfig->getLogger('error');
 		$this->usersDatasetName = $this->nameConfig->buildName('users-dataset');
 		$this->itemsDatasetName = $this->nameConfig->buildName('items-dataset');
 		$this->interactionsDatasetName = $this->nameConfig->buildName('interactions-dataset');
@@ -30,6 +34,7 @@ class Dataset extends PersonalizeBase
 		$this->itemsSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/itemsSchemaName');
 		$this->interactionsSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/interactionsSchemaName');
 		$this->datasetGroupArn = $this->nameConfig->buildArn('dataset-group',$this->datasetGroupName);
+			$this->infoLogger->info( "\ndatasetGroupArn ---------: \n" . $this->datasetGroupArn);
 		$this->usersSchemaArn = $this->nameConfig->buildArn('schema',$this->usersSchemaName);
 		$this->itemsSchemaArn = $this->nameConfig->buildArn('schema',$this->itemsSchemaName);
 		$this->interactionsSchemaArn = $this->nameConfig->buildArn('schema',$this->interactionsSchemaName);
@@ -75,6 +80,7 @@ class Dataset extends PersonalizeBase
 			return  'not defined';
 		}
 	}
+
 	public function createDatasets() {
 		try {
 			$result = $this->personalizeClient->{$this->apiCreate}([
@@ -86,7 +92,7 @@ class Dataset extends PersonalizeBase
 			$this->nameConfig->saveName('usersDatasetName', $this->usersDatasetName);
 			$this->nameConfig->saveArn('usersDatasetArn', $result['datasetArn']);
 		} catch(\Exception $e) {
-			$this->nameConfig->getLogger()->error( "\ncreate users dataset  error : \n" . $e->getMessage());
+			$this->errorLogger->error( "\ncreate users dataset  error : \n" . $e->getMessage());
 		}
 
 		try {
@@ -99,7 +105,7 @@ class Dataset extends PersonalizeBase
 			$this->nameConfig->saveName('itemsDatasetName', $this->itemsDatasetName);
 			$this->nameConfig->saveArn('itemsDatasetArn', $result['datasetArn']);
 		} catch(\Exception $e) {
-			$this->nameConfig->getLogger()->error( "\ncreate items dataset error : \n" . $e->getMessage());
+			$this->errorLogger->error( "\ncreate items dataset error : \n" . $e->getMessage());
 		}
 
 		try {
@@ -112,7 +118,7 @@ class Dataset extends PersonalizeBase
 			$this->nameConfig->saveName('interactionsDatasetName', $this->interactionsDatasetName);
 			$this->nameConfig->saveArn('interactionsDatasetArn', $result['datasetArn']);
 		} catch(\Exception $e) {
-			$this->nameConfig->getLogger()->error( "\ncreate interactions dataset error : \n" . $e->getMessage());
+			$this->errorLogger->error( "\ncreate interactions dataset error : \n" . $e->getMessage());
 		}
 	}
 }
