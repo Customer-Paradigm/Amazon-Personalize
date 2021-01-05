@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-	<type name="Magento\Config\Model\Config">
-		<plugin name="awsp_system_config_after" type="CustomerParadigm\AmazonPersonalize\Plugin\Config\AfterSaveConfig" sortOrder="1" />
+    <type name="Magento\Config\Model\Config">
+	<plugin name="awsp_system_config_after" type="CustomerParadigm\AmazonPersonalize\Plugin\Config\AfterSaveConfig" sortOrder="1" />
     </type>
 </config>
