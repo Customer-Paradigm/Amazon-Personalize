@@ -34,7 +34,7 @@ class Dataset extends PersonalizeBase
 		$this->itemsSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/itemsSchemaName');
 		$this->interactionsSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/interactionsSchemaName');
 		$this->datasetGroupArn = $this->nameConfig->buildArn('dataset-group',$this->datasetGroupName);
-			$this->infoLogger->info( "\ndatasetGroupArn ---------: \n" . $this->datasetGroupArn);
+		$this->infoLogger->info( "\ndatasetGroupArn ---------: \n" . $this->datasetGroupArn);
 		$this->usersSchemaArn = $this->nameConfig->buildArn('schema',$this->usersSchemaName);
 		$this->itemsSchemaArn = $this->nameConfig->buildArn('schema',$this->itemsSchemaName);
 		$this->interactionsSchemaArn = $this->nameConfig->buildArn('schema',$this->interactionsSchemaName);
@@ -50,10 +50,12 @@ class Dataset extends PersonalizeBase
 					'datasetArn' => $config_arn,
 				]);
 			} catch(\Exception $e) {
+				$this->errorLogger->error( "\nerror checking schema creation--$config_path : \n" . $e->getMessage());
 				return 'error';
 			}
 
 			if ($aws_schema['dataset']['datasetArn'] == $config_arn) {
+				$this->infoLogger->info( "\nschema created--arn: $config_arn\n");
 				return true;
 			}
 

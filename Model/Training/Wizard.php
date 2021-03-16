@@ -75,7 +75,6 @@ class Wizard
     }
 
     public function createCsvFiles() {
-	    /*
         try {
 	    $generator = $this->userGenerator->generateCsv();
         
@@ -93,7 +92,6 @@ class Wizard
         } catch (\Exception $e) {
             $this->setStepError('create_csv_files',$e->getMessage());
 	}
-	     */
         return false;
     }
     

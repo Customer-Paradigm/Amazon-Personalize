@@ -131,8 +131,14 @@ class PersonalizeConfig
     }
 
     public function getStoreName() {
-        return $this->scopeConfig->getValue('general/store_information/name',
-                        \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
+
+        $name = $this->scopeConfig->getValue('general/store_information/name',
+		\Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
+	if( empty($name) ) {
+	    $url = $this->storeManager->getStore()->getBaseUrl();
+	    $name = parse_url($url, PHP_URL_HOST);
+	}
+	return $name;
     }
 
     public function isEnabled() {
@@ -148,21 +154,9 @@ class PersonalizeConfig
         $this->configWriter->save('awsp_settings/awsp_general/home_dir', $dir);
     }
 
-    public function encryptAwsAccount() {
-        $acct = $this->scopeConfig->getValue('awsp_settings/awsp_general/aws_acct', 
-               \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
-		$acctencprypted = $this->encrypt_decrypt('encrypt',$acct);
-        $this->configWriter->save('awsp_settings/awsp_general/aws_acct', $acctencprypted);
-    }
-
     public function getAwsAccount() {
         return $this->scopeConfig->getValue('awsp_settings/awsp_general/aws_acct', 
                \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
-    }
-
-    public function decryptAwsAccount() {
-        return $this->getAwsAccount();
-        //return $this->encrypt_decrypt('decrypt',$acctencrypted);
     }
 
     public function getAwsRegion() {

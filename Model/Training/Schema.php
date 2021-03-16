@@ -24,6 +24,9 @@ class Schema extends PersonalizeBase
 		$this->usersSchemaName = $this->nameConfig->buildName('users-schema');
 		$this->itemsSchemaName = $this->nameConfig->buildName('items-schema');
 		$this->interactionsSchemaName = $this->nameConfig->buildName('interactions-schema');
+		$this->usersSchemaArn = $this->nameConfig->buildArn('schema',$this->usersSchemaName);
+		$this->itemsSchemaArn = $this->nameConfig->buildArn('schema',$this->itemsSchemaName);
+		$this->interactionsSchemaArn = $this->nameConfig->buildArn('schema',$this->interactionsSchemaName);
 	}
 
 	public function awsSchemaIsCreated($config_path) {
@@ -156,58 +159,72 @@ class Schema extends PersonalizeBase
 	}';
 
 		try {
-			$this->infoLogger->info( "\ncreate users schema result : \n");
-			$result = $this->personalizeClient->{$this->apiCreate}([
-				'name' => "$this->usersSchemaName",
-				'schema' => $schUser,
-			])->wait();
-			$this->infoLogger->info($result);
-			$this->nameConfig->saveName('usersSchemaName', $this->usersSchemaName);
-			$this->nameConfig->saveArn('usersSchemaArn', $result['schemaArn']);
-			$this->usersSchemaArn = $result['schemaArn'];
-			$check = $this->personalizeClient->{$this->apiDescribe}([
-				'schemaArn' => $this->usersSchemaArn,
-			]);
-			$this->infoLogger->info( "\ncheck users schema: \n" . $check);
+			if( ! $this->alreadyCreated('users',$this->usersSchemaName,$this->usersSchemaArn) ) {
+				$this->infoLogger->info( "\ncreate users schema result : \n");
+				$result = $this->personalizeClient->{$this->apiCreate}([
+					'name' => "$this->usersSchemaName",
+					'schema' => $schUser,
+				])->wait();
+				$this->usersSchemaArn = $result['schemaArn'];
+				$this->nameConfig->saveName('usersSchemaName', $this->usersSchemaName);
+				$this->nameConfig->saveArn('usersSchemaArn', $this->usersSchemaArn);
+			//	$this->infoLogger->info($result);
+			}
+
+
 		} catch( \Exception $e ) {
 			$this->errorLogger->error( "\n------------create users schema error : \n");
 			$this->errorLogger->error( $e->getMessage());
 		}
 
 		try {
-			$this->infoLogger->info( "\ncreate items schema result : \n");
-			$result = $this->personalizeClient->{$this->apiCreate}([
-				'name' => "$this->itemsSchemaName",
-				'schema' => $schItem,
-			])->wait();
-			$this->infoLogger->info($result);
-			$this->nameConfig->saveName('itemsSchemaName', $this->itemsSchemaName);
-			$this->nameConfig->saveArn('itemsSchemaArn', $result['schemaArn']);
-			$this->itemsSchemaArn = $result['schemaArn'];
-			$check = $this->personalizeClient->{$this->apiDescribe}([
-				'schemaArn' => $this->itemsSchemaArn,
-			]);
-			$this->infoLogger->info( "\ncheck items schema: \n" . $check);
+                        if( ! $this->alreadyCreated('items',$this->itemsSchemaName,$this->itemsSchemaArn) ) {
+                                $this->infoLogger->info( "\ncreate items schema result : \n");
+                                $result = $this->personalizeClient->{$this->apiCreate}([
+                                        'name' => "$this->itemsSchemaName",
+                                        'schema' => $schUser,
+                                ])->wait();
+                                $this->itemsSchemaArn = $result['schemaArn'];
+				$this->nameConfig->saveName('itemsSchemaName', $this->itemsSchemaName);
+				$this->nameConfig->saveArn('itemsSchemaArn', $this->itemsSchemaArn);
+                        //      $this->infoLogger->info($result);
+                        }
+
+
 		} catch( \Exception $e ) {
 			$this->errorLogger->error( "\ncreate items schema error : \n" . $e->getMessage());
 		}
 
 		try {
-			$this->infoLogger->info( "\ncreate interactions schema result : \n");
-			$result = $this->personalizeClient->{$this->apiCreate}([
-				'name' => "$this->interactionsSchemaName",
-				'schema' => $schInt,
-			])->wait();
-			$this->infoLogger->info($result);
-			$this->nameConfig->saveName('interactionsSchemaName', $this->interactionsSchemaName);
-			$this->nameConfig->saveArn('interactionsSchemaArn', $result['schemaArn']);
-			$this->interactionsSchemaArn = $result['schemaArn'];
-			$check = $this->personalizeClient->{$this->apiDescribe}([
-				'schemaArn' => $this->interactionsSchemaArn,
-			]);
-			$this->infoLogger->info( "\ncheck interaction schema: \n" . $check);
+                        if( ! $this->alreadyCreated('interactions',$this->interactionsSchemaName,$this->interactionsSchemaArn) ) {
+                                $this->infoLogger->info( "\ncreate interactions schema result : \n");
+                                $result = $this->personalizeClient->{$this->apiCreate}([
+                                        'name' => "$this->interactionsSchemaName",
+                                        'schema' => $schUser,
+                                ])->wait();
+                                $this->interactionsSchemaArn = $result['schemaArn'];
+				$this->nameConfig->saveName('interactionsSchemaName', $this->interactionsSchemaName);
+				$this->nameConfig->saveArn('interactionsSchemaArn', $this->interactionsSchemaArn);
+                        //      $this->infoLogger->info($result);
+                        }
+
 		} catch( \Exception $e ) {
 			$this->errorLogger->error( "\ncreate interactions schema error : \n" . $e->getMessage());
 		}
+	}
+
+	public function alreadyCreated($name,$schemaName,$schemaArn) {
+			$this->infoLogger->info( "\n--Hit--alreadyCreated(): \n");
+			$rtn = false;
+			$check = $this->personalizeClient->{$this->apiDescribe}([
+				'schemaArn' => $schemaArn,
+			]);
+			//$this->infoLogger->info( "\ncheck users schemaExists: \n" . print_r($check,true));
+			if(!empty($check) ) {
+				$rtn = true;
+				$this->nameConfig->saveName($name."SchemaName", $schemaName);
+				$this->nameConfig->saveArn($name."SchemaArn", $schemaArn);
+			}
+			return $rtn;
 	}
 }

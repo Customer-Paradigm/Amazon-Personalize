@@ -60,7 +60,7 @@ class NameConfig extends PersonalizeConfig
     public function buildArn($type,$name,$suffix = null) {
         $prefix = "arn:aws:personalize:";
         $region = $this->getAwsRegion();
-        $acct = $this->decryptAwsAccount();
+        $acct = $this->getAwsAccount();
         $rtn = $prefix . "$region:" . "$acct:" . "$type/" . $name;
         if( $suffix ) {
             $rtn .= "/$suffix";
