@@ -92,7 +92,7 @@ class Wizard
         } catch (\Exception $e) {
             $this->setStepError('create_csv_files',$e->getMessage());
 	}
-        return false;
+        return array();
     }
     
     public function createS3Bucket() {

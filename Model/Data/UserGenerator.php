@@ -115,12 +115,32 @@ class UserGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
 
         return $data;
     }
+    
+    private function getPaddedUserDataFromCustomer($num,$customer) {
+        $data = [];
+        $data[] = $this->parseNullData("cpgen$num-" . $customer->getId());
+        $data[] = $this->parseNullData($this->getCustomerGroupCode($customer));
+//        $data[] = $this->parseNullData($customer->getEmail());
+
+        $data = array_merge($data, $this->getCustomerAddressData($customer));
+
+        return $data;
+    }
 
     private function writeCustomersToCsv($customers)
     {
+	$count = count($customers);
         foreach ($customers as $customer) {
             $this->writer->writeCsv($this->getUserDataFromCustomer($customer));
-        }
+	}
+	// pad customer csv file if fewer than 25 customers
+	while($count < 25) {
+	
+		foreach ($customers as $customer) {
+			$this->writer->writeCsv($this->getPaddedUserDataFromCustomer($count,$customer));
+			$count++;
+		}
+	}
 
         return $this;
     }
