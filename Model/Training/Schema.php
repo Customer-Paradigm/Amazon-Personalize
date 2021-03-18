@@ -173,8 +173,7 @@ class Schema extends PersonalizeBase
 
 
 		} catch( \Exception $e ) {
-			$this->errorLogger->error( "\n------------create users schema error : \n");
-			$this->errorLogger->error( $e->getMessage());
+			$this->errorLogger->error( "\ncreate users schema error : \n" . print_r($e->getMessage(),true));
 		}
 
 		try {
@@ -192,7 +191,7 @@ class Schema extends PersonalizeBase
 
 
 		} catch( \Exception $e ) {
-			$this->errorLogger->error( "\ncreate items schema error : \n" . $e->getMessage());
+			$this->errorLogger->error( "\ncreate items schema error : \n" . print_r($e->getMessage(),true));
 		}
 
 		try {
@@ -205,26 +204,40 @@ class Schema extends PersonalizeBase
                                 $this->interactionsSchemaArn = $result['schemaArn'];
 				$this->nameConfig->saveName('interactionsSchemaName', $this->interactionsSchemaName);
 				$this->nameConfig->saveArn('interactionsSchemaArn', $this->interactionsSchemaArn);
-                        //      $this->infoLogger->info($result);
                         }
 
 		} catch( \Exception $e ) {
-			$this->errorLogger->error( "\ncreate interactions schema error : \n" . $e->getMessage());
+			$this->errorLogger->error( "\ncreate interactions schema error : \n" . print_r($e->getMessage(),true));
 		}
 	}
 
 	public function alreadyCreated($name,$schemaName,$schemaArn) {
-			$this->infoLogger->info( "\n--Hit--alreadyCreated(): \n");
+			$this->infoLogger->info( "\nalreadyCreated() called: \n");
 			$rtn = false;
-			$check = $this->personalizeClient->{$this->apiDescribe}([
-				'schemaArn' => $schemaArn,
-			]);
-			//$this->infoLogger->info( "\ncheck users schemaExists: \n" . print_r($check,true));
-			if(!empty($check) ) {
+			if( $this->schemaExists($schemaArn) ) {
 				$rtn = true;
 				$this->nameConfig->saveName($name."SchemaName", $schemaName);
 				$this->nameConfig->saveArn($name."SchemaArn", $schemaArn);
 			}
 			return $rtn;
 	}
+
+    public function schemaExists($schemaArn) {
+        $this->infoLogger->info( "\nschemaExists() called: \n");
+	if(empty($schemaArn)) {
+		return false;
+	}
+	try {
+		$check = $this->personalizeClient->{$this->apiDescribe}([
+		'schemaArn' => $schemaArn,
+		]);
+		if(!empty($check) ) {
+			return true;
+		}
+	} catch(Exception $e) {
+		$this->infoLogger->info( "\nChecking schemaExists--false\n" . print_r($e->getMessage(),true));
+		return false;
+	}
+        return false;
+    }
 }
