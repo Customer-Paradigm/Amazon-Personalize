@@ -43,8 +43,6 @@ class ImportJob extends PersonalizeBase
 		$checkArray = array($this->usersImportJobName,$this->itemsImportJobName,$this->interactionsImportJobName);
 		$checklist = array();
 		$rtn = $this->personalizeClient->listDatasetImportJobs();
-//		$this->infoLogger->info('listDatasetImportJobs response: ' . print_r($rtn,true));
-
 		$result = 'none found';
 		try {
 			foreach($rtn['datasetImportJobs'] as $idx=>$item) {

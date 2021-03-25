@@ -111,12 +111,12 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $rtn['state'] = $process['state'];
             switch($process['state']) {
                 case 'error':
-		    $this->infoLogger->info("WizardTracking runSteps() error -- try again");
+		    $this->infoLogger->info("WizardTracking runSteps() error status -- try $step again");
                     return $this->tryAgain($step);
                 case 'step ready':
                 case 'not started':
-		    $this->infoLogger->info("WizardTracking runSteps() not started/ready");
                     $fname = $this->stepToFuncName($step);
+		    $this->infoLogger->info("WizardTracking runSteps() starting step" . $fname);
                     $this->setStepInprogress($step);
         	    $this->saveStepData($step,'attempt_number',$this->attempts);
                     try {
@@ -136,7 +136,6 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                     }
                     break;
                 case 'in progress':
-		    $this->infoLogger->info("WizardTracking runSteps() in progress");
                     $rtn['steps'] = $this->displayProgress();
                     $rtn['mssg'] = 'success';
                     $rtn['state'] = 'complete';
@@ -362,14 +361,14 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
    
     protected function setStepRetry($step) {
         $attempt = $this->getAttemptNum($step);
-	$this->errorLogger->error("WizardTracking setStepRetry()-- step: " . $step . " -- attempt #: " . $attempt);
+	$this->infoLogger->info("WizardTracking setStepRetry()-- step: " . $step . " -- attempt #: " . $attempt);
         if( $attempt >= $this->maxAttempts ) {
             $this->saveStepData($step,'in_progress',true);
             $this->saveStepData($step,'is_completed',false);
             $this->saveStepData($step,'error',"unknown error after $attempt tries");
             return array();
         } else {
-            $this->saveStepData($step,'attempt_number',$attempt);
+            $this->saveStepData($step,'attempt_number',$attempt + 1);
             $this->saveStepData($step,'is_completed',null);
             $this->saveStepData($step,'error',null);
             return $step;

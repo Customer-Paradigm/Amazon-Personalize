@@ -28,7 +28,7 @@ class Schema extends PersonalizeBase
 		$this->itemsSchemaArn = $this->nameConfig->buildArn('schema',$this->itemsSchemaName);
 		$this->interactionsSchemaArn = $this->nameConfig->buildArn('schema',$this->interactionsSchemaName);
 	}
-
+/*
 	public function awsSchemaIsCreated($config_path) {
 		$config_arn = $this->nameConfig->getConfigVal($config_path);
 		if ($config_arn == NULL) {
@@ -49,12 +49,14 @@ class Schema extends PersonalizeBase
 			return false;
 		}
 	}
+*/
 
 	public function getStatus() {
+
 		$count = 0;
-		$checklist[] = $this->awsSchemaIsCreated('awsp_wizard/data_type_arn/usersSchemaArn');
-		$checklist[] = $this->awsSchemaIsCreated('awsp_wizard/data_type_arn/itemsSchemaArn');
-		$checklist[] = $this->awsSchemaIsCreated('awsp_wizard/data_type_arn/interactionsSchemaArn');
+		$checklist[] = $this->schemaExists('awsp_wizard/data_type_arn/usersSchemaName');
+		$checklist[] = $this->schemaExists('awsp_wizard/data_type_arn/itemsSchemaName');
+		$checklist[] = $this->schemaExists('awsp_wizard/data_type_arn/interactionsSchemaName');
 		switch (true) {
 			CASE (count($checklist) == 3):
 				return 'complete';
@@ -160,7 +162,6 @@ class Schema extends PersonalizeBase
 
 		try {
 			if( ! $this->alreadyCreated('users',$this->usersSchemaName,$this->usersSchemaArn) ) {
-				$this->infoLogger->info( "\ncreate users schema result : \n");
 				$result = $this->personalizeClient->{$this->apiCreate}([
 					'name' => "$this->usersSchemaName",
 					'schema' => $schUser,
@@ -168,7 +169,6 @@ class Schema extends PersonalizeBase
 				$this->usersSchemaArn = $result['schemaArn'];
 				$this->nameConfig->saveName('usersSchemaName', $this->usersSchemaName);
 				$this->nameConfig->saveArn('usersSchemaArn', $this->usersSchemaArn);
-			//	$this->infoLogger->info($result);
 			}
 
 
@@ -178,7 +178,6 @@ class Schema extends PersonalizeBase
 
 		try {
                         if( ! $this->alreadyCreated('items',$this->itemsSchemaName,$this->itemsSchemaArn) ) {
-                                $this->infoLogger->info( "\ncreate items schema result : \n");
                                 $result = $this->personalizeClient->{$this->apiCreate}([
                                         'name' => "$this->itemsSchemaName",
                                         'schema' => $schUser,
@@ -186,7 +185,6 @@ class Schema extends PersonalizeBase
                                 $this->itemsSchemaArn = $result['schemaArn'];
 				$this->nameConfig->saveName('itemsSchemaName', $this->itemsSchemaName);
 				$this->nameConfig->saveArn('itemsSchemaArn', $this->itemsSchemaArn);
-                        //      $this->infoLogger->info($result);
                         }
 
 
@@ -196,7 +194,6 @@ class Schema extends PersonalizeBase
 
 		try {
                         if( ! $this->alreadyCreated('interactions',$this->interactionsSchemaName,$this->interactionsSchemaArn) ) {
-                                $this->infoLogger->info( "\ncreate interactions schema result : \n");
                                 $result = $this->personalizeClient->{$this->apiCreate}([
                                         'name' => "$this->interactionsSchemaName",
                                         'schema' => $schUser,
@@ -212,9 +209,8 @@ class Schema extends PersonalizeBase
 	}
 
 	public function alreadyCreated($name,$schemaName,$schemaArn) {
-			$this->infoLogger->info( "\nalreadyCreated() called: \n");
 			$rtn = false;
-			if( $this->schemaExists($schemaArn) ) {
+			if( $this->schemaExists($schemaName) ) {
 				$rtn = true;
 				$this->nameConfig->saveName($name."SchemaName", $schemaName);
 				$this->nameConfig->saveArn($name."SchemaArn", $schemaArn);
@@ -222,21 +218,17 @@ class Schema extends PersonalizeBase
 			return $rtn;
 	}
 
-    public function schemaExists($schemaArn) {
-        $this->infoLogger->info( "\nschemaExists() called: \n");
-	if(empty($schemaArn)) {
-		return false;
-	}
+    public function schemaExists($schemaName) {
 	try {
-		$check = $this->personalizeClient->{$this->apiDescribe}([
-		'schemaArn' => $schemaArn,
-		]);
-		if(!empty($check) ) {
-			return true;
+		$schemas = $this->personalizeClient->listSchemas(array('maxResults'=>100));
+		foreach($schemas['schemas'] as $idx=>$item) {
+			if($item['name'] === $schemaName) {
+				return true;
+			}
 		}
 	} catch(Exception $e) {
-		$this->infoLogger->info( "\nChecking schemaExists--false\n" . print_r($e->getMessage(),true));
-		return false;
+		$this->errorLogger->error( "\nschemaExists() error. Message:\n" . print_r($e->getMessage(),true));
+		exit;
 	}
         return false;
     }
