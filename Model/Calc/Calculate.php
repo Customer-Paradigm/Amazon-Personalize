@@ -318,7 +318,7 @@ class Calculate
 			$result=curl_exec($ch);
             $curl_error=curl_error($ch); 
             if( $curl_error ) {
-                $this->logger()->error( "\nCalc curl post error" . $curl_error);
+                $this->logger->error( "\nCalc curl post error" . $curl_error);
             }
             
             curl_close($ch);
