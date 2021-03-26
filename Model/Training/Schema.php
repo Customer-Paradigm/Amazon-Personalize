@@ -27,6 +27,10 @@ class Schema extends PersonalizeBase
 		$this->usersSchemaArn = $this->nameConfig->buildArn('schema',$this->usersSchemaName);
 		$this->itemsSchemaArn = $this->nameConfig->buildArn('schema',$this->itemsSchemaName);
 		$this->interactionsSchemaArn = $this->nameConfig->buildArn('schema',$this->interactionsSchemaName);
+                $this->usersConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/usersSchemaName');
+                $this->itemsConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/itemsSchemaName');
+                $this->interactionsConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/interactionsSchemaName');
+
 	}
 /*
 	public function awsSchemaIsCreated($config_path) {
@@ -53,10 +57,15 @@ class Schema extends PersonalizeBase
 
 	public function getStatus() {
 
-		$count = 0;
-		$checklist[] = $this->schemaExists('awsp_wizard/data_type_arn/usersSchemaName');
-		$checklist[] = $this->schemaExists('awsp_wizard/data_type_arn/itemsSchemaName');
-		$checklist[] = $this->schemaExists('awsp_wizard/data_type_arn/interactionsSchemaName');
+		if($rtn = $this->schemaExists('users')) {
+                        $checklist[] = $rtn;
+                }
+		if($rtn = $this->schemaExists('items')) {
+                        $checklist[] = $rtn;
+                }
+		if($rtn = $this->schemaExists('interactions')) {
+                        $checklist[] = $rtn;
+		}
 		switch (true) {
 			CASE (count($checklist) == 3):
 				return 'complete';
@@ -212,8 +221,12 @@ class Schema extends PersonalizeBase
 			$rtn = false;
 			if( $this->schemaExists($schemaName) ) {
 				$rtn = true;
-				$this->nameConfig->saveName($name."SchemaName", $schemaName);
-				$this->nameConfig->saveArn($name."SchemaArn", $schemaArn);
+	//			if(empty($this->nameConfig->getConfigVal($name."SchemaName", $schemaName))) {
+					$this->nameConfig->saveName($name."SchemaName", $schemaName);
+	//			}
+	//			if(empty($this->nameConfig->getConfigVal($name."SchemaName", $schemaName))) {
+					$this->nameConfig->saveArn($name."SchemaArn", $schemaArn);
+	//			}
 			}
 			return $rtn;
 	}

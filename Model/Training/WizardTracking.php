@@ -45,7 +45,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $this->maxAttempts = 3;
             $this->steps = array(
                 // 'create_personalize_user',
-                'create_csv_files',
+//                'create_csv_files',
                 'create_s3_bucket',
                 'upload_csv_files',
                 'create_schemas',
@@ -361,7 +361,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
    
     protected function setStepRetry($step) {
         $attempt = $this->getAttemptNum($step);
-	$this->infoLogger->info("WizardTracking setStepRetry()-- step: " . $step . " -- attempt #: " . $attempt);
+	$this->infoLogger->info("WizardTracking setStepRetry() -- attempt #: " . $attempt);
         if( $attempt >= $this->maxAttempts ) {
             $this->saveStepData($step,'in_progress',true);
             $this->saveStepData($step,'is_completed',false);
