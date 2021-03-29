@@ -12,6 +12,8 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
 	protected $baseName;
 	protected $apiCreate;
 	protected $apiDescribe;
+	protected $infoLogger;
+	protected $errorLogger;
 
 	public function __construct(
 		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig
@@ -22,6 +24,8 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
 		$this->apiDescribe = 'describe' . $this->baseName;
 		$this->nameConfig = $nameConfig;
 		$this->region = $this->nameConfig->getAwsRegion();
+		$this->infoLogger = $nameConfig->getLogger('info');
+		$this->errorLogger = $nameConfig->getLogger('error');
 		
 		$this->personalizeClient = new PersonalizeClient(
 			[ 'profile' => 'default',
@@ -31,10 +35,12 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
 	}
 
         public function checkAssetCreatedAndSync($type_name,$step_name,$name_value,$arn_value) {
+                $this->infoLogger->info( "\n--------checkAssetCreatedAndSync() function called---");
                 $rtn = false;
                 $step_plural = $step_name . "s";
                 if( $this->assetExists($step_plural,$name_value) ) {
                         $name = $type_name.$step_name;
+                        $this->infoLogger->info( "\n--------checkAssetCreatedAndSync() function name:\n" . $name);
                         $rtn = true;
                         if(empty($this->nameConfig->getConfigVal($name."Name"))) {
                                 $this->nameConfig->saveName($name."Name", $name_value);
@@ -43,13 +49,15 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
                                 $this->nameConfig->saveArn($name."Arn", $arn_value);
                         }
                 }
+                $this->infoLogger->info( "\n--------checkAssetCreatedAndSync() function rtn:\n" . $rtn);
                 return $rtn;
         }
 
         public function assetExists($type, $name) {
 		try {
 			$type = ucfirst($type);
-                        $func_name = "list" . $type;
+			$func_name = "list" . $type;
+
                         $assets = $this->personalizeClient->$func_name(array('maxResults'=>100));
                         if(empty($assets)) {
                                 return false;

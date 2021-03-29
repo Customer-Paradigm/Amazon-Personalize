@@ -173,10 +173,13 @@ class Wizard
     }
     
     public function createCampaign() {
+	$this->infoLogger->info("\nWizardTracking ) createCampaign() called");
         try {
             $this->campaign->createCampaign();
             $this->setStepError('create_campaign','');
+		$this->infoLogger->info("\nWizardTracking ) createCampaign() try block");
         } catch (\Exception $e) {
+		$this->infoLogger->info("\nWizardTracking ) createCampaign() exception caught: " . $e->getMessage());
             $this->setStepError('create_campaing',$e->getMessage());
         }
     }
@@ -191,6 +194,7 @@ class Wizard
     }
 
     public function checkStatus($step_name) {
+	        $this->infoLogger->info("\nWizardTracking runSteps() checkStatus step: " . $step_name);
 		$rtn = null;
 		switch ($step_name) {
 			case 'create_csv_files':

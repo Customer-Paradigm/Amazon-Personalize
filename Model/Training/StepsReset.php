@@ -97,7 +97,7 @@ class StepsReset extends PersonalizeBase
 		}
 		$this->wizardTracking->clearData();
 	}
-
+/*
 	public function assetExists($name,$arn) {
 
 		$ucname = ucfirst($name);
@@ -116,6 +116,7 @@ class StepsReset extends PersonalizeBase
 		}
 		return $rtn;
 	}
+ */
 
 	public function deleteAsset($name, $arn) {
                 $this->infoLogger->info("\nDelete asset: $name, $arn");
@@ -124,7 +125,7 @@ class StepsReset extends PersonalizeBase
 		$lcname = lcfirst($name);
 		$fname = 'delete' . $ucname . 'Async';
 		try {
-			if($this->assetExists($name, $arn)) {
+			if($this->assetExists($name . "s", $arn)) {
 				$result = $this->personalizeClient->{$fname}([
 					$lcname . 'Arn' => $arn,
 				])->wait();

@@ -8,7 +8,6 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     protected $_cacheTag = 'customerparadigm_amazonpersonalize_wizardtracking';
     protected $_eventPrefix = 'customerparadigm_amazonpersonalize_wizardtracking';
     protected $connection;
-    protected $trackingCollection;
     protected $steps;
     protected $pHelper;
     protected $infoLogger;
@@ -23,7 +22,6 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         \Magento\Framework\Model\Context $context,
 	\CustomerParadigm\AmazonPersonalize\Logger\InfoLogger $infoLogger,
 	\CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger $errorLogger,
-        \CustomerParadigm\AmazonPersonalize\Model\ResourceModel\WizardTracking\Collection $trackingCollection,
         \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
         \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
         \Magento\Framework\Event\ManagerInterface $eventManager,
@@ -35,7 +33,6 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     {
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
             $this->connection = $this->getResource()->getConnection();
-            $this->trackingCollection = $trackingCollection;
             $this->pHelper = $pHelper;
 	    $this->infoLogger = $infoLogger;
 	    $this->errorLogger = $errorLogger;
@@ -45,7 +42,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $this->maxAttempts = 3;
             $this->steps = array(
                 // 'create_personalize_user',
-//                'create_csv_files',
+                'create_csv_files',
                 'create_s3_bucket',
                 'upload_csv_files',
                 'create_schemas',
@@ -105,6 +102,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         $this->eventManager->dispatch('awsp_wizard_runsteps_before', ['obj' => $this]);
         try {
             $process = $this->getProcessStepState();
+	    $this->infoLogger->info("WizardTracking runSteps() getProcessStepState rtn: " . print_r($process,true));
             $step = $process['step'];
             $rtn['steps'] = $this->displayProgress();
             $rtn['mssg'] = $process['mssg'];
@@ -116,7 +114,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                 case 'step ready':
                 case 'not started':
                     $fname = $this->stepToFuncName($step);
-		    $this->infoLogger->info("WizardTracking runSteps() starting step" . $fname);
+		    $this->infoLogger->info("WizardTracking runSteps() starting step " . $fname);
                     $this->setStepInprogress($step);
         	    $this->saveStepData($step,'attempt_number',$this->attempts);
                     try {
@@ -130,7 +128,8 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                         }
                     } catch(\Exception $e) {
                         $this->setStepError($step, $e->getMessage());
-                        $this->errorLogger->error("WizardTracking runSteps() error:  " . $e);
+                        $this->errorLogger->error("WizardTracking runSteps() error at step:  " . $step);
+                        $this->errorLogger->error("WizardTracking runSteps() error message:  " . $e);
                         $rtn['mssg'] = 'run step error';
                         $rtn['is_success'] = false;
                     }
@@ -140,7 +139,6 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                     $rtn['mssg'] = 'success';
                     $rtn['state'] = 'complete';
                     $check = $wizard->checkStatus($step);
-		    $this->infoLogger->info("\nWizardTracking runSteps() checkStatus: \n" . $check);
                     if($check == 'complete') {
                         $this->setStepComplete($step);
                     }
@@ -360,19 +358,22 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     }
    
     protected function setStepRetry($step) {
-        $attempt = $this->getAttemptNum($step);
-	$this->infoLogger->info("WizardTracking setStepRetry() -- attempt #: " . $attempt);
-        if( $attempt >= $this->maxAttempts ) {
-            $this->saveStepData($step,'in_progress',true);
-            $this->saveStepData($step,'is_completed',false);
-            $this->saveStepData($step,'error',"unknown error after $attempt tries");
-            return array();
-        } else {
-            $this->saveStepData($step,'attempt_number',$attempt + 1);
-            $this->saveStepData($step,'is_completed',null);
-            $this->saveStepData($step,'error',null);
-            return $step;
-        }
+	    $attempt = $this->getAttemptNum($step);
+	    if(is_array($attempt)) {
+		    $attempt = json_encode($attempt);
+	    }
+	    $this->infoLogger->info("WizardTracking setStepRetry() -- attempt #: " . $attempt);
+	    if( $attempt >= $this->maxAttempts ) {
+		    $this->saveStepData($step,'in_progress',true);
+		    $this->saveStepData($step,'is_completed',false);
+		    $this->saveStepData($step,'error',"unknown error after $attempt tries");
+		    return array();
+	    } else {
+		    $this->saveStepData($step,'attempt_number',$attempt);
+		    $this->saveStepData($step,'is_completed',null);
+		    $this->saveStepData($step,'error',null);
+		    return $step;
+	    }
     }
 
     protected function getAttemptNum($step) {
