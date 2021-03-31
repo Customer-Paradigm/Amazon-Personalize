@@ -27,9 +27,9 @@ class Dataset extends PersonalizeBase
 		$this->usersDatasetName = $this->nameConfig->buildName('users-dataset');
 		$this->itemsDatasetName = $this->nameConfig->buildName('items-dataset');
 		$this->interactionsDatasetName = $this->nameConfig->buildName('interactions-dataset');
-                $this->usersDatasetArn = $this->nameConfig->buildArn('dataset-group', 'USERS');
-                $this->itemsDatasetArn = $this->nameConfig->buildArn('dataset-group', 'ITEMS');
-                $this->interactionsDatasetArn = $this->nameConfig->buildArn('dataset-group','INTERACTIONS');
+                $this->usersDatasetArn = $this->nameConfig->buildArn('dataset-group', $this->usersDatasetName ) . "/USERS";
+                $this->itemsDatasetArn = $this->nameConfig->buildArn('dataset-group', $this->itemsDatasetName) . "/ITEMS";
+                $this->interactionsDatasetArn = $this->nameConfig->buildArn('dataset-group',$this->interactionsDatasetName) . "/INTERACTIONS";
 		$this->datasetGroupName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/datasetGroupName');
 		$this->usersSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/usersSchemaName');
 		$this->itemsSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/itemsSchemaName');
