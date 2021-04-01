@@ -24,17 +24,19 @@ class Dataset extends PersonalizeBase
 	)
 	{
 		parent::__construct($nameConfig);
+		$this->datasetGroupName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/datasetGroupName');
+		$this->datasetGroupArn = $this->nameConfig->buildArn('dataset-group',$this->datasetGroupName);
+
 		$this->usersDatasetName = $this->nameConfig->buildName('users-dataset');
 		$this->itemsDatasetName = $this->nameConfig->buildName('items-dataset');
 		$this->interactionsDatasetName = $this->nameConfig->buildName('interactions-dataset');
-                $this->usersDatasetArn = $this->nameConfig->buildArn('dataset-group', $this->usersDatasetName ) . "/USERS";
-                $this->itemsDatasetArn = $this->nameConfig->buildArn('dataset-group', $this->itemsDatasetName) . "/ITEMS";
-                $this->interactionsDatasetArn = $this->nameConfig->buildArn('dataset-group',$this->interactionsDatasetName) . "/INTERACTIONS";
-		$this->datasetGroupName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/datasetGroupName');
+                $this->usersDatasetArn = $this->nameConfig->buildArn('dataset', $this->datasetGroupName ) . "/USERS";
+                $this->itemsDatasetArn = $this->nameConfig->buildArn('dataset', $this->datasetGroupName) . "/ITEMS";
+		$this->interactionsDatasetArn = $this->nameConfig->buildArn('dataset',$this->datasetGroupName) . "/INTERACTIONS";
+
 		$this->usersSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/usersSchemaName');
 		$this->itemsSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/itemsSchemaName');
 		$this->interactionsSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/interactionsSchemaName');
-		$this->datasetGroupArn = $this->nameConfig->buildArn('dataset-group',$this->datasetGroupName);
 		$this->usersSchemaArn = $this->nameConfig->buildArn('schema',$this->usersSchemaName);
 		$this->itemsSchemaArn = $this->nameConfig->buildArn('schema',$this->itemsSchemaName);
 		$this->interactionsSchemaArn = $this->nameConfig->buildArn('schema',$this->interactionsSchemaName);

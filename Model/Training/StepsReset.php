@@ -78,6 +78,8 @@ class StepsReset extends PersonalizeBase
 			$resetTracking[$name]['asset'] = $asset;
 		}
 
+//		var_dump($resetTracking);
+//		die('-------');
 
 		foreach( $resetTracking as $item ) {
 			if( $item['asset'] == 's3Bucket' ) {
@@ -95,11 +97,13 @@ class StepsReset extends PersonalizeBase
 				$this->deleteAsset($item['asset'],$item['arn']);
 			}
 		}
+		$this->nameConfig->saveConfigSetting('awsp_settings/awsp_general/campaign_exists',0);
 		$this->wizardTracking->clearData();
 	}
-/*
+
 	public function assetExists($name,$arn) {
 
+                $this->infoLogger->info("\nassetExists: $name, $arn");
 		$ucname = ucfirst($name);
 		$lcname = lcfirst($name);
 		$rtn = false;
@@ -107,16 +111,18 @@ class StepsReset extends PersonalizeBase
 			return $rtn;
 		}
 		$fname = 'list' . $ucname . 's';
-		$info = $this->personalizeClient->{$fname}();
+		$info = $this->personalizeClient->{$fname}(array('maxResults'=>100));
+                $this->infoLogger->info("\nassetExists key: " . $lcname.'s');
 		foreach($info[$lcname.'s'] as $item) {
+
 			if(array_key_exists($lcname."Arn", $item) && $item[$lcname."Arn"] == $arn) {
+			  	$this->infoLogger->info("\n$arn exists on aws");
 				$rtn = true;
 				break;
 			} 
 		}
 		return $rtn;
 	}
- */
 
 	public function deleteAsset($name, $arn) {
                 $this->infoLogger->info("\nDelete asset: $name, $arn");
@@ -125,10 +131,11 @@ class StepsReset extends PersonalizeBase
 		$lcname = lcfirst($name);
 		$fname = 'delete' . $ucname . 'Async';
 		try {
-			if($this->assetExists($name . "s", $arn)) {
+			if($this->assetExists($name, $arn)) {
 				$result = $this->personalizeClient->{$fname}([
 					$lcname . 'Arn' => $arn,
 				])->wait();
+				$this->infoLogger->info("\nDelete asset result: " . print_r($result,true));
 			} 
 		} catch(\Exception $e) {
 			$this->errorLogger->error( "\n------------deleteAsset() : \n");
