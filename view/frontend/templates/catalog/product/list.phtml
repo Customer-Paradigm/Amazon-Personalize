@@ -51,8 +51,8 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
                                 <?= /* @escapeNotVerified */ $_helper->productAttribute($_product, $_product->getName(), 'name') ?>
                             </a>
                         </strong>
-                        <?= $block->getReviewsSummaryHtml($_product, $templateType) ?>
-                        <?= /* @escapeNotVerified */ $block->getProductPrice($_product) ?>
+			<?= $block->getReviewsSummaryHtml($_product, $templateType) ?>
+			<?= /* @escapeNotVerified */ $block->getProductPrice($_product) ?>
                         <?= $block->getProductDetailsHtml($_product) ?>
 
                         <div class="product-item-inner">

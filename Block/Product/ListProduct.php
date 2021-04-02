@@ -125,17 +125,13 @@ class ListProduct extends \Magento\Catalog\Block\Product\ListProduct implements 
 		} else {
 			$price = "$" . number_format($price,2);
 		}
-
-		$id = $product->getId();
-
-		$resultBlock = $this->pageFactory->create();
-		$price_block = $resultBlock->getLayout()
-			->createBlock("\CustomerParadigm\AmazonPersonalize\Block\Product\ListProduct")
-			->setData('id',$id)
-			->setData('price',$price)
-			->setTemplate("CustomerParadigm_AmazonPersonalize::product/price.phtml");
-
-		return $price_block->toHtml();
+		$ctnr = 
+"<div class='price-box price-final_price' data-role='priceBox' data-product-id='14' data-price-box='product-id-14'>
+	<span class='price-container price-final_price tax weee'>
+        <span id='old-price-14-widget-product-grid' data-price-amount='45' data-price-type='finalPrice' class='price-wrapper '><span class='price'>$price</span></span>
+        </span>
+</div>";
+		return $ctnr;
 	}
 
 	protected function _beforeToHtml()

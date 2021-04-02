@@ -47,12 +47,12 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                 'upload_csv_files',
                 'create_schemas',
                 'create_dataset_group',
-                'create_datasets',
+		'create_datasets',
                 'create_import_jobs',
                 'create_solution',
                 'create_solution_version',
                 'create_campaign',
-                'create_event_tracker'
+		'create_event_tracker'
             );
     }
 
