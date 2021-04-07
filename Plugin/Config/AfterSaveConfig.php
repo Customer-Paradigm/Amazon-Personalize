@@ -88,7 +88,8 @@ class AfterSaveConfig
 
 			// Set credentials for aws php sdk
 			try {
-				$home_dir = $this->pConfig->getUserHomeDir();
+				//$home_dir = $this->pConfig->getUserHomeDir();
+				$home_dir = getenv("HOME");
 				$region = $this->pConfig->getAwsRegion();
 				$access_key = $this->pConfig->getAccessKey();
 				$secret_key = $this->pConfig->getSecretKey();
@@ -113,9 +114,15 @@ class AfterSaveConfig
 				$config_dir = $home_dir .'/.aws';
 				$cred_file = $home_dir . '/.aws/credentials';
 				$config_file = $home_dir . '/.aws/config';
+				$htaccess_file = $home_dir . '/.aws/.htaccess';
 				$cmd = "mkdir -p $config_dir && touch $config_file";
 				$output = $this->shell->execute($cmd);
 				$cmd = "touch $cred_file";
+				$output = $this->shell->execute($cmd);
+				$cmd = "touch $htaccess_file";
+				$output = $this->shell->execute($cmd);
+				$htaccess_entry = 'Deny from all';
+				$cmd = 'echo "'. $htaccess_entry . '" >' . $htaccess_file;
 				$output = $this->shell->execute($cmd);
 
 				$cred_entry = "[default]

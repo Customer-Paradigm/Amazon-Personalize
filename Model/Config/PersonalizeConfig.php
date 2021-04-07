@@ -55,7 +55,11 @@ class PersonalizeConfig
         $this->webdir = $this->directoryList->getRoot();
         $this->storeId = $this->storeManager->getStore()->getId();
         $this->homedir = $this->scopeConfig->getValue('awsp_settings/awsp_general/home_dir', 
-                        \Magento\Store\Model\ScopeInterface::SCOPE_STORE,$this->storeId);
+		\Magento\Store\Model\ScopeInterface::SCOPE_STORE,$this->storeId);
+	if(!is_writable($this->homedir)) {
+		$this->homedir =  $this->webdir . "/pub/media";
+        	$this->configWriter->save('awsp_settings/awsp_general/home_dir', $this->homedir);
+        }
         $this->region = $this->scopeConfig->getValue('awsp_settings/awsp_general/aws_region', 
                         \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
 	
