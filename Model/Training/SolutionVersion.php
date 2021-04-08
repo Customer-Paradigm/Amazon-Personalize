@@ -6,13 +6,16 @@ Use Aws\Personalize\PersonalizeClient;
 class SolutionVersion extends PersonalizeBase
 {
 	protected $solutionVersionName;
+	protected $pHelper;
 
 	public function __construct(
-		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig
+		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
+		\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper
 	)
 	{
 		parent::__construct($nameConfig);
 		$this->solutionVersionName = $this->nameConfig->buildName('solution-version');
+		$this->pHelper = $pHelper;
 	}
 
 	public function createSolutionVersion() {
@@ -35,8 +38,11 @@ class SolutionVersion extends PersonalizeBase
 			$rslt = $this->personalizeClient->{$this->apiDescribe}([
 				'solutionVersionArn' => $arn,
 			]);
+			$this->nameConfig->getLogger('info')->info( "\nsolutionVersion arn: " . $arn);
+			$this->nameConfig->getLogger('info')->info( "\nsolutionVersion result: " . print_r($rslt['solutionVersion']['status'],true));
 		} catch (\Exception $e) {
-			$this->nameConfig->getLogger('error')->error( "\ncampaignVersion getStatus error: " . $e->getMessage());
+			$this->pHelper->setStepError('create_solution_version', $e->getMessage());
+			$this->nameConfig->getLogger('error')->error( "\nsolutionVersion getStatus error: " . $e->getMessage());
 			return $e->getMessage();
 		}
 		if(empty($rslt)) {
@@ -52,6 +58,7 @@ class SolutionVersion extends PersonalizeBase
 			$rtn = 'in progress';
 			break;
 		case 'CREATE FAILED':
+			$this->pHelper->setStepError('create_solution_version',$rslt['solutionVersion']['failureReason']);
 			$rtn = 'error';
 			break;
 		default:

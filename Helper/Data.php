@@ -11,24 +11,26 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use CustomerParadigm\AmazonPersonalize\Helper\Db;
 use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
 use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
-
-
+use \Magento\Framework\App\ResourceConnection;
 
 class Data extends AbstractHelper {
 
 	protected $optionFactory;
 	protected $cacheTypeList;
 	protected $cacheFrontendPool;
+	protected $resource;
 	protected $db;
 	protected $infoLogger;
 	protected $errorLogger;
 	protected $scope;
+	protected $connection;
 
 	public function __construct( 
 		Context $context,
 		OptionFactory $optionFactory,
 		TypeListInterface $cacheTypeList, 
 		Pool $cacheFrontendPool,
+		ResourceConnection $resource,
 		Db $db,
 		InfoLogger $infoLogger,
 		ErrorLogger $errorLogger
@@ -37,6 +39,8 @@ class Data extends AbstractHelper {
 		$this->optionFactory = $optionFactory;
 		$this->cacheTypeList = $cacheTypeList;
 		$this->cacheFrontendPool = $cacheFrontendPool;
+		$this->resource = $resource;
+		$this->connection = $this->resource->getConnection();
 		$this->db = $db;
 		$this->infoLogger = $infoLogger;
 		$this->errorLogger = $errorLogger;
@@ -143,5 +147,15 @@ class Data extends AbstractHelper {
 		); 
 		return $rtn;
 	}
+
+    public function setStepError($step,$message) {
+        $this->saveStepData($step,'error',$message);
+    }
+
+    public function saveStepData($step_name, $set_column, $value) {
+        $sql = "update aws_wizard_steps set $set_column = '$value' where step_name = '$step_name'";
+        $this->connection->exec($sql);
+    }
+
 
 }

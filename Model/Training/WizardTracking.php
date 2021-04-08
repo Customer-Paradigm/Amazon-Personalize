@@ -109,8 +109,10 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $rtn['state'] = $process['state'];
             switch($process['state']) {
                 case 'error':
-		    $this->infoLogger->info("WizardTracking runSteps() error status -- try $step again");
-                    return $this->tryAgain($step);
+                   $this->errorLogger->error("WizardTracking runSteps() non-exeption error at step:  " . $step);
+                   $this->errorLogger->error("WizardTracking runSteps() error message:  " . $rtn['mssg'] );
+		   // $this->infoLogger->info("WizardTracking runSteps() error status -- try $step again");
+                   // return $this->tryAgain($step);
                 case 'step ready':
                 case 'not started':
                     $fname = $this->stepToFuncName($step);

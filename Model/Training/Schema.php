@@ -36,28 +36,6 @@ class Schema extends PersonalizeBase
                 $this->interactionsConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/interactionsSchemaName');
 
 	}
-/*
-	public function awsSchemaIsCreated($config_path) {
-		$config_arn = $this->nameConfig->getConfigVal($config_path);
-		if ($config_arn == NULL) {
-			return false;
-		} else {
-			try {
-				$aws_schema = $this->personalizeClient->{$this->apiDescribe}([
-					'schemaArn' => $config_arn,
-				]);
-			} catch(\Exception $e) {
-				return 'error';
-			}
-
-			if ($aws_schema['schema']['schemaArn'] == $config_arn) {
-				return true;
-			}
-
-			return false;
-		}
-	}
-*/
 
 	public function getStatus() {
                $checklist[] = $this->schemaExists('awsp_wizard/data_type_arn/usersSchemaName');

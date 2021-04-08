@@ -16,13 +16,16 @@ class ImportJob extends PersonalizeBase
 	protected $itemsDatasetArn;
 	protected $interactionsDatasetArn;
 	protected $infoLogger;
+	protected $pHelper;
 
 	public function __construct(
-		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig
+		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
+                \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper
 	)
 	{
 		parent::__construct($nameConfig);
 		$acct_num = $this->nameConfig->getAwsAccount();
+                $this->pHelper = $pHelper;
 
 		$this->infoLogger = $this->nameConfig->getLogger('info');
 		$this->roleArn = "arn:aws:iam::$acct_num:role/personalize_full_access";
@@ -43,7 +46,6 @@ class ImportJob extends PersonalizeBase
 		$checkArray = array($this->usersImportJobName,$this->itemsImportJobName,$this->interactionsImportJobName);
 		$checklist = array();
 		$rtn = $this->personalizeClient->listDatasetImportJobs();
-		$this->infoLogger->info('listDatasetImportJobs response: ' . print_r($rtn,true));
 		$result = 'none found';
 		try {
 			foreach($rtn['datasetImportJobs'] as $idx=>$item) {
@@ -64,7 +66,9 @@ class ImportJob extends PersonalizeBase
 						$result = 'in progress';
 						break;
 					case 'CREATE FAILED':
-						return $item['failureReason'];
+						$result = 'error';
+                        			$this->pHelper->setStepError('create_import_jobs',$item['failureReason']);
+						//return $item['failureReason'];
 						break;
 					}
 				}
@@ -73,6 +77,7 @@ class ImportJob extends PersonalizeBase
 			$this->nameConfig->getLogger()->error( "\ncheck datasetImportJobs status error: " . $e->getMessage());
 			return $e->getMessage();
 		}
+		$this->infoLogger->info('listDatasetImportJobs status result: ' . print_r($result,true));
 		return $result;
 	}
 

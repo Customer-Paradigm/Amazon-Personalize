@@ -6,15 +6,19 @@ Use Aws\Personalize\PersonalizeClient;
 class Campaign extends PersonalizeBase
 {
 	protected $campaignName;
+	protected $pHelper;
 
 	public function __construct(
-		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig
+		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
+                \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper
 	)
     {
         parent::__construct($nameConfig);
         $this->campaignName = $this->nameConfig->buildName('campaign');
         $this->campaignArn = $this->nameConfig->buildArn('campaign', $this->campaignName);
-        $this->campaignVersionName = $this->nameConfig->buildName('campaign-version');
+	$this->campaignVersionName = $this->nameConfig->buildName('campaign-version');
+	$this->pHelper = $pHelper;
+
     }
 
     public function createCampaign() {
@@ -67,7 +71,8 @@ class Campaign extends PersonalizeBase
             case 'CREATE IN_PROGRESS':
                 $rtn = 'in progress';
                 break;
-            case 'CREATE FAILED':
+	    case 'CREATE FAILED':
+                $this->pHelper->setStepError('create_campaign',$rslt['campaign']['failureReason']);
                 $rtn = 'error';
                 break;
             default:

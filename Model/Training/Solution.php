@@ -8,9 +8,11 @@ class Solution extends PersonalizeBase
 	protected $solutionName;
 	protected $solutionVersionName;
 	protected $recipeArn;
+	protected $pHelper;
 
 	public function __construct(
-		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig
+		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
+                \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper
 	)
 	{
 		parent::__construct($nameConfig);
@@ -19,6 +21,7 @@ class Solution extends PersonalizeBase
 
 		$this->solutionVersionName = $this->nameConfig->buildName('solution-version');
 		$this->recipeArn = 'arn:aws:personalize:::recipe/aws-user-personalization';
+                $this->pHelper = $pHelper;
 	}
 
 	public function createSolution() {
@@ -77,6 +80,7 @@ class Solution extends PersonalizeBase
 			$rtn = 'in progress';
 			break;
 		case 'CREATE FAILED':
+                        $this->pHelper->setStepError('create_solution',$rslt['solution']['failureReason']);
 			$rtn = 'error';
 			break;
 		default:

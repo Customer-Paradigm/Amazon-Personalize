@@ -29,11 +29,13 @@
 				<field id="campaign_exists" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Campaign Active</label>
                     <frontend_model>CustomerParadigm\AmazonPersonalize\Block\System\Config\Form\Field\Readonly</frontend_model>
-                </field>
+	    </field>
+	    <!--
                 <field id="home_dir" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>File owner home directory</label>
 					<comment>Where the keys will be stored</comment>
-                </field>
+		</field>
+-->
                 <field id="aws_region" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
                     <label>Aws Region</label>
 					<comment>Aws region in which your data will be located</comment>
