@@ -20,7 +20,10 @@ class Test extends \Magento\Framework\App\Action\Action {
         \CustomerParadigm\AmazonPersonalize\ViewModel\Product $prodViewModel,
         \CustomerParadigm\AmazonPersonalize\Api\Personalize\RuntimeClient $rtClient,
         \CustomerParadigm\AmazonPersonalize\Model\ResultFactory $awsResultFactory,
-        \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig
+	\CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
+	\CustomerParadigm\AmazonPersonalize\Block\Widget\Display $prodDisplay,
+	\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper
+
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->productFactory = $productFactory;
@@ -31,8 +34,10 @@ class Test extends \Magento\Framework\App\Action\Action {
         $this->awsResultFactory = $awsResultFactory;
         $this->pConfig = $pConfig;
         $this->nameConfig = $nameConfig;
-        $homedir = $this->pConfig->getUserHomeDir();
-        putenv("HOME=$homedir");
+        $this->prodDisplay = $prodDisplay;
+        $this->pHelper = $pHelper;
+        $this->homedir = $this->pConfig->getUserHomeDir();
+        putenv("HOME=$this->homedir");
 
 	parent::__construct($context);
         $this->region = $this->nameConfig->getAwsRegion();
@@ -47,10 +52,16 @@ class Test extends \Magento\Framework\App\Action\Action {
     {
 /* Comment out this redirect to homepage to use the test controller */
             $resultRedirect = $this->resultRedirectFactory->create();
-            $resultRedirect->setPath('');
-            return $resultRedirect;
+           $resultRedirect->setPath('');
+	    return $resultRedirect;
 
 
+	    var_dump($this->pHelper->canDisplay());
+	    var_dump($this->prodDisplay->isEnabled());
+	    var_dump($this->prodDisplay->getUserId());
+		die('-----------------------');
+
+/*
 	// test non existant config value
 	    $itemsSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_arn/itemsDatasetArn');
 	// test assetExists function
@@ -61,6 +72,7 @@ class Test extends \Magento\Framework\App\Action\Action {
 	    var_dump($schemas);
 	    echo('</pre>');
 	    die("<br>----hit test");
+ */
     }
 
     protected function assetExists($type, $name) {

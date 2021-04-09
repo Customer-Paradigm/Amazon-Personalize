@@ -80,9 +80,13 @@ class Db extends AbstractHelper {
 			$this->logger->info("Amazon personalize " . $installed['notification_case']);
 			$this->setInstalled();
 		} else {
+			$this->setError($installed['notification_text']);
 			$this->logger->error("Amazon personalize " . $installed['notification_case']);
-			if( ! $installed['notification_text'] == 'Script is already installed (or database not empty).' ) {
+			if( $installed['notification_text'] != 'Script is already installed (or database not empty).' ) {
+				$this->configWriter->save('awsp_settings/awsp_general/calc_active',0, $this->scope);
 				$this->logger->error("Amazon personalize Installation failed: " . $installed['notification_text']);
+			} else {
+				$this->setInstalled();
 			}
 		}
 	}
@@ -93,6 +97,10 @@ class Db extends AbstractHelper {
 		$this->configWriter->save('awsp_settings/awsp_general/rule_ft2', filemtime($this->f2), $this->scope);
 		$this->configWriter->save('awsp_settings/awsp_general/rule_fh1', hash_file("haval160,4", $this->f1), $this->scope);
 		$this->configWriter->save('awsp_settings/awsp_general/rule_fh2', hash_file("haval160,4", $this->f2), $this->scope);
+	}
+
+	public function setError($error) {
+		$this->configWriter->save('awsp_settings/awsp_general/calc_error',$error, $this->scope);
 	}
 
 	public function db() {
