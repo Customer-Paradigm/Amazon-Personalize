@@ -82,9 +82,14 @@ class Wizard
         $generator = $this->itemGenerator->generateCsv();
         $this->nameConfig->saveName("itemUserFile", $generator->getFilePath());
         $generator = $this->interactionGenerator->generateCsv();
-        $this->nameConfig->saveName("interactionUserFile", $generator->getFilePath());
-        if( $generator->getDataError() == 'too_few_interactions' ) {
-            $this->setStepError('create_csv_files',"Interaction csv file error: you need at least 1000 interactions to train your model");
+	$this->nameConfig->saveName("interactionUserFile", $generator->getFilePath());
+	$err_mssg = $generator->getDataError();
+        //if( $generator->getDataError() == 'too_few_interactions' ) {
+	if( strpos($err_mssg, 'too_few_interactions') !== false ) {
+		$mssg_array = explode(":",$err_mssg);
+		$mssg_total = $mssg_array[1];
+		$this->setStepError('create_csv_files',"Interaction file error:You have $mssg_total interactions--you need at least 1000 to train your model");
+		$this->nameConfig->saveConfigSetting("awsp_settings/awsp_general/interactions-count",$total);
         }
 
         } catch (AwsException $e) {

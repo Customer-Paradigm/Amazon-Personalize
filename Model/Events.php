@@ -141,7 +141,7 @@ class Events
             $cust_id = $this->_findCustomerId();
             $cust_email = $this->_findCustomerEmail();
             $event = array('sentAt'=>time(), 'eventType'=>$eventType, 'eventValue'=>$eventValue,'properties'=>"{\"customerEmail\":\"$cust_email\",\"itemId\":\"$itemId\",\"itemType\":\"$itemType\", \"itemName\":\"$itemName\"}");
-            $eventsList = array('eventList'=>array($event), 'sessionId'=>"$sess_id", 'trackingId'=>$this->trackingId, 'userId'=>"$cust_id");
+	    $eventsList = array('eventList'=>array($event), 'sessionId'=>"$sess_id", 'trackingId'=>$this->trackingId, 'userId'=>"$cust_id");
 
             if($this->debugLog) {
                 file_put_contents($this->debugLogFile, "\n=========", FILE_APPEND);

@@ -88,7 +88,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 			$this->writer->close();
 			// Aws needs at least 1000 interactions
 			if($total < 1000) {
-				$this->setDataError("too_few_interactions");
+				$this->setDataError("too_few_interactions:$total");
 				$this->errorLogger->error("Not enough interactions in csv. Total: $total");
 			}
 		} catch(Exception $e) {
