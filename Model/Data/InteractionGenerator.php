@@ -5,7 +5,9 @@ namespace CustomerParadigm\AmazonPersonalize\Model\Data;
 use CustomerParadigm\AmazonPersonalize\Model\ResourceModel\Data\Interaction\ReportEvent\CollectionFactory as
 InteractionReportCollectionFactory;
 use CustomerParadigm\AmazonPersonalize\Model\ResourceModel\Data\Interaction\PurchaseEvent\CollectionFactory as
-IinteractionPurchaseCollectionFactory;
+InteractionPurchaseCollectionFactory;
+use CustomerParadigm\AmazonPersonalize\Model\ResourceModel\InteractionCheck\CollectionFactory as
+InteractionCheckCollectionFactory;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Filesystem\File\WriteFactory;
@@ -36,7 +38,8 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 
 	public function __construct(
 		InteractionReportCollectionFactory $interactionReportCollectionFactory,
-		IinteractionPurchaseCollectionFactory $interactionPurchaseCollectionFactory,
+		InteractionPurchaseCollectionFactory $interactionPurchaseCollectionFactory,
+		InteractionCheckCollectionFactory $interactionCheckCollectionFactory,
 		WriteFactory $writeFactory,
 		DirectoryList $directoryList,
 		InfoLogger $infoLogger,
@@ -46,6 +49,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 	){
 		$this->interactionReportCollectionFactory = $interactionReportCollectionFactory;
 		$this->interactionPurchaseCollectionFactory = $interactionPurchaseCollectionFactory;
+		$this->interactionCheckCollectionFactory = $interactionCheckCollectionFactory;
 		parent::__construct($writeFactory, $directoryList, $file);
 		$this->infoLogger = $infoLogger;
 		$this->errorLogger = $errorLogger;
@@ -61,16 +65,18 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 			$max_records = 2000;
 			$reportInteractions = $this->interactionReportCollectionFactory->create()->addFieldToFilter('last_visit_at', array('gt' => $rstart_date))->setOrder('event_id','desc')->setPageSize($max_records);
 			$purchaseInteractions = $this->interactionPurchaseCollectionFactory->create()->addFieldToFilter('sales_order.updated_at', array('gt' =>  $pstart_date))->setOrder('order_id','desc')->setPageSize($max_records);
-
+			$addedInteractions = $this->interactionCheckCollectionFactory->create()->setOrder('interaction_check_id','desc')->setPageSize($max_records);
 
 			$rcount = count($reportInteractions);
 			$pcount = count($purchaseInteractions);
-			$total = (int)$rcount + (int)$pcount;
+			$acount = count($addedInteractions);
+			$total = (int)$rcount + (int)$pcount + (int)$acount;
 
 			$this->createWriter()
 				->writeHeadersToCsv()
 				->writeCollectionToCsv($reportInteractions)
-				->writeCollectionToCsv($purchaseInteractions);
+				->writeCollectionToCsv($purchaseInteractions)
+				->writeCollectionToCsv($addedInteractions);
 			// pad interactions if fewer than 1000
 		/*
 	    if($total < 1000) {

@@ -294,7 +294,11 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         return $rtn;
     }
 
-	public function clearData() {
+    public function needsInteractions() {
+	    return $this->pConfig->needsInteractions();
+    }
+
+    public function clearData() {
 		$tableName = $this->getResource()->getMainTable();
 		$this->connection->truncateTable($tableName);
 		$sql = "delete from core_config_data where path like 'awsp_wizard/data_type_name/%'";
@@ -303,7 +307,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
 		$this->connection->exec($sql);
     }
 
-	public function stepToAssetName($string) 
+    public function stepToAssetName($string) 
     {	
         $rtn = '';
         // de-pluralize

@@ -148,6 +148,12 @@ class PersonalizeConfig
     public function isEnabled() {
         return $this->helper->canDisplay();
     }
+    
+    public function needsInteractions() {
+        $count = $this->scopeConfig->getValue('awsp_settings/awsp_general/interactions-count', 
+                        \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
+        return $count < 1100;
+    }
 
     public function getUserHomeDir() {
         return $this->scopeConfig->getValue('awsp_settings/awsp_general/home_dir', 

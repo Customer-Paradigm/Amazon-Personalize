@@ -2,7 +2,12 @@
 <button id="train_button" title="Start Process" type="button" class="action-default scalable" data-bind=", click: startProcess, css: buttonStatus"> 
         <span>Start Process</span>
 </button>
-
+<div class="interaction-wrapper">
+	<span>Interactions Guage</span>
+	<div id="interaction-progress">
+		<div id="interaction-count">&nbsp;</div>
+	</div>
+</div>
 <div class="training-indicator" id="train_div"  afterRender="showProgress()">
 
     <table id="train_steps">
@@ -12,11 +17,8 @@
                 <img width="16px" height="16px" data-bind="attr:{src: imgUrl}" />
               </td>
               <td data-bind="text: step_name"></td>
-              <td>
-		      <div data-bind="if: error">
-			      <span class="message-button-label">Error: </span>
+              <td data-bind="if: error">
 			      <img title="Display error message" class="message-button" width="16px" height="16px" data-bind="attr:{src: infoUrl}, click: $parent.displayErrorMssg" />
-		      </div>
               </td>
             </tr>
           </tbody>

@@ -105,6 +105,24 @@
   padding: 10px;
 }
 
+.interaction-wrapper {
+  width:400px;
+  position:relative;
+  left:-58%;
+}
+
+#interaction-progress {
+  width: 100%;
+  background-color: #ddd;
+}
+
+#interaction-count {
+  width: 4%;
+  height: 20px;
+  background-color: #4CAF50;
+}
+
+
 #reset_button {
 	float:left;
 }

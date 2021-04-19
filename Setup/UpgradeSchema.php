@@ -77,8 +77,7 @@ class UpgradeSchema implements  UpgradeSchemaInterface
 		if (version_compare($context->getVersion(), '1.0.4') < 0) {
 			$installer = $setup;
             $installer->startSetup();
-			$installer->getConnection()->addColumn(
-				$installer->getTable('sales_order_grid'),
+			$installer->getConnection()->addColumn( $installer->getTable('sales_order_grid'),
 				'ab_customer_type',
 				[
 					'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
@@ -238,6 +237,48 @@ class UpgradeSchema implements  UpgradeSchemaInterface
             $installer->endSetup();
         }
 
+                /**
+		 * Create table to track personalize interaction events for stores with less then 1000 interactions
+		 */
+                if (version_compare($context->getVersion(), '1.0.12') < 0) {
+                        $installer = $setup;
+                        $installer->startSetup();
+
+                        $table = $installer->getConnection()->newTable($installer->getTable('aws_interaction_check')
+                        )->addColumn(
+                                'interaction_check_id',
+                                Table::TYPE_INTEGER,
+                                null,
+                                ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                                'Interaction Check Id'
+                        )->addColumn(
+                                'user_id',
+                                Table::TYPE_TEXT,
+                                255,
+                                ['nullable' => false],
+                                'User Id'
+                        )->addColumn(
+                                'item_id',
+                                Table::TYPE_INTEGER,
+                                null,
+                                ['nullable' => false],
+                                'Item Id'
+                        )->addColumn(
+                                'event_type',
+                                Table::TYPE_TEXT,
+                                255,
+                                ['nullable' => false, 'default' => 'none'],
+                                'Event Type'
+                        )->addColumn(
+                                'timestamp',
+                                Table::TYPE_INTEGER,
+                                null,
+                                ['nullable' => false],
+                                'Unix timestamp'
+                        );
+                        $installer->getConnection()->createTable($table);
+                        $installer->endSetup();
+                }
 
 	}
 }

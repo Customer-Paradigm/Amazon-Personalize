@@ -18,7 +18,6 @@ define([
 			this.steps = ko.observableArray([]);
 			this.imgUrl = ko.observable('');
 			this.infoUrl = ko.observable(this.infoUrl);
-			//this.mssg = ko.observable('Click button to kick off data creation process');
 			this.mssg = ko.observable(this.initMssg);
 			this.buttonStatus = ko.observable('');
 			this.resetStatus = ko.observable('');
@@ -36,12 +35,12 @@ define([
 		},
 
 		setBttnMssg: function(txt) {
-			var bttn = jQuery('#training_section');
+			var bttn = jQuery('#train_button');
 			bttn.find('span').html(txt);
 		},
 
 		disableBttn: function(disabled) {
-			var bttn = jQuery('#training_section');
+			var bttn = jQuery('#train_button');
 			bttn.prop('disabled', disabled);
 		},
 
@@ -100,18 +99,19 @@ define([
 						imgUrl = self.errUrl;
 						infoUrl = self.infoUrl;
 						var html = '<div class="error-message-header"> Error in step ' + value.step_name + '</div>';
-						if(value.mssg.includes("1000 interactions")) {
+						if(value.mssg.includes("you need at least 1000")) {
+							self.setBttnMssg("Recheck Interactions");
 							html += '<div class="error-message-body">';
 							html += '<div>You need at least 1000 interactions to train your model</div>';
 							html += '<span>Details: </span>';
 							html += '<a href="https://docs.aws.amazon.com/personalize/latest/dg/limits.html#limits-table">Amazon Service quotas</a>';
 							html += '</div>';
 						} else {
+							self.setBttnMssg("Processing Error");
 							html += '<div class="error-message-body">' + value.mssg + '</div>';
 						}
 						self.mssg(html);
 						self.displayErrorBttn('block');
-						self.setBttnMssg("Processing Error");
 						self.displayRstBttn('block');
 					} else if(value.state == 'not started') {
 						imgUrl = self.pendingUrl;

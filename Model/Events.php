@@ -19,11 +19,14 @@ class Events
     protected $trackingId;
     protected $debugLog;
     protected $debugLogFile;
+    protected $interactionCheck;
+    protected $needsInteractions;
 
     public function __construct(
     	\CustomerParadigm\AmazonPersonalize\Api\Personalize\EventsClient $eventsClient,
     	\CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
         \CustomerParadigm\AmazonPersonalize\Model\AbTracking $abTracking,
+        \CustomerParadigm\AmazonPersonalize\Model\InteractionCheck $interactionCheck,
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Framework\Registry $registry,
@@ -36,6 +39,7 @@ class Events
         $this->eventsClient = $eventsClient;
         $this->pConfig = $pConfig;
         $this->abTracking = $abTracking;
+        $this->interactionCheck = $interactionCheck;
         $this->customerSession = $customerSession;
         $this->checkoutSession = $checkoutSession;
         $this->registry = $registry;
@@ -44,7 +48,8 @@ class Events
         $this->logger = $logger;
         $this->trackingId = 'c61e8b60-0fee-44e3-867a-660d77d45e20';
         $this->debugLog = false && $this->pConfig->isEnabled();
-        $this->debugLogFile = $this->directoryList->getRoot() . "/var/log/event-debug.log";
+	$this->debugLogFile = $this->directoryList->getRoot() . "/var/log/event-debug.log";
+	$this->needsInteractions = $this->pConfig->needsInteractions();
     }
 
     public function putObsAddtocart($observer, $request) {
@@ -73,8 +78,11 @@ class Events
 
                 $eventsList = array('eventList'=>$events, 
                     'sessionId'=>"$sess_id", 'trackingId'=>$this->trackingId, 'userId'=>"$cust_id");
-
-                $this->eventsClient->putEvents($eventsList);
+		if($this->needsInteractions){
+			$this->interactionCheck->saveEvent($eventsList);
+		} else {
+			$this->eventsClient->putEvents($eventsList);
+		}
                 if($this->debugLog) {
                     file_put_contents($this->debugLogFile, "\nAdd to cart", FILE_APPEND);
                     file_put_contents($this->debugLogFile, print_r($eventsList,true), FILE_APPEND);
@@ -114,7 +122,11 @@ class Events
                 file_put_contents($this->debugLogFile, "\nPurchase", FILE_APPEND);
                 file_put_contents($this->debugLogFile, print_r($eventsList,true), FILE_APPEND);
             }
-            $this->eventsClient->putEvents($eventsList);
+		if($this->needsInteractions){
+			$this->interactionCheck->saveEvent($eventsList);
+		} else {
+			$this->eventsClient->putEvents($eventsList);
+		}
         } catch(\Exception $e) {
             $this->logger->critical('Error message', ['exception' => $e]);
         }
@@ -147,7 +159,11 @@ class Events
                 file_put_contents($this->debugLogFile, "\n=========", FILE_APPEND);
                 file_put_contents($this->debugLogFile, print_r($eventsList,true), FILE_APPEND);
             }
-            $this->eventsClient->putEvents($eventsList);
+		if($this->needsInteractions ){
+			$this->interactionCheck->saveEvent($eventsList);
+		} else {
+			$this->eventsClient->putEvents($eventsList);
+		}
         } catch(\Exception $e) {
             $this->logger->critical('Error message', ['exception' => $e]);
         }

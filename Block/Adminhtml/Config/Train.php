@@ -131,4 +131,5 @@ class Train  extends Field {
     public function getProcessStatus() {
         return $this->tracking->getProcessStatus()['status'];
     }
+    
 }
