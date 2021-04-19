@@ -12,11 +12,22 @@
                 <img width="16px" height="16px" data-bind="attr:{src: imgUrl}" />
               </td>
               <td data-bind="text: step_name"></td>
+              <td>
+		      <div data-bind="if: error">
+			      <span class="message-button-label">Error: </span>
+			      <img title="Display error message" class="message-button" width="16px" height="16px" data-bind="attr:{src: infoUrl}, click: $parent.displayErrorMssg" />
+		      </div>
+              </td>
             </tr>
           </tbody>
     </table>
+	<div id="train_message_wrapper">
+		<div class="popup" id="train_message_div">
+			<div class="close" data-bind=", click: closeErrorMssg">&times;</div>
+			<div html="mssg()"></div>
+		</div>
+	</div>
 </div>
-<div id="train_message_div" html="mssg()"></div>
 
 <button id="reset_button" title="Reset Process" type="button" class="action-default scalable" data-bind=", click: resetProcess, css: resetStatus"> 
         <span>Reset Process</span>

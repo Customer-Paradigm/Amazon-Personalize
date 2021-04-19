@@ -72,6 +72,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 				->writeCollectionToCsv($reportInteractions)
 				->writeCollectionToCsv($purchaseInteractions);
 			// pad interactions if fewer than 1000
+		/*
 	    if($total < 1000) {
 		    $count = $total;
 		    $diff = 1200 - $total; // a few extra
@@ -83,15 +84,13 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 			    $diff--;
 		    }
 	    }
-
+		 */
 			$this->writer->close();
 			// Aws needs at least 1000 interactions
-			/*
 			if($total < 1000) {
 				$this->setDataError("too_few_interactions");
 				$this->errorLogger->error("Not enough interactions in csv. Total: $total");
 			}
-			 */
 		} catch(Exception $e) {
 			$mssg = $e->getMessage();
 			$this->errorLogger->error("InteractionGenerator Processing error: $mssg");

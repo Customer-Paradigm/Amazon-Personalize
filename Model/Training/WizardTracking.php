@@ -86,15 +86,15 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         return count($tabledata) == count( $this->steps);
     }
 
-	public function initStepsTable() {
-       // $this->clearData();
-        if( ! $this->stepsInitialized() ){
-            foreach( $this->steps as $step) {
-                $sql = "insert into aws_wizard_steps(step_name) values('$step') ";
-                $this->connection->exec($sql);
-            }
-        } 
-	}
+    public function initStepsTable() {
+	    // $this->clearData();
+	    if( ! $this->stepsInitialized() ){
+		    foreach( $this->steps as $step) {
+			    $sql = "insert into aws_wizard_steps(step_name) values('$step') ";
+			    $this->connection->exec($sql);
+		    }
+	    } 
+    }
 
     public function runSteps($wizard) {
 	$this->attempts = 1;

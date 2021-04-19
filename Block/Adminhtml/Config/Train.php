@@ -12,7 +12,7 @@ class Train  extends Field {
     /**
      * @var string
      */
-    protected $_template = 'CustomerParadigm_AmazonPersonalize::system/config/train_button.phtml';
+    protected $_template = 'CustomerParadigm_AmazonPersonalize::system/config/training_section.phtml';
     protected $dirReader;
     protected $tracking;
 
@@ -90,7 +90,7 @@ class Train  extends Field {
             'Magento\Backend\Block\Widget\Button'
         )->setData(
             [
-                'id' => 'train_button',
+                'id' => 'training_section',
                 'onClick' => 'startProcess',
                 'label' => __('Start Process nnn'),
             ]
@@ -106,8 +106,12 @@ class Train  extends Field {
      * @return string
      */
     public function getImageUrl($type){
-		$rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/success.gif');
+	$rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/success.gif');
+
         switch($type) {
+	case 'info':
+			$rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/info.png');
+            break;
         case 'pending':
 			$rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/pending.png');
             break;

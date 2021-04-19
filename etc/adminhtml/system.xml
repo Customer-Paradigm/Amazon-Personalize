@@ -58,7 +58,7 @@
 			<label>Data Range</label>
 			<comment>How many previous months to include when creating training data</comment>
 		</field>
-		<field id="data_process_button" translate="label comment" type="button" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+		<field id="data_process_info" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
 			<frontend_model>CustomerParadigm\AmazonPersonalize\Block\Adminhtml\Config\Train</frontend_model>
 			<label>Export data and train campaign</label>
 		</field>
