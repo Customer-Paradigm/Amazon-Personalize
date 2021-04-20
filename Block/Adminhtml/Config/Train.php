@@ -68,6 +68,16 @@ class Train  extends Field {
     {
         return $this->getUrl('cpaws/config/train') . "?isAjax=true";
     }
+    
+    /**
+     * Return ajax url for interactions progress gauge
+     *
+     * @return string
+     */
+    public function getAjaxInteractionUrl()
+    {
+        return $this->getUrl('cpaws/config/gauge') . "?isAjax=true";
+    }
 
     /**
      * Return ajax url for steps display
@@ -131,5 +141,15 @@ class Train  extends Field {
     public function getProcessStatus() {
         return $this->tracking->getProcessStatus()['status'];
     }
+
+    public function needsInteractions() {
+	$count = $this->interactionsCount();
+	return $count < 1010;
+    }
+    
+    public function interactionsCount() {
+	return $this->tracking->pConfig->getInteractionsCount();
+    }
+    
     
 }

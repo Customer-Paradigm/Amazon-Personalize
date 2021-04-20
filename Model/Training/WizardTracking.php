@@ -13,10 +13,10 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     protected $infoLogger;
     protected $errorLogger;
     protected $nameConfig;
-    protected $pConfig;
     protected $eventManager;
     protected $attempts;
     protected $maxAttempts;
+    public $pConfig;
 
     public function __construct(
         \Magento\Framework\Model\Context $context,

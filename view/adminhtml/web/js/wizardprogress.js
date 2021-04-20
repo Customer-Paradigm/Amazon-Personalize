@@ -8,13 +8,12 @@ define([
 	return Component.extend({
 		defaults: {
 			template: 'CustomerParadigm_AmazonPersonalize/system/config/training_section',
-			buttonMssg: "Start Process",
+			buttonMssg: "Start Process---",
 			initMssg: 'Click \'Start Process\' button to kick off data creation process'
 		},
 
 		initialize: function () {
 			this._super();
-			this.setInitDisplay();
 			this.steps = ko.observableArray([]);
 			this.imgUrl = ko.observable('');
 			this.infoUrl = ko.observable(this.infoUrl);
@@ -25,8 +24,7 @@ define([
 		},
 
 		setInitDisplay: function(){
-			var bttn = jQuery('#training_section > span');
-			bttn.html(this.buttonMssg);
+			this.setBttnMssg("Start");
 		},
 
 		startProcess: function() {
@@ -74,11 +72,25 @@ define([
 			bttn.find('span').html(txt);
 		},
 
+		displayGauge: function() {
+			var gauge = jQuery('#interaction-count');
+			var url = self.ajaxInteractionUrl;
+			jQuery.getJSON(url, function(data) { 
+				console.log(data);
+				var pct = (data.value / 1050) * 100;
+				gauge.css('width', pct + '%');
+			});
+		},
+
 		showProgress: function(startProcess){
 			self = this;
+			console.log('interactions');
+			console.log(self.interactionsCount);
+			console.log(self.needsInteractions);
 			var url = self.ajaxDisplayUrl;
 			var imgUrl = self.successUrl;
 			var infoUrl = self.infoUrl;
+			self.displayGauge();
 			/* TODO -- debug */
 			//self.displayRstBttn('none');
 			self.displayRstBttn('block');

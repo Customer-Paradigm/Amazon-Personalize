@@ -1,9 +1,9 @@
-<div id='train_steps_container'>
+<div class="label" id='train_steps_container'>
 <button id="train_button" title="Start Process" type="button" class="action-default scalable" data-bind=", click: startProcess, css: buttonStatus"> 
-        <span>Start Process</span>
-</button>
-<div class="interaction-wrapper">
-	<span>Interactions Guage</span>
+        <span>Start Process Static</span>
+<span data-bind="text: name"></span></button>
+<div class="interaction-wrapper" data-bind="if: needsInteractions">
+	<span class="label">Interactions Gauge</span>
 	<div id="interaction-progress">
 		<div id="interaction-count">&nbsp;</div>
 	</div>

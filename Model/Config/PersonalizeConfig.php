@@ -149,10 +149,10 @@ class PersonalizeConfig
         return $this->helper->canDisplay();
     }
     
-    public function needsInteractions() {
+    public function getInteractionsCount() {
         $count = $this->scopeConfig->getValue('awsp_settings/awsp_general/interactions-count', 
                         \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
-        return $count < 1100;
+        return $count;
     }
 
     public function getUserHomeDir() {
