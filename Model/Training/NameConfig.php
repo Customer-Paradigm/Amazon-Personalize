@@ -11,6 +11,7 @@ use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
 use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
 use \Magento\Framework\App\Filesystem\DirectoryList;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
+use CustomerParadigm\AmazonPersonalize\Model\InteractionCheck;
 
 class NameConfig extends PersonalizeConfig
 {
@@ -34,7 +35,8 @@ class NameConfig extends PersonalizeConfig
         ErrorLogger $errorLogger,
         StoreManagerInterface $storeManager,
         DirectoryList $directoryList,
-        Data $helper
+	Data $helper,
+	InteractionCheck $interactionCheck
     ) {
         $this->configWriter = $configWriter;
         $this->scopeConfig = $scopeConfig;
@@ -42,7 +44,7 @@ class NameConfig extends PersonalizeConfig
         $this->directoryList = $directoryList;
         $this->helper = $helper;
         $this->store = $this->storeManager->getStore();
-        parent::__construct($configWriter, $scopeConfig, $infoLogger, $errorLogger, $storeManager, $directoryList, $helper);
+        parent::__construct($configWriter, $scopeConfig, $infoLogger, $errorLogger, $storeManager, $directoryList, $helper,$interactionCheck);
     }
 
     public function buildName($type) {

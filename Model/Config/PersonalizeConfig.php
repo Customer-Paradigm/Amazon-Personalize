@@ -10,6 +10,7 @@ use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
 use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
 use \Magento\Framework\App\Filesystem\DirectoryList;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
+use CustomerParadigm\AmazonPersonalize\Model\InteractionCheck;
 
 class PersonalizeConfig
 {
@@ -31,6 +32,7 @@ class PersonalizeConfig
     protected $directoryList;
     protected $webdir;
     protected $helper;
+    protected $interactionCheck;
 
     /**
      * AfterSaveConfig constructor.
@@ -43,7 +45,8 @@ class PersonalizeConfig
         ErrorLogger $errorLogger,
         StoreManagerInterface $storeManager,
         DirectoryList $directoryList,
-        Data $helper
+	Data $helper,
+	InteractionCheck $interactionCheck
     ) {
         $this->configWriter = $configWriter;
         $this->scopeConfig = $scopeConfig;
@@ -52,6 +55,7 @@ class PersonalizeConfig
         $this->storeManager = $storeManager;
         $this->directoryList = $directoryList;
         $this->helper = $helper;
+        $this->interactionCheck = $interactionCheck;
         $this->webdir = $this->directoryList->getRoot();
         $this->storeId = $this->storeManager->getStore()->getId();
         $this->homedir = $this->scopeConfig->getValue('awsp_settings/awsp_general/home_dir', 
@@ -150,9 +154,15 @@ class PersonalizeConfig
     }
     
     public function getInteractionsCount() {
-        $count = $this->scopeConfig->getValue('awsp_settings/awsp_general/interactions-count', 
-                        \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
-        return $count;
+        $filecount = $this->scopeConfig->getValue('awsp_settings/awsp_general/file-interactions-count', 
+		\Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
+	$eventcount = $this->interactionCheck->getTotal();
+        return $filecount + $eventcount;
+    }
+    
+    public function needsInteractions() {
+        $count = $this->getInteractionsCount();
+        return $count < 1001;
     }
 
     public function getUserHomeDir() {

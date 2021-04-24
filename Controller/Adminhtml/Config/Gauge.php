@@ -45,7 +45,8 @@ class Gauge extends Action
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
-        $result->setData(['value'=>900]);
+	$count = $this->wizardTracking->pConfig->getInteractionsCount();
+        $result->setData(['value'=>$count]);
         return $result;
     }
  

@@ -146,7 +146,9 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                     }
             }
             $this->pHelper->flushAllCache();
-        } catch(Exception $e) {
+	} catch(Exception $e) {
+	    $this->errorLogger->error("WizardTracking runSteps() Exception at step:  " . $step . "------------------");
+            $this->errorLogger->error($e->getMessage());
             $this->eventManager->dispatch('awsp_wizard_runsteps_error', ['obj' => $e]);
         }
         $this->eventManager->dispatch('awsp_wizard_runsteps_after', ['obj' => $this]);

@@ -77,7 +77,7 @@ define([
 			var url = self.ajaxInteractionUrl;
 			jQuery.getJSON(url, function(data) { 
 				console.log(data);
-				var pct = (data.value / 1050) * 100;
+				var pct = (data.value / 1001) * 100;
 				gauge.css('width', pct + '%');
 			});
 		},
@@ -106,15 +106,16 @@ define([
 				var imgUrl = '';
 				var infoUrl = '';
 				jQuery.each(data.steps,function(idx,value){
-					//			self.disableBttn(true);
 					if(value.error) {
+						self.disableBttn(true);
 						imgUrl = self.errUrl;
 						infoUrl = self.infoUrl;
 						var html = '<div class="error-message-header"> Error in step ' + value.step_name + '</div>';
 						if(value.mssg.includes("you need at least 1000")) {
-							self.setBttnMssg("Recheck Interactions");
+						//	self.setBttnMssg("Recheck Interactions");
 							html += '<div class="error-message-body">';
-							html += '<div>You need at least 1000 interactions to train your model</div>';
+							html += '<div>You need at least 1000 interactions to train your model.</div>';
+							html += '<div>The Interactions Progress Guage is tracking customer interactions on your site and will resume the traing process when you have enough interactions.</div>';
 							html += '<span>Details: </span>';
 							html += '<a href="https://docs.aws.amazon.com/personalize/latest/dg/limits.html#limits-table">Amazon Service quotas</a>';
 							html += '</div>';

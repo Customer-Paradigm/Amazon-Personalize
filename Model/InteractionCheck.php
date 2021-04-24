@@ -7,19 +7,16 @@ class InteractionCheck extends \Magento\Framework\Model\AbstractModel
 	const CACHE_TAG = 'customerparadigm_amazonpersonalize_interactioncheck';
 	protected $_cacheTag = 'customerparadigm_amazonpersonalize_interactioncheck';
 	protected $_eventPrefix = 'customerparadigm_amazonpersonalize_interactioncheck';
-	protected $pConfig;
 
 	public function __construct(
 		\Magento\Framework\Model\Context $context,
 		\Magento\Framework\Registry $registry,
-		\CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
 		\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
 		\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
 		array $data = []
 	)
 	{
 		parent::__construct($context, $registry, $resource, $resourceCollection, $data);
-		$this->pConfig = $pConfig;
 	}
 
 	protected function _construct() { 
@@ -55,5 +52,9 @@ class InteractionCheck extends \Magento\Framework\Model\AbstractModel
 		$connection = $this->getResource()->getConnection();
 		$tableName = $this->getResource()->getMainTable();
 		$connection->truncateTable($tableName);
+	}
+
+	public function getTotal() {
+		return $this->getCollection()->getSize();
 	}
 }

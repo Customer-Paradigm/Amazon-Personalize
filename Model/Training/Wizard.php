@@ -89,7 +89,7 @@ class Wizard
 		$mssg_array = explode(":",$err_mssg);
 		$mssg_total = $mssg_array[1];
 		$this->setStepError('create_csv_files',"Interaction file error: You have $mssg_total interactions--you need at least 1000 to train your model");
-		$this->nameConfig->saveConfigSetting("awsp_settings/awsp_general/interactions-count",$mssg_total);
+		$this->nameConfig->saveConfigSetting("awsp_settings/awsp_general/file-interactions-count",$mssg_total);
         }
 
         } catch (AwsException $e) {
