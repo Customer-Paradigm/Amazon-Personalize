@@ -11,7 +11,6 @@ use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
  
 class Gauge extends Action
 {
- 
     protected $resultJsonFactory;
     protected $loggerInterface;
     protected $helper;
@@ -46,7 +45,13 @@ class Gauge extends Action
     {
         $result = $this->resultJsonFactory->create();
 	$count = $this->wizardTracking->pConfig->getInteractionsCount();
-        $result->setData(['value'=>$count]);
+	$result->setData(['value'=>$count,'paused'=>true]);
+	if($count >= 1000) {
+		$this->wizardTracking->resetStep('create_csv_files');
+		$result->setData(['value'=>$count,'paused'=>false]);
+	} else {
+		$this->wizardTracking->setStepInprogress('create_csv_files');
+	}
         return $result;
     }
  

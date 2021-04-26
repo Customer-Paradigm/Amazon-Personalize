@@ -85,6 +85,10 @@ class PersonalizeConfig
     public function saveConfigSetting($path,$value) {
         $this->configWriter->save($path, $value);
     }
+    
+    public function deleteConfigSetting($path) {
+        $this->configWriter->delete($path);
+    }
 
     public function setCron($name,$onoff,$schedule = "* * * * *"){
         if( $onoff == 'off' ) {
@@ -154,15 +158,23 @@ class PersonalizeConfig
     }
     
     public function getInteractionsCount() {
+	$rtn = false;
         $filecount = $this->scopeConfig->getValue('awsp_settings/awsp_general/file-interactions-count', 
 		\Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
-	$eventcount = $this->interactionCheck->getTotal();
-        return $filecount + $eventcount;
+	if( !empty($filecount) ) {
+		$eventcount = $this->interactionCheck->getTotal();
+		$rtn = $filecount + $eventcount;
+	}
+	return $rtn;
     }
     
     public function needsInteractions() {
-        $count = $this->getInteractionsCount();
-        return $count < 1001;
+	if( $count = $this->getInteractionsCount() === false ) {
+		$rtn = false;
+	} else {
+		$rtn = $count < 1000;
+	}
+        return $rtn;
     }
 
     public function getUserHomeDir() {

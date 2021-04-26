@@ -119,6 +119,9 @@ class Train  extends Field {
 	$rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/success.gif');
 
         switch($type) {
+	case 'refresh':
+			$rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/refresh.png');
+            break;
 	case 'info':
 			$rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/info.png');
             break;
@@ -143,8 +146,7 @@ class Train  extends Field {
     }
 
     public function needsInteractions() {
-	$count = $this->interactionsCount();
-	return $count < 1010;
+	return $this->tracking->pConfig->needsInteractions();
     }
     
     public function interactionsCount() {

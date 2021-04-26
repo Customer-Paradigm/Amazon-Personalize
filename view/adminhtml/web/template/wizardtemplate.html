@@ -4,7 +4,8 @@
 </button>
 <div class="interaction-wrapper" data-bind="if: needsInteractions">
 	<span id="interaction-number" data-bind="text: interactionsCount">&nbsp;</span>
-	<span class="label">Interactions Progress</span>
+	<span class="label">Interactions</span>
+        <img title="Refresh Interactions Count" class="refresh message-button" width="16px" height="16px" data-bind="attr:{src: refreshUrl}, click: displayGauge" />
 	<div id="interaction-progress">
 		<div id="interaction-count">&nbsp;</div>
 	</div>

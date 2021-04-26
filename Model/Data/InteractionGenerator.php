@@ -17,6 +17,7 @@ use CustomerParadigm\AmazonPersonalize\Helper\Data;
 
 class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\AbstractGenerator
 {
+	protected $enablePadding = true;
 	/*
 	 * Array containing csv header keys
 	 */
@@ -31,6 +32,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 	protected $infoLogger;
 	protected $errorLogger;
 	protected $pHelper;
+	protected $itemCount;
 
 
 	private $interactionPurchaseCollectionFactory;
@@ -78,19 +80,21 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 				->writeCollectionToCsv($purchaseInteractions)
 				->writeCollectionToCsv($addedInteractions);
 			// pad interactions if fewer than 1000
-		/*
-	    if($total < 1000) {
-		    $count = $total;
-		    $diff = 1200 - $total; // a few extra
-		    while($diff > 0) {
-			    $user_id = 1000 % $diff;
-			    $item_id = 1200 - $diff;
-			    $timestamp = time();
-			    $this->writer->writeCsv(array($user_id,$item_id,'none',$timestamp));
-			    $diff--;
-		    }
-	    }
-		 */
+	
+			if($this->enablePadding && $total < 1000) {
+			    $count = 1;
+			    $diff = 1010 - $total; // a few extra
+			    while($diff > 0) {
+				    $user_id = 1000 % $diff;
+				    $item_id = 1010 - $diff;
+				    $timestamp = time();
+				    $this->writer->writeCsv(array($user_id,$item_id,'none',$timestamp));
+				    $diff--;
+				    $count++;
+			    }
+			    $total += $count;
+			}
+			$this->setItemCount($total);
 			$this->writer->close();
 			// Aws needs at least 1000 interactions
 			if($total < 1000) {
@@ -104,4 +108,11 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 		return $this;
 	}
 
+	public function getItemCount() {
+		return $this->itemCount;
+	}
+
+	public function setItemCount($ct) {
+		$this->itemCount = $ct;
+	}
 }

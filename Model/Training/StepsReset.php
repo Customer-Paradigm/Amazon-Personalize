@@ -98,6 +98,7 @@ class StepsReset extends PersonalizeBase
 			}
 		}
 		$this->nameConfig->saveConfigSetting('awsp_settings/awsp_general/campaign_exists',0);
+		$this->nameConfig->deleteConfigSetting('awsp_settings/awsp_general/file-interactions-count');
 		$this->wizardTracking->clearData();
 	}
 

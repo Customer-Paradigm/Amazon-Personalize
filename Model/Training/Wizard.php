@@ -81,8 +81,10 @@ class Wizard
         $this->nameConfig->saveName("csvUserFile", $generator->getFilePath());
         $generator = $this->itemGenerator->generateCsv();
         $this->nameConfig->saveName("itemUserFile", $generator->getFilePath());
-        $generator = $this->interactionGenerator->generateCsv();
-	$this->nameConfig->saveName("interactionUserFile", $generator->getFilePath());
+	$generator = $this->interactionGenerator->generateCsv();
+	$intTotal = $generator->getItemCount();
+	$interactionRtn = $this->nameConfig->saveName("interactionUserFile", $generator->getFilePath());
+	$this->nameConfig->saveConfigSetting("awsp_settings/awsp_general/file-interactions-count",$intTotal);
 	$err_mssg = $generator->getDataError();
 
 	if( strpos($err_mssg, 'too_few_interactions') !== false ) {
