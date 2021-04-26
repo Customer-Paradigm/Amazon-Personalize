@@ -146,8 +146,7 @@ class Train  extends Field {
     }
 
     public function needsInteractions() {
-	$count = $this->interactionsCount();
-	return $count < 1000;
+	return $this->tracking->pConfig->needsInteractions();
     }
     
     public function interactionsCount() {

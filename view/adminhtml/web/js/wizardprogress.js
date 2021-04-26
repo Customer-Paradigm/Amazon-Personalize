@@ -78,15 +78,16 @@ define([
 			var url = self.ajaxInteractionUrl;
 			jQuery.getJSON(url, function(data) { 
 				console.log(data);
-//				if( data.value >= 1000 ) {
-//					self.showProgress();
-//				} else {
+				if( data.paused ) {
+					self.showProgress(true);
 					var pct = (data.value / 1000) * 100;
 					gauge.css('width', pct + '%');
 					if(number[0]) {
 						number[0].innerText = data.value + " of 1000";
 					}
-//				}
+				} else {
+					return true;
+				}
 			});
 		},
 
@@ -98,7 +99,11 @@ define([
 			var url = self.ajaxDisplayUrl;
 			var imgUrl = self.successUrl;
 			var infoUrl = self.infoUrl;
-			self.displayGauge();
+			/*
+			if(self.needsInteractions) {
+				self.displayGauge();
+			}
+			*/
 			/* TODO -- debug */
 			//self.displayRstBttn('none');
 			self.displayRstBttn('block');

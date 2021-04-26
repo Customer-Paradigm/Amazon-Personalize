@@ -190,18 +190,15 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $name = $step['step_name'];
             $has_error = false;
 	    if( $step['error'] ) {
-		if($step['step_name'] == 'create_csv_files' && strpos($step['error'],'You need at least 1000') !== false) {
-			$has_error = false;
-			$state = 'paused';
-		} else {
-			$has_error = true;
-			$state = 'error';
-		}
+		$has_error = true;
+		$state = 'error';
 		$mssg = $step['error'];
             } 
             
             if( $step['in_progress'] ) {
                 $state = 'in progress';
+	    } elseif($step['step_name'] == 'create_csv_files' && strpos($step['error'],'you need at least 1000') !== false) {
+                $state = 'paused';
             } elseif ( $step['is_completed'] ){
                 $state = 'complete';
             } else {
@@ -265,7 +262,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             if( $step['error']) {
                 return array('step'=>$step['step_name'],'state'=>'error','mssg'=>$step['mssg']);
             }
-            if( $step['paused']) {
+            if( $step['step_name'] == 'create_csv_files' && strpos($step['error'],'you need at least 1000') !== false) {
                 return array('step'=>$step['step_name'],'state'=>'paused','mssg'=>$step['mssg']);
             }
             if($step['state'] == 'in progress') {
@@ -304,7 +301,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         if( $step['error'] ) {
             $rtn['state'] = 'error';
         }
-        if( $step['paused'] ) {
+        if( $step['step_name'] == 'create_csv_files' && strpos($step['error'],'you need at least 1000') !== false ) {
             $rtn['state'] = 'paused';
         }
         return $rtn;
