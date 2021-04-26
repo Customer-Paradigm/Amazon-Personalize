@@ -74,11 +74,19 @@ define([
 
 		displayGauge: function() {
 			var gauge = jQuery('#interaction-count');
+			var number = jQuery('#interaction-number');
 			var url = self.ajaxInteractionUrl;
 			jQuery.getJSON(url, function(data) { 
 				console.log(data);
-				var pct = (data.value / 1001) * 100;
-				gauge.css('width', pct + '%');
+//				if( data.value >= 1000 ) {
+//					self.showProgress();
+//				} else {
+					var pct = (data.value / 1000) * 100;
+					gauge.css('width', pct + '%');
+					if(number[0]) {
+						number[0].innerText = data.value + " of 1000";
+					}
+//				}
 			});
 		},
 
@@ -103,16 +111,19 @@ define([
 			}
 
 			jQuery.getJSON(url, function(data) { 
+					console.log(data.steps);
 				var imgUrl = '';
 				var infoUrl = '';
 				jQuery.each(data.steps,function(idx,value){
+					console.log(value);
 					if(value.error) {
 						self.disableBttn(true);
 						imgUrl = self.errUrl;
 						infoUrl = self.infoUrl;
 						var html = '<div class="error-message-header"> Error in step ' + value.step_name + '</div>';
-						if(value.mssg.includes("you need at least 1000")) {
-						//	self.setBttnMssg("Recheck Interactions");
+						//if(value.mssg.includes("You need at least 1000")) {
+						if(self.needsInteractions) {
+							self.setBttnMssg("Paused: Generating Interactions");
 							html += '<div class="error-message-body">';
 							html += '<div>You need at least 1000 interactions to train your model.</div>';
 							html += '<div>The Interactions Progress Guage is tracking customer interactions on your site and will resume the traing process when you have enough interactions.</div>';

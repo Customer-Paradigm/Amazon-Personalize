@@ -72,7 +72,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     }
 
     public function saveStepData($step_name, $set_column, $value) {
-        $sql = "update aws_wizard_steps set $set_column = '$value' where step_name = '$step_name'";
+	    $sql = "update aws_wizard_steps set $set_column = '$value' where step_name = '$step_name'";
         $this->connection->exec($sql);
     }
     
@@ -189,10 +189,15 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $state = '';
             $name = $step['step_name'];
             $has_error = false;
-            if( $step['error'] ) {
-                $has_error = true;
-                $state = 'error';
-                $mssg = $step['error'];
+	    if( $step['error'] ) {
+		if($step['step_name'] == 'create_csv_files' && strpos($step['error'],'You need at least 1000') !== false) {
+			$has_error = false;
+			$state = 'paused';
+		} else {
+			$has_error = true;
+			$state = 'error';
+		}
+		$mssg = $step['error'];
             } 
             
             if( $step['in_progress'] ) {
@@ -221,6 +226,9 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         }
         $count = count($steps);
         foreach($steps as $idx=>$step) {
+            if( $step['error'] && $step['step_name'] == 'create_csv_files') {
+                return array('step_name'=>$step['step_name'], 'status'=>'paused');
+            }
             if( $step['error'] ) {
                 return array('step_name'=>$step['step_name'], 'status'=>'hasError');
             }
@@ -257,6 +265,9 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             if( $step['error']) {
                 return array('step'=>$step['step_name'],'state'=>'error','mssg'=>$step['mssg']);
             }
+            if( $step['paused']) {
+                return array('step'=>$step['step_name'],'state'=>'paused','mssg'=>$step['mssg']);
+            }
             if($step['state'] == 'in progress') {
                 return array('step'=>$step['step_name'],'state'=>$step['state'],'mssg'=>'');
             }
@@ -292,6 +303,9 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         }
         if( $step['error'] ) {
             $rtn['state'] = 'error';
+        }
+        if( $step['paused'] ) {
+            $rtn['state'] = 'paused';
         }
         return $rtn;
     }
@@ -352,17 +366,24 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
 		return $rtn;
 	}
 
-    protected function setStepComplete($step) {
+    public function setStepComplete($step) {
         $this->saveStepData($step,'is_completed', true);
         $this->saveStepData($step,'in_progress', false);
     }
 
-    protected function setStepInprogress($step) {
+    public function setStepInprogress($step) {
+        $this->saveStepData($step,'is_completed', false);
         $this->saveStepData($step,'in_progress', true);
     }
     
-    protected function setStepError($step,$message) {
+    public function setStepError($step,$message) {
         $this->saveStepData($step,'error',$message);
+    }
+    
+    public function resetStep($step) {
+        $this->saveStepData($step,'error',null);
+        $this->saveStepData($step,'in_progress', null);
+        $this->saveStepData($step,'is_completed', null);
     }
    
     protected function setStepRetry($step) {

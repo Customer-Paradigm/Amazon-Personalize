@@ -10,6 +10,7 @@
 							"mediaUrl" : "<?php echo($block->getImageUrl('media'))?>",
 							"successUrl" : "<?php echo($block->getImageUrl('success'))?>",
 							"infoUrl" : "<?php echo($block->getImageUrl('info'))?>",
+							"refreshUrl" : "<?php echo($block->getImageUrl('refresh'))?>",
 							"processingUrl" : "<?php echo($block->getImageUrl('processing'))?>",
 							"pendingUrl" : "<?php echo($block->getImageUrl('pending'))?>",
 							"ajaxDisplayUrl": "<?php echo($block->getAjaxDisplayUrl()) ?>",
@@ -18,7 +19,7 @@
 							"ajaxInteractionUrl": "<?php echo($block->getAjaxInteractionUrl()) ?>",
 							"processStatus": "<?php echo($block->getProcessStatus()) ?>",
 							"needsInteractions": "<?php echo($block->needsInteractions()) ?>",
-							"interactionsCount": "<?php echo($block->interactionsCount()) ?>",
+							"interactionsCount": "<?php echo($block->interactionsCount() . ' of 1000') ?>",
 							"buttonMssg": "Start Process",
 							"steps": []
                         }
