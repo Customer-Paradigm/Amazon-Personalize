@@ -99,11 +99,9 @@ define([
 			var url = self.ajaxDisplayUrl;
 			var imgUrl = self.successUrl;
 			var infoUrl = self.infoUrl;
-			/*
 			if(self.needsInteractions) {
 				self.displayGauge();
 			}
-			*/
 			/* TODO -- debug */
 			//self.displayRstBttn('none');
 			self.displayRstBttn('block');
