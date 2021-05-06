@@ -17,7 +17,7 @@ use CustomerParadigm\AmazonPersonalize\Helper\Data;
 
 class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\AbstractGenerator
 {
-	protected $enablePadding = false;
+	protected $enablePadding = true;
 	/*
 	 * Array containing csv header keys
 	 */
@@ -65,6 +65,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 			$rstart_date =  date("Y-m-d", strtotime("-$months months"));
 			$pstart_date =  date("Y-m-d", strtotime("-$months months"));
 			$max_records = 2000;
+			$file_total = $this->checkActualFileCount();
 			$reportInteractions = $this->interactionReportCollectionFactory->create()->addFieldToFilter('last_visit_at', array('gt' => $rstart_date))->setOrder('event_id','desc')->setPageSize($max_records);
 			$purchaseInteractions = $this->interactionPurchaseCollectionFactory->create()->addFieldToFilter('sales_order.updated_at', array('gt' =>  $pstart_date))->setOrder('order_id','desc')->setPageSize($max_records);
 			$addedInteractions = $this->interactionCheckCollectionFactory->create()->setOrder('interaction_check_id','desc')->setPageSize($max_records);
@@ -84,6 +85,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 			if($this->enablePadding && $total < 1000) {
 			    $count = 1;
 			    $diff = 1010 - $total; // a few extra
+			    $total = 0; // reset
 			    while($diff > 0) {
 				    $user_id = 1000 % $diff;
 				    $item_id = 1010 - $diff;
@@ -106,6 +108,12 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 			$this->errorLogger->error("InteractionGenerator Processing error: $mssg");
 		}
 		return $this;
+	}
+
+	public function checkActualFileCount() {
+		$current_file_path = $this->pHelper->getConfigValue('awsp_wizard/data_type_name/interactionUserFile');
+		$contents = file_get_contents($current_file_path);
+		$this->infoLogger->info(print_r($contents,true));
 	}
 
 	public function getItemCount() {

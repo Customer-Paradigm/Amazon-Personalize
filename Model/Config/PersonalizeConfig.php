@@ -158,7 +158,7 @@ class PersonalizeConfig
     }
     
     public function getInteractionsCount() {
-	$rtn = false;
+	$rtn = 0;
         $filecount = $this->scopeConfig->getValue('awsp_settings/awsp_general/file-interactions-count', 
 		\Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
 	if( !empty($filecount) ) {
@@ -169,12 +169,8 @@ class PersonalizeConfig
     }
     
     public function needsInteractions() {
-	if( $count = $this->getInteractionsCount() === false ) {
-		$rtn = false;
-	} else {
-		$rtn = $count < 1000;
-	}
-        return $rtn;
+	$count = $this->getInteractionsCount();
+	return $count < 1000;
     }
 
     public function getUserHomeDir() {

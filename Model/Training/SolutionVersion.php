@@ -35,11 +35,15 @@ class SolutionVersion extends PersonalizeBase
 	public function getStatus() {
 		try {
 			$arn = $this->nameConfig->getArn('solutionVersionArn');
-			$rslt = $this->personalizeClient->{$this->apiDescribe}([
-				'solutionVersionArn' => $arn,
-			]);
-			$this->nameConfig->getLogger('info')->info( "\nsolutionVersion arn: " . $arn);
-			$this->nameConfig->getLogger('info')->info( "\nsolutionVersion result: " . print_r($rslt['solutionVersion']['status'],true));
+			if( !empty($arn) ) {
+				$rslt = $this->personalizeClient->{$this->apiDescribe}([
+					'solutionVersionArn' => $arn,
+				]);
+				$this->nameConfig->getLogger('info')->info( "\nsolutionVersion arn: " . $arn);
+				$this->nameConfig->getLogger('info')->info( "\nsolutionVersion result: " . print_r($rslt['solutionVersion']['status'],true));
+			} else {
+				$this->nameConfig->getLogger('info')->info( "\ngetStatus: solutionVersion arn not found");
+			}
 		} catch (\Exception $e) {
 			$this->pHelper->setStepError('create_solution_version', $e->getMessage());
 			$this->nameConfig->getLogger('error')->error( "\nsolutionVersion getStatus error: " . $e->getMessage());
