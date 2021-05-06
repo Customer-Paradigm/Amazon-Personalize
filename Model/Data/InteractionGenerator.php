@@ -65,7 +65,14 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 			$rstart_date =  date("Y-m-d", strtotime("-$months months"));
 			$pstart_date =  date("Y-m-d", strtotime("-$months months"));
 			$max_records = 2000;
+
+			// bypass all the collection counting if file is already created with > 1000 entries
 			$file_total = $this->checkActualFileCount();
+			if($file_total > 1001) {
+				$this->setDataError(null);
+				return $this;
+			}
+
 			$reportInteractions = $this->interactionReportCollectionFactory->create()->addFieldToFilter('last_visit_at', array('gt' => $rstart_date))->setOrder('event_id','desc')->setPageSize($max_records);
 			$purchaseInteractions = $this->interactionPurchaseCollectionFactory->create()->addFieldToFilter('sales_order.updated_at', array('gt' =>  $pstart_date))->setOrder('order_id','desc')->setPageSize($max_records);
 			$addedInteractions = $this->interactionCheckCollectionFactory->create()->setOrder('interaction_check_id','desc')->setPageSize($max_records);
@@ -111,9 +118,13 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 	}
 
 	public function checkActualFileCount() {
+		$linecount = 0;
 		$current_file_path = $this->pHelper->getConfigValue('awsp_wizard/data_type_name/interactionUserFile');
-		$contents = file_get_contents($current_file_path);
-		$this->infoLogger->info(print_r($contents,true));
+		if( !empty($current_file_path) ) {
+			$linecount = count(file($current_file_path));
+			$this->setItemCount($linecount); 
+		}
+		return $linecount;
 	}
 
 	public function getItemCount() {
