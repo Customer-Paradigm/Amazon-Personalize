@@ -206,6 +206,9 @@ class Wizard
 	        $this->infoLogger->info("\nWizardTracking runSteps() checkStatus step: " . $step_name);
 		$rtn = null;
 		switch ($step_name) {
+			case 'create_personalize_s3_role':
+				$rtn = 'complete';
+				break;
 			case 'create_csv_files':
 				$rtn = 'complete';
 				break;

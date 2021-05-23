@@ -2,6 +2,8 @@
 namespace CustomerParadigm\AmazonPersonalize\Controller\Personalize;
 
 Use Aws\Personalize\PersonalizeClient;
+Use Aws\Iam\IamClient;
+Use Aws\Sts\StsClient;
 
 class Test extends \Magento\Framework\App\Action\Action {
 
@@ -9,6 +11,8 @@ class Test extends \Magento\Framework\App\Action\Action {
     protected $nameConfig;
     protected $personalizeBase;
     protected $personalizeClient;
+    protected $iamClient;
+    protected $stsClient;
 
     public function __construct(
 	\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
@@ -41,24 +45,36 @@ class Test extends \Magento\Framework\App\Action\Action {
 
 	parent::__construct($context);
         $this->region = $this->nameConfig->getAwsRegion();
+	$this->stsClient = new StsClient(
+		[ 'profile' => 'default',
+		'version' => 'latest',
+		'region' => "$this->region" ]
+	);
 	$this->personalizeClient = new PersonalizeClient(
 		[ 'profile' => 'default',
 		'version' => 'latest',
 		'region' => "$this->region" ]
 	);
+/*
+	$this->iamClient = new IamClient(
+		[ 'profile' => 'default',
+		'version' => 'latest',
+		'region' => "$this->region"
+	]);
+*/
     }
 
     public function execute()
     {
-/* Comment out this redirect to homepage to use the test controller */
+	    /* Comment out this redirect to homepage to use the test controller 
             $resultRedirect = $this->resultRedirectFactory->create();
            $resultRedirect->setPath('');
 	    return $resultRedirect;
+	* */
 
-
-	    var_dump($this->pHelper->canDisplay());
-	    var_dump($this->prodDisplay->isEnabled());
-	    var_dump($this->prodDisplay->getUserId());
+// test IAM user s3 access
+$this->createRole();
+//$this->createRole();
 		die('-----------------------');
 
 /*
@@ -74,6 +90,115 @@ class Test extends \Magento\Framework\App\Action\Action {
 	    die("<br>----hit test");
  */
     }
+
+    public function createRole() {
+	try {
+	$result = $this->stsClient->getSessionToken();
+	$credentials = $this->stsClient->createCredentials($result);
+	$this->iamClient = IamClient::factory(array(
+	    'profile' => 'default',
+	    'version' => 'latest',
+	    'region' => "$this->region",
+	    'credentials' => $credentials
+    ));
+	$result = $this->iamClient->createRole([
+		'AssumeRolePolicyDocument' => '{"Version":"2012-10-17",
+		"Statement":[{
+			"Effect":"Allow",
+			"Principal":{"Service":["personalize.amazonaws.com"]},
+			"Action":["sts:AssumeRole"]}]}',
+		'RoleName' => 'PersonalizeS3AcessRole'
+	]
+);
+	/*
+	    $result = $this->iamClient->createGroup(array(
+		// UserName is required
+		'GroupName' => 'PersonalizeGroup',
+	));
+	 */
+	    var_dump($result);
+	} catch (AwsException $e) {
+	    // output error message if fails
+	    error_log($e->getMessage());
+	}
+ 
+}
+/*
+    public function createRole() {
+
+	    $roleName = 'PersonalizeAccessRole';
+
+	    $description = 'An Instance role that has permission for Amazon s3 buckets.';
+
+	    $PersonalizeAccessPolicy = '{
+	    "Version": "2012-10-17",
+		    "Statement": [
+	    {
+		    "Effect": "Allow",
+			    "Action": [
+				    "s3:Get*",
+				    "s3:List*"
+			    ],
+			    "Resource": "*"
+    }
+    ]
+    }';
+
+	    $rolePolicy = '{
+	    "Version": "2012-10-17",
+		    "Statement": [
+	    {
+		    "Effect": "Allow",
+			    "Principal": {
+			    "Service": "s3.amazonaws.com"
+    },
+	    "Action": "sts:AssumeRole"
+    }
+  ]
+    }';
+
+
+	    try {
+		    $iamPolicy = $this->iamClient->createPolicy([
+			    'PolicyName' => $roleName . 'policy',
+			    'PolicyDocument' => $PersonalizeAccessPolicy
+		    ]);
+		    if ($iamPolicy['@metadata']['statusCode'] == 200) {
+			    $policyArn = $iamPolicy['Policy']['Arn'];
+			    echo('<p> Your IAM Policy has been created. Arn -  ');
+			    echo($policyArn);
+			    echo('<p>');
+			    $role = $this->iamClient->createRole([
+				    'RoleName' => $roleName,
+				    'Description' => $description,
+				    'AssumeRolePolicyDocument' => $rolePolicy,
+			    ]);
+			    echo('<p> Your IAM User Role has been created. Arn: ');
+			    echo($role['Role']['Arn']);
+			    echo('<p>');
+			    if ($role['@metadata']['statusCode'] == 200) {
+				    $result = $this->iamClient->attachRolePolicy([
+					    'PolicyArn' => $policyArn,
+					    'RoleName' => $roleName,
+				    ]);
+				    var_dump($result);
+			    } else {
+				    echo('<p> There was an error creating your IAM User Role </p>');
+				    var_dump($role);
+			    }
+		    } else {
+			    echo('<p> There was an error creating your IAM Policy </p>');
+			    var_dump($iamPolicy);
+
+		    }
+	    } catch (AwsException $e) {
+		    // output error message if fails
+		    echo $e;
+		    error_log($e->getMessage());
+
+	    }
+    }
+   */ 
 
     protected function assetExists($type, $name) {
         try {

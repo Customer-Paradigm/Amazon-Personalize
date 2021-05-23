@@ -28,7 +28,7 @@ class ImportJob extends PersonalizeBase
                 $this->pHelper = $pHelper;
 
 		$this->infoLogger = $this->nameConfig->getLogger('info');
-		$this->roleArn = "arn:aws:iam::$acct_num:role/personalize_full_access";
+		$this->roleArn = "arn:aws:iam::$acct_num:role/PersonalizeS3AcessRole";
 		$this->s3BucketName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/s3BucketName');
 		$this->usersImportJobName = $this->nameConfig->buildName('users-import');
 		$this->itemsImportJobName = $this->nameConfig->buildName('items-import');

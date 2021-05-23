@@ -120,7 +120,7 @@ class s3
     }
 
     public function listS3Buckets() {
-        return $this->s3Client->listBuckets([
+        	return $this->s3Client->listBuckets([
         ]);
     }
 

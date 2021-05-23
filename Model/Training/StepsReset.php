@@ -78,23 +78,25 @@ class StepsReset extends PersonalizeBase
 			$resetTracking[$name]['asset'] = $asset;
 		}
 
-//		var_dump($resetTracking);
-//		die('-------');
-
 		foreach( $resetTracking as $item ) {
-			if( $item['asset'] == 's3Bucket' ) {
-				$this->deleteS3Bucket($item);
-			} elseif($item['asset'] == 'Dataset') {
-				// last data item, delete EVENT_INTERACTIONS too
-				if(strstr($item['arn'],'USERS')) {
-					$tmp = explode('/',$item['arn']);
-					$event_arn = $tmp[0] . '/' . $tmp[1] . '/EVENT_INTERACTIONS';
-					$this->deleteAsset('Dataset',$event_arn);
+			try {
+				if( $item['asset'] == 's3Bucket' ) {
+					$this->deleteS3Bucket($item);
+				} elseif($item['asset'] == 'Dataset') {
+					// last data item, delete EVENT_INTERACTIONS too
+					if(strstr($item['arn'],'USERS')) {
+						$tmp = explode('/',$item['arn']);
+						$event_arn = $tmp[0] . '/' . $tmp[1] . '/EVENT_INTERACTIONS';
+						$this->deleteAsset('Dataset',$event_arn);
+					}
+					$this->deleteAsset($item['asset'],$item['arn']);
 				}
-				$this->deleteAsset($item['asset'],$item['arn']);
-			}
-			else {
-				$this->deleteAsset($item['asset'],$item['arn']);
+				else {
+					$this->deleteAsset($item['asset'],$item['arn']);
+				}
+			} catch(Exception $e) {
+				$this->errorLogger->error( "\n------------Error in StepsReset execute() : \n");
+				$this->errorLogger->error( $e->getMessage());
 			}
 		}
 		$this->nameConfig->saveConfigSetting('awsp_settings/awsp_general/campaign_exists',0);

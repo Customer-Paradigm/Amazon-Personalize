@@ -41,10 +41,12 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $this->attempts = 0;
             $this->maxAttempts = 3;
             $this->steps = array(
-                // 'create_personalize_user',
                 'create_csv_files',
+		'create_personalize_s3_role',
                 'create_s3_bucket',
-                'upload_csv_files',
+		'upload_csv_files'
+		/*
+		,
                 'create_schemas',
                 'create_dataset_group',
 		'create_datasets',
@@ -53,6 +55,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                 'create_solution_version',
                 'create_campaign',
 		'create_event_tracker'
+		 */
             );
     }
 

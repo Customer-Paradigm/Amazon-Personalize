@@ -199,17 +199,27 @@ class PersonalizeConfig
         $client = $this->pRuntimeClient;
         $config_valid = false;
         try {
-            $cred_class = $client->getCredentials();
+	    $cred_class = $client->getCredentials();
             $status = $cred_class->getState();
 
             if($status === 'rejected' ) {
-                $this->errorLogger->error("Aws Credentials failed. Looks like home/.aws file is missing or can't be read");
+                $this->errorLogger->error("Aws Credentials failed. Looks like .aws file is missing or can't be read");
             }
 
             if($status === 'fulfilled' ) {
                 $response = $cred_class->wait(true);
                 $client_key = $response->getAccessKeyId();
-                $client_secret = $response->getSecretKey();
+		$client_secret = $response->getSecretKey();
+		/*
+		if(!empty($client_key)){
+			putEnv("AWS_ACCESS_KEY_ID=$client_key");
+			var_dump(getEnv("AWS_ACCESS_KEY_ID"));
+			die("----------------haha");
+		}
+		if(!empty($client_secret)){
+			putEnv("AWS_SECRET_ACCESS_KEY=$client_secret");
+		}
+		 */
                 $saved_key = $this->getAccessKey();
                 $saved_secret = $this->getSecretKey();
                 if( !empty($client_key) &&
@@ -219,7 +229,7 @@ class PersonalizeConfig
                 ) {
                     $config_valid = array('client_key'=>$client_key, 'client_secret'=>$client_secret);
                 } else {
-                    $this->errorLogger->error('Aws Credentials failed. Looks like home/.aws creds were overwritten');
+                    $this->errorLogger->error('Aws Credentials failed. Looks like .aws creds were overwritten');
                 }
             }
 
