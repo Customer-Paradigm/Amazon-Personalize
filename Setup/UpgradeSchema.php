@@ -215,8 +215,45 @@ class UpgradeSchema implements  UpgradeSchemaInterface
                 'Created At'
             );
             $installer->getConnection()->createTable($table);
-            $installer->endSetup();
         }
+	
+	/**
+         * Refactor table to track errors
+	 */
+	if (version_compare($context->getVersion(), '1.0.13') < 0) {
+            $installer = $setup;
+	    $installer->startSetup();
+	    // Remove the old table and start over
+	    $installer->getConnection()->dropTable('aws_erors');
+	    $table = $installer->getConnection()->newTable($installer->getTable('aws_errors')
+            )->addColumn(
+                'error_id',
+                Table::TYPE_INTEGER,
+                null,
+                ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+		'Error table index id'
+ 	    )->addColumn(
+                    'error_type',
+                            Table::TYPE_TEXT,
+                            255,
+                            ['nullable' => true],
+                            'Error type'
+ 	    )->addColumn(
+                    'error_message',
+                            Table::TYPE_TEXT,
+                            null,
+                            ['nullable' => true],
+                            'Error message'
+            )->addColumn(
+                'created_at',
+                Table::TYPE_TIMESTAMP,
+                null,
+                ['nullable' => false, 'default' => Table::TIMESTAMP_INIT],
+                'Created At'
+            );
+            $installer->getConnection()->createTable($table);
+	    $installer->endSetup();
+	}
 
         /**
          * Create sales_order columns for ab test user type attribute

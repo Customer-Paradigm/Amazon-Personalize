@@ -4,7 +4,8 @@
  ** @copyright Copyright (c) 2020 Customer Paradigm (https://www.customerparadigm.com/) 
  **/ 
 namespace CustomerParadigm\AmazonPersonalize\Logger; 
- 
+
+use Magento\Framework\Filesystem\DriverInterface;
 use Magento\Framework\Logger\Handler\Base as BaseHandler; 
 use Monolog\Logger as MonologLogger; 
  
@@ -19,11 +20,31 @@ class InfoHandler extends BaseHandler
          ** @var int 
          **/ 
         protected $loggerType = MonologLogger::INFO; 
+	protected $error;
+
+        public function __construct(
+                DriverInterface $filesystem,
+                $filePath = null,
+                $fileName = null,
+                \CustomerParadigm\AmazonPersonalize\Model\Error $error
+        ) {
+                $this->error = $error;
+                parent::__construct(
+                        $filesystem,
+                        'var/log/aws_personalize/',
+                        'info.log'
+                );
+
+        }
+
+        /**
+         * @inheritDoc
+         */
+        public function write(array $record)
+        {
+ //               $this->error->writeError($record);
+                parent::write($record);
+        }
+
  
-        /** 
-         ** File name 
-         ** 
-         ** @var string 
-         **/ 
-        protected $fileName = '/var/log/aws_personalize/info.log'; 
 } 
