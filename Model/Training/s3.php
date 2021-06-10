@@ -18,7 +18,7 @@ class s3
         $this->nameConfig = $nameConfig;
         $this->region = $this->nameConfig->getAwsRegion();
         $this->s3BucketName = $this->nameConfig->buildName('personalize-s3bucket');
-		$this->varDir = $this->nameConfig->getVarDir();
+	$this->varDir = $this->nameConfig->getVarDir();
         $this->s3Client =   new S3Client(
             [ 'profile' => 'default',
             'version' => 'latest',
@@ -60,7 +60,7 @@ class s3
         try {
             //$this->checkBucketExists($this->s3BucketName);
             $result = $this->s3Client->createBucket([
-                'ACL' => 'authenticated-read',
+                $this->s3Client,
                 'Bucket' => $this->s3BucketName, 
                 'CreateBucketConfiguration' => [
                     'LocationConstraint' => $this->region,
@@ -75,6 +75,7 @@ class s3
     }
 
     public function addS3BucketPolicy() {
+	$this->nameConfig->getLogger('error')->error( "\nbucket Policy with " . $this->s3BucketName);
         $result = $this->s3Client->putBucketPolicy([
             'Bucket' => $this->s3BucketName,
             'Policy' => '{
@@ -100,7 +101,10 @@ class s3
 
     public function uploadCsvFiles() {
         $files = $this->getCsvFiles();
-        foreach( $files as $type => $file ) {
+	foreach( $files as $type => $file ) {
+		$this->nameConfig->getLogger('info')->info( "\nupload file type: \n" . $type);
+		$this->nameConfig->getLogger('info')->info( "\nupload file file: \n" . $file);
+
             $this->uploadFileToS3($type, $file);
         }
     }
@@ -125,21 +129,25 @@ class s3
     }
 
     public function getUploadStatus() {
-		$result = $this->s3Client->listObjects([
-			'Bucket' => $this->s3BucketName,
-			'Delimiter' => ',',
-        ]);
-		if(!empty($result) || ! array_key_exists('Contents',$result) ) {
-            $files = $result['Contents'];
-			if(count($files) == 3) {
-				return 'complete';
-			} elseif( count($files) > 0 ) {
-				return 'in progress';
-			}	
-		} else {
-			return 'not started';
-		}
-	} 
+	    $result = $this->s3Client->listObjects([
+		    'Bucket' => $this->s3BucketName,
+		    'Delimiter' => ',',
+	    ]);
+	$this->nameConfig->getLogger('info')->info( "\ngetUploadStatus result: \n" . $result);
+	    if(!empty($result) || ! array_key_exists('Contents',$result) ) {
+		    $files = $result['Contents'];
+	$this->nameConfig->getLogger('info')->info( "\ngetUploadStatus files var : \n" . $files);
+		    if(empty($files)) {
+			    return 'not started';
+		    } elseif(count($files) == 3) {
+			    return 'complete';
+		    } elseif( count($files) > 0 ) {
+			    return 'in progress';
+		    }	
+	    } else {
+		    return 'not started';
+	    }
+    } 
 
     
     public function deleteS3Bucket($name) {

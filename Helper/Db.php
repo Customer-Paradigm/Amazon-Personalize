@@ -58,9 +58,15 @@ class Db extends AbstractHelper {
 			$canCalc = $this->calc->canCalc(null, true);
 			if ($this->db() && $canCalc['notification_case']=="notification_license_ok") {
 				return true;
-			} else {
-				return false;
-			}
+                        } else {
+                                if($this->db()) {
+                                        $this->logger->error("License Error " . $canCalc['notification_text']);
+                                } else {
+                                        $this->logger->error("License Error this->db() returns false");
+                                }
+                                return false;
+                        }
+
 		}
 	}
 

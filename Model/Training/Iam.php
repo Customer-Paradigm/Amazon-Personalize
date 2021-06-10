@@ -53,6 +53,7 @@ class Iam extends PersonalizeBase
 				]
 			)->wait();
 			$this->infoLogger->info( $result);
+			$this->errorLogger->error( $result);
 			$this->nameConfig->saveArn('personalizeS3RoleArn', $result[0]['Arn']);
 		} catch (AwsException $e) {
 			$this->errorLogger->error( $e->getMessage());
