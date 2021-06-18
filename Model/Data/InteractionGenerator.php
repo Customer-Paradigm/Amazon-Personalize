@@ -17,7 +17,7 @@ use CustomerParadigm\AmazonPersonalize\Helper\Data;
 
 class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\AbstractGenerator
 {
-	protected $enablePadding = true;
+	protected $enablePadding = false;
 	/*
 	 * Array containing csv header keys
 	 */
@@ -81,6 +81,11 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 			$pcount = count($purchaseInteractions);
 			$acount = count($addedInteractions);
 			$total = (int)$rcount + (int)$pcount + (int)$acount;
+			
+			$this->infoLogger->info("InteractionGenerator reportInteractions count: $rcount");
+			$this->infoLogger->info("InteractionGenerator purchaseInteractions count: $rcount");
+			$this->infoLogger->info("InteractionGenerator addedInteractions count: $rcount");
+			$this->infoLogger->info("InteractionGenerator total count: $rcount");
 
 			$this->createWriter()
 				->writeHeadersToCsv()
@@ -90,9 +95,10 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 			// pad interactions if fewer than 1000
 	
 			if($this->enablePadding && $total < 1000) {
+			    $this->infoLogger->info("InteractionGenerator padding enabled");
 			    $count = 1;
 			    $diff = 1010 - $total; // a few extra
-			    $total = 0; // reset
+			//    $total = 0; // reset
 			    while($diff > 0) {
 				    $user_id = 1000 % $diff;
 				    $item_id = 1010 - $diff;
@@ -105,6 +111,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 			}
 			$this->setItemCount($total);
 			$this->writer->close();
+			$this->pHelper->setConfigValue("awsp_settings/awsp_general/file-interactions-count",$total);
 			// Aws needs at least 1000 interactions
 			if($total < 1000) {
 				$this->setDataError("too_few_interactions:$total");
@@ -121,9 +128,12 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 		$linecount = 0;
 		$current_file_path = $this->pHelper->getConfigValue('awsp_wizard/data_type_name/interactionUserFile');
 		if( !empty($current_file_path) ) {
-			$linecount = count(file($current_file_path));
+			// Don't include header in data count
+			$linecount = count(file($current_file_path) - 1);
 			$this->setItemCount($linecount); 
 		}
+		$this->infoLogger->info("InteractionGenerator file path: $current_file_path");
+		$this->infoLogger->info("InteractionGenerator actual file count: $linecount");
 		return $linecount;
 	}
 

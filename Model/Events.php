@@ -49,7 +49,7 @@ class Events
         $this->trackingId = 'c61e8b60-0fee-44e3-867a-660d77d45e20';
         $this->debugLog = false && $this->pConfig->isEnabled();
 	$this->debugLogFile = $this->directoryList->getRoot() . "/var/log/event-debug.log";
-	$this->needsInteractions = $this->pConfig->needsInteractions();
+//	$this->needsInteractions = $this->pConfig->needsInteractions();
     }
 
     public function putObsAddtocart($observer, $request) {
@@ -78,7 +78,7 @@ class Events
 
                 $eventsList = array('eventList'=>$events, 
                     'sessionId'=>"$sess_id", 'trackingId'=>$this->trackingId, 'userId'=>"$cust_id");
-		if($this->needsInteractions){
+		if($this->pConfig->needsInteractions()){
 			$this->interactionCheck->saveEvent($eventsList);
 		} else {
 			$this->eventsClient->putEvents($eventsList);
@@ -122,7 +122,7 @@ class Events
                 file_put_contents($this->debugLogFile, "\nPurchase", FILE_APPEND);
                 file_put_contents($this->debugLogFile, print_r($eventsList,true), FILE_APPEND);
             }
-		if($this->needsInteractions){
+		if($this->pConfig->needsInteractions()){
 			$this->interactionCheck->saveEvent($eventsList);
 		} else {
 			$this->eventsClient->putEvents($eventsList);
@@ -159,7 +159,7 @@ class Events
                 file_put_contents($this->debugLogFile, "\n=========", FILE_APPEND);
                 file_put_contents($this->debugLogFile, print_r($eventsList,true), FILE_APPEND);
             }
-		if($this->needsInteractions ){
+		if($this->pConfig->needsInteractions()){
 			$this->interactionCheck->saveEvent($eventsList);
 		} else {
 			$this->eventsClient->putEvents($eventsList);

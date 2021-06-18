@@ -73,7 +73,6 @@ class Test extends \Magento\Framework\App\Action\Action {
 
     public function execute()
     {
-die("no access");
 /* Comment out this redirect to homepage to use the test controller 
 */
 /*
@@ -81,13 +80,11 @@ die("no access");
            $resultRedirect->setPath('');
 	    return $resultRedirect;
 */
-//	$this->stepsReset->execute();
-//	$this->deleteBucketContents('cprdgm-nestle-magento-library-personalize-s3bucket','save.csv');
-//	$this->listPers('SolutionVersions');
-//	$this->listPers('EventTrackers');
+	$this->stepsReset->execute();
 /*
 	$this->listS3();
-	$this->listBucketContents('cprdgm-nestle-magento-library-personalize-s3bucket');
+	$this->getBucketAcl('cprdgm-mage240-test-personalize-s3bucket');
+	$this->listBucketContents('cprdgm-mage240-test-personalize-s3bucket');
 	$this->listPers('Schemas');
 	$this->listPers('DatasetGroups');
 	$this->listPers('Datasets');
@@ -95,8 +92,23 @@ die("no access");
 	$this->listPers('Solutions');
 	$this->listPers('SolutionVersions');
 	$this->listPers('Campaigns');
+//	$this->listPers('EventTrackers');
 */
 	echo('done');
+    }
+
+    public function getBucketAcl($bucketName) {
+	try {
+	    $resp = $this->s3Client->getBucketAcl([
+		'Bucket' => $bucketName
+	    ]);
+	    echo "Succeed in retrieving bucket ACL as follows: \n";
+	    var_dump($resp);
+	} catch (AwsException $e) {
+	    // output error message if fails
+	    echo $e->getMessage();
+	    echo "\n";
+	}
     }
 
     public function listBucketContents($bucketName) {

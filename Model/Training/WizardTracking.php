@@ -44,9 +44,8 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                 'create_csv_files',
 		'create_personalize_s3_role',
                 'create_s3_bucket',
-		'upload_csv_files'
+		'upload_csv_files',
 		/*
-		,
                 'create_schemas',
                 'create_dataset_group',
 		'create_datasets',
@@ -201,10 +200,10 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             
             if( $step['in_progress'] ) {
                 $state = 'in progress';
-	    } elseif($step['step_name'] == 'create_csv_files' && strpos($step['error'],'you need at least 1000') !== false) {
-                $state = 'paused';
             } elseif ( $step['is_completed'] ){
                 $state = 'complete';
+	    } elseif($step['step_name'] == 'create_csv_files' && strpos($step['error'],'you need at least 1000') !== false) {
+                $state = 'paused';
             } else {
                 $state = 'not started';
             }

@@ -75,7 +75,7 @@ class s3
     }
 
     public function addS3BucketPolicy() {
-	$this->nameConfig->getLogger('error')->error( "\nbucket Policy with " . $this->s3BucketName);
+	$this->nameConfig->getLogger('info')->info( "\nAdding bucket Policy to " . $this->s3BucketName);
         $result = $this->s3Client->putBucketPolicy([
             'Bucket' => $this->s3BucketName,
             'Policy' => '{

@@ -79,7 +79,7 @@ define([
 			jQuery.getJSON(url, function(data) { 
 				console.log(data);
 				if( data.paused ) {
-					self.showProgress(true);
+					self.showProgress();
 					var pct = (data.value / 1000) * 100;
 					gauge.css('width', pct + '%');
 					if(number[0]) {

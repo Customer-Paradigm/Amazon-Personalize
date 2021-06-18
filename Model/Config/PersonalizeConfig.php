@@ -159,18 +159,25 @@ class PersonalizeConfig
     
     public function getInteractionsCount() {
 	$rtn = 0;
+	$process_started = $this->scopeConfig->getValue('awsp_wizard/data_type_name/csvUserFile');
+	if($process_started === NULL) {
+		return false;
+	}
         $filecount = $this->scopeConfig->getValue('awsp_settings/awsp_general/file-interactions-count', 
 		\Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
-	if( !empty($filecount) ) {
-		$eventcount = $this->interactionCheck->getTotal();
-		$rtn = $filecount + $eventcount;
-	}
+	$filecount = empty($filecount) ? 0 : $filecount;
+	$eventcount = $this->interactionCheck->getTotal();
+	$rtn = $filecount + $eventcount;
 	return $rtn;
     }
     
     public function needsInteractions() {
-	$count = $this->getInteractionsCount();
-	return $count < 1000;
+        if( $count = $this->getInteractionsCount() === false ) {
+                $rtn = false;
+        } else {
+                $rtn = $count < 1000;
+        }
+        return $rtn;
     }
 
     public function getUserHomeDir() {
