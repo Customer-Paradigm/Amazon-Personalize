@@ -8,6 +8,7 @@ use Magento\Catalog\Model\Product\OptionFactory;
 use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Cache\Frontend\Pool;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Config\Storage\WriterInterface;
 use CustomerParadigm\AmazonPersonalize\Helper\Db;
 use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
 use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
@@ -24,6 +25,7 @@ class Data extends AbstractHelper {
 	protected $errorLogger;
 	protected $scope;
 	protected $connection;
+	protected $configWriter;
 
 	public function __construct( 
 		Context $context,
@@ -33,7 +35,8 @@ class Data extends AbstractHelper {
 		ResourceConnection $resource,
 		Db $db,
 		InfoLogger $infoLogger,
-		ErrorLogger $errorLogger
+		ErrorLogger $errorLogger,
+		WriterInterface $configWriter
 	) {
 		parent::__construct($context);
 		$this->optionFactory = $optionFactory;
@@ -44,6 +47,7 @@ class Data extends AbstractHelper {
 		$this->db = $db;
 		$this->infoLogger = $infoLogger;
 		$this->errorLogger = $errorLogger;
+		$this->configWriter = $configWriter;
 		$this->scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
 	}
 
@@ -146,6 +150,10 @@ class Data extends AbstractHelper {
 			\Magento\Store\Model\ScopeInterface::SCOPE_STORE
 		); 
 		return $rtn;
+	}
+	
+	public function setConfigValue($config_path, $value){
+		 $this->configWriter->save($config_path, $value, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $scopeId = 0);
 	}
 
     public function setStepError($step,$message) {

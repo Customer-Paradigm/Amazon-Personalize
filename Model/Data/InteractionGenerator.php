@@ -17,7 +17,7 @@ use CustomerParadigm\AmazonPersonalize\Helper\Data;
 
 class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\AbstractGenerator
 {
-	protected $enablePadding = false;
+	protected $enablePadding = true;
 	/*
 	 * Array containing csv header keys
 	 */
@@ -69,6 +69,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 			// bypass all the collection counting if file is already created with > 1000 entries
 			$file_total = $this->checkActualFileCount();
 			if($file_total > 1001) {
+				var_dump('inside');
 				$this->setDataError(null);
 				return $this;
 			}
