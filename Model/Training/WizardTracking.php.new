@@ -42,7 +42,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $this->maxAttempts = 3;
             $this->steps = array(
                 'create_csv_files',
-//		'create_personalize_s3_role',
+		'create_personalize_s3_role',
                 'create_s3_bucket',
 		'upload_csv_files',
 		/*
@@ -225,7 +225,9 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $rtn = array('step_name'=>'create_s3_bucket', 'status'=>'notStarted');
         }
         $count = count($steps);
-        foreach($steps as $idx=>$step) {
+	foreach($steps as $idx=>$step) {
+		//var_dump($step);
+		//die('===================');
             if( $step['error'] && $step['step_name'] == 'create_csv_files') {
                 return array('step_name'=>$step['step_name'], 'status'=>'paused');
             }
@@ -235,9 +237,13 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             if( $step['in_progress'] && !$step['is_completed'] ) {
                 return array('step_name'=>$step['step_name'], 'status'=>'inProgress');
             }
-            if( $step['is_completed'] && $count <= $step['wizard_step_id']) {
-                $this->pConfig->saveConfigSetting('awsp_settings/awsp_general/campaign_exists',1);
-                return array('step_name'=>'finished', 'status'=>'finished');
+	    if( $step['is_completed'] ) {
+		if($count <= $step['wizard_step_id']) {
+                	$this->pConfig->saveConfigSetting('awsp_settings/awsp_general/campaign_exists',1);
+			return array('step_name'=>'finished', 'status'=>'finished');
+		} else {
+                	return array('step_name'=>$step['step_name'], 'status'=>'inProgress');
+		}
             }
             if( !$step['in_progress'] && !$step['is_completed'] && $step['wizard_step_id'] == 1 ) {
                 return array('step_name'=>$step['step_name'], 'status'=>'notStarted');

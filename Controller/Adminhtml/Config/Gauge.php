@@ -50,7 +50,6 @@ class Gauge extends Action
 		$this->wizardTracking->resetStep('create_csv_files');
 		$result->setData(['value'=>$count,'paused'=>false]);
 	} else {
-		$result->setData(['value'=>$count]);
 		$this->wizardTracking->setStepInprogress('create_csv_files');
 	}
         return $result;

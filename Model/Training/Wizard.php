@@ -21,7 +21,6 @@ class Wizard
     protected $eventTracker;
     protected $infoLogger;
     protected $errorLogger;
-    protected $pConfig;
 
     public function __construct(
         \CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
@@ -40,8 +39,7 @@ class Wizard
         \CustomerParadigm\AmazonPersonalize\Model\Training\Campaign $campaign,
         \CustomerParadigm\AmazonPersonalize\Model\Training\EventTracker $eventTracker,
         \CustomerParadigm\AmazonPersonalize\Logger\InfoLogger $infoLogger,
-        \CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger $errorLogger,
-        \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig
+        \CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger $errorLogger
     )
     {
         $this->wizardTracking = $wizardTracking;
@@ -61,7 +59,6 @@ class Wizard
         $this->eventTracker = $eventTracker;
         $this->infoLogger = $infoLogger;
         $this->errorLogger = $errorLogger;
-        $this->pConfig = $pConfig;
     }
     
     public function execute() {
@@ -75,33 +72,39 @@ class Wizard
     }
 
     public function createCsvFiles() {
-        try {
-	    $generator = $this->userGenerator->generateCsv();
-        
-        $this->nameConfig->saveName("csvUserFile", $generator->getFilePath());
-        $generator = $this->itemGenerator->generateCsv();
-        $this->nameConfig->saveName("itemUserFile", $generator->getFilePath());
-	$generator = $this->interactionGenerator->generateCsv();
-	if( $generator->checkActualFileCount() < 1001 ) {
-		$interactionRtn = $this->nameConfig->saveName("interactionUserFile", $generator->getFilePath());
-	}
-	$intTotal = $generator->getItemCount();
-	$this->nameConfig->saveConfigSetting("awsp_settings/awsp_general/file-interactions-count",$intTotal);
-	$err_mssg = $generator->getDataError();
+	    try {
+		    if(empty($this->nameConfig->getConfigVal('awsp_wizard/data_type_name/csvUserFile'))) {
+			    $generator = $this->userGenerator->generateCsv();
+			    $this->nameConfig->saveName("csvUserFile", $generator->getFilePath());
+		    }
 
-	if( strpos($err_mssg, 'too_few_interactions') !== false ) {
-		$mssg_array = explode(":",$err_mssg);
-		$mssg_total = $mssg_array[1];
-		$this->setStepError('create_csv_files',"Interaction file error: You have $mssg_total interactions--you need at least 1000 to train your model");
-		$this->nameConfig->saveConfigSetting("awsp_settings/awsp_general/file-interactions-count",$mssg_total);
-        }
+		    if(empty($this->nameConfig->getConfigVal('awsp_wizard/data_type_name/itemUserFile'))) {
+			    $generator = $this->itemGenerator->generateCsv();
+			    $this->nameConfig->saveName("itemUserFile", $generator->getFilePath());
+		    }
 
-        } catch (AwsException $e) {
-            $this->setStepError('create_csv_files',$e->getMessage());
-        } catch (\Exception $e) {
-            $this->setStepError('create_csv_files',$e->getMessage());
-	}
-        return array();
+		    $generator = $this->interactionGenerator->generateCsv();
+		    $interactionRtn = $this->nameConfig->saveName("interactionUserFile", $generator->getFilePath());
+		   // if( $generator->checkActualFileCount() < 1001 ) {
+		   // }
+
+		    $intTotal = $generator->getItemCount();
+		    $this->nameConfig->saveConfigSetting("awsp_settings/awsp_general/file-interactions-count",$intTotal);
+		    $err_mssg = $generator->getDataError();
+
+		    if( strpos($err_mssg, 'too_few_interactions') !== false ) {
+			    $mssg_array = explode(":",$err_mssg);
+			    $mssg_total = $mssg_array[1];
+			    $this->setStepError('create_csv_files',"Interaction file error: You have $mssg_total interactions--you need at least 1000 to train your model");
+			    $this->nameConfig->saveConfigSetting("awsp_settings/awsp_general/file-interactions-count",$mssg_total);
+		    }
+
+	    } catch (AwsException $e) {
+		    $this->setStepError('create_csv_files',$e->getMessage());
+	    } catch (\Exception $e) {
+		    $this->setStepError('create_csv_files',$e->getMessage());
+	    }
+	    return array();
     }
     
     public function createS3Bucket() {
@@ -118,10 +121,11 @@ class Wizard
 
     public function uploadCsvFiles() {
         try {
-            $this->s3->uploadCsvFiles();
-            $this->setStepError('upload_csvs','');
+		$rtn = $this->s3->uploadCsvFiles();
+
+            $this->setStepError('upload_csv_files',print_r($rtn,true));
         } catch (\Exception $e) {
-            $this->setStepError('upload_csvs',$e->getMessage());
+            $this->setStepError('upload_csv_files',$e->getMessage());
         }
     }
 

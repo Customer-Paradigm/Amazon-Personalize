@@ -101,6 +101,7 @@ class s3
 
     public function uploadCsvFiles() {
         $files = $this->getCsvFiles();
+	$this->nameConfig->getLogger('info')->info( "\nupload files ?: \n" . print_r($files,true));
 	foreach( $files as $type => $file ) {
 		$this->nameConfig->getLogger('info')->info( "\nupload file type: \n" . $type);
 		$this->nameConfig->getLogger('info')->info( "\nupload file file: \n" . $file);
@@ -177,13 +178,18 @@ class s3
     }
 
     protected function uploadFileToS3($type, $filepath) {
-        $data = file_get_contents($filepath);
-        $result = $this->s3Client->putObjectAsync([
-            'ACL' => 'authenticated-read',
-            'Body' => $data,
-            'Bucket' => $this->s3BucketName,
-            'Key' => $type . ".csv",
-        ])->wait();
+	    $data = file_get_contents($filepath);
+	    try {
+		    $result = $this->s3Client->putObjectAsync([
+			    'ACL' => 'authenticated-read',
+			    'Body' => $data,
+			    'Bucket' => $this->s3BucketName,
+			    'Key' => $type . ".csv",
+		    ])->wait();
+		    $this->nameConfig->getLogger('info')->info( "\n Upload CSV file Result " . print_r($result,true));
+	    } catch (\Exception $e) {
+		    $this->nameConfig->getLogger('error')->error( "\nupload CSV files error : \n" . $e->getMessage());
+	    }
     }
 
     protected function getCsvFiles() {

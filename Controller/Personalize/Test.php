@@ -80,11 +80,11 @@ class Test extends \Magento\Framework\App\Action\Action {
            $resultRedirect->setPath('');
 	    return $resultRedirect;
 */
-	$this->stepsReset->execute();
-/*
+//	$this->stepsReset->execute();
 	$this->listS3();
-	$this->getBucketAcl('cprdgm-mage240-test-personalize-s3bucket');
-	$this->listBucketContents('cprdgm-mage240-test-personalize-s3bucket');
+//	$this->listBucketContents('cprdgm-mage240-test-personalize-s3bucket');
+	/*
+var_dump($this->getBucketAcl('cprdgm-mage240-test-personalize-s3bucket'));
 	$this->listPers('Schemas');
 	$this->listPers('DatasetGroups');
 	$this->listPers('Datasets');

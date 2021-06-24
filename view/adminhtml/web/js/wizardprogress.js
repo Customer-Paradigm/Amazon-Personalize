@@ -72,17 +72,26 @@ define([
 			bttn.find('span').html(txt);
 		},
 
+		hideGauge: function() {
+			console.log('hide gauge');
+			var gauge = jQuery('#interaction-count');
+			gauge.hide()
+		},
+
 		displayGauge: function() {
+			console.log('display gauge');
 			var gauge = jQuery('#interaction-count');
 			var number = jQuery('#interaction-number');
 			var url = self.ajaxInteractionUrl;
 			jQuery.getJSON(url, function(data) { 
 				console.log(data);
 				if( data.paused ) {
+					console.log('paused');
 					self.showProgress();
 					var pct = (data.value / 1000) * 100;
 					gauge.css('width', pct + '%');
 					if(number[0]) {
+					console.log('number[0]');
 						number[0].innerText = data.value + " of 1000";
 					}
 				} else {
@@ -99,9 +108,7 @@ define([
 			var url = self.ajaxDisplayUrl;
 			var imgUrl = self.successUrl;
 			var infoUrl = self.infoUrl;
-			if(self.needsInteractions) {
-				self.displayGauge();
-			}
+
 			/* TODO -- debug */
 			//self.displayRstBttn('none');
 			self.displayRstBttn('block');
@@ -117,6 +124,7 @@ define([
 					console.log(data.steps);
 				var imgUrl = '';
 				var infoUrl = '';
+				self.steps([]);
 				jQuery.each(data.steps,function(idx,value){
 					console.log(value);
 					if(value.error) {
@@ -124,7 +132,6 @@ define([
 						imgUrl = self.errUrl;
 						infoUrl = self.infoUrl;
 						var html = '<div class="error-message-header"> Error in step ' + value.step_name + '</div>';
-						//if(value.mssg.includes("You need at least 1000")) {
 						if(self.needsInteractions) {
 							self.setBttnMssg("Paused: Generating Interactions");
 							html += '<div class="error-message-body">';
@@ -136,6 +143,7 @@ define([
 						} else {
 							self.setBttnMssg("Processing Error");
 							html += '<div class="error-message-body">' + value.mssg + '</div>';
+							self.hideGauge();
 						}
 						self.mssg(html);
 						self.displayErrorBttn('block');
@@ -164,6 +172,7 @@ define([
 					value.infoUrl = infoUrl;
 					self.steps.push(value);
 				});
+				
 
 				self.buttonStatus(self.processStatus);
 			});
@@ -179,6 +188,7 @@ define([
 				var imgUrl = '';
 				var infoUrl = '';
 			});
+			location.reload();
 		}
 	});
 });

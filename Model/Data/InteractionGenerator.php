@@ -17,7 +17,7 @@ use CustomerParadigm\AmazonPersonalize\Helper\Data;
 
 class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\AbstractGenerator
 {
-	protected $enablePadding = true;
+	protected $enablePadding = false;
 	/*
 	 * Array containing csv header keys
 	 */
@@ -81,12 +81,13 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 			$rcount = count($reportInteractions);
 			$pcount = count($purchaseInteractions);
 			$acount = count($addedInteractions);
+
 			$total = (int)$rcount + (int)$pcount + (int)$acount;
 			
 			$this->infoLogger->info("InteractionGenerator reportInteractions count: $rcount");
-			$this->infoLogger->info("InteractionGenerator purchaseInteractions count: $rcount");
-			$this->infoLogger->info("InteractionGenerator addedInteractions count: $rcount");
-			$this->infoLogger->info("InteractionGenerator total count: $rcount");
+			$this->infoLogger->info("InteractionGenerator purchaseInteractions count: $pcount");
+			$this->infoLogger->info("InteractionGenerator addedInteractions count: $acount");
+			$this->infoLogger->info("InteractionGenerator total count: $total");
 
 			$this->createWriter()
 				->writeHeadersToCsv()
@@ -128,6 +129,8 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 	public function checkActualFileCount() {
 		$linecount = 0;
 		$current_file_path = $this->pHelper->getConfigValue('awsp_wizard/data_type_name/interactionUserFile');
+		//var_dump($current_file_path);
+		//die("-=------------'");
 		if( !empty($current_file_path) ) {
 			// Don't include header in data count
 			$linecount = count(file($current_file_path) - 1);
