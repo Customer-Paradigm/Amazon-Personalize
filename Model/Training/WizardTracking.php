@@ -45,7 +45,6 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
 //		'create_personalize_s3_role',
                 'create_s3_bucket',
 		'upload_csv_files',
-		/*
                 'create_schemas',
                 'create_dataset_group',
 		'create_datasets',
@@ -54,7 +53,6 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                 'create_solution_version',
                 'create_campaign',
 		'create_event_tracker'
-		 */
             );
     }
 
@@ -268,6 +266,9 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             if( $step['step_name'] == 'create_csv_files' && strpos($step['error'],'you need at least 1000') !== false) {
                 return array('step'=>$step['step_name'],'state'=>'paused','mssg'=>$step['mssg']);
             }
+            if( $step['step_name'] == 'create_solution_version' && strpos($step['error'],'you need at least 1000') !== false) {
+                return array('step'=>$step['step_name'],'state'=>'error','mssg'=>$step['mssg']);
+            }
             if($step['state'] == 'in progress') {
                 return array('step'=>$step['step_name'],'state'=>$step['state'],'mssg'=>'');
             }
@@ -306,6 +307,9 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         }
         if( $step['step_name'] == 'create_csv_files' && strpos($step['error'],'you need at least 1000') !== false ) {
             $rtn['state'] = 'paused';
+        }
+        if( $step['step_name'] == 'create_solution_version' && strpos($step['error'],'you need at least 1000') !== false ) {
+            $rtn['state'] = 'error';
         }
         return $rtn;
     }

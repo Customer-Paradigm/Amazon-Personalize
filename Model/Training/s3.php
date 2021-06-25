@@ -88,7 +88,11 @@ class s3
                     "Principal": {
                         "Service": "personalize.amazonaws.com"
                     },
-                    "Action": "s3:*",
+                    "Action": [
+			"s3:GetObject",
+			"s3:ListBucket",
+			"s3:PutObject"
+            	    ],
                     "Resource": [
                         "arn:aws:s3:::'.$this->s3BucketName.'",
                         "arn:aws:s3:::'. $this->s3BucketName.'/*"
@@ -134,10 +138,10 @@ class s3
 		    'Bucket' => $this->s3BucketName,
 		    'Delimiter' => ',',
 	    ]);
-	$this->nameConfig->getLogger('info')->info( "\ngetUploadStatus result: \n" . $result);
+	$this->nameConfig->getLogger('info')->info( "\ngetUploadStatus result: \n" . print_r($result,true));
 	    if(!empty($result) || ! array_key_exists('Contents',$result) ) {
 		    $files = $result['Contents'];
-	$this->nameConfig->getLogger('info')->info( "\ngetUploadStatus files var : \n" . $files);
+			$this->nameConfig->getLogger('info')->info( "\ngetUploadStatus files var : \n" . print_r($files,true));
 		    if(empty($files)) {
 			    return 'not started';
 		    } elseif(count($files) == 3) {
@@ -181,7 +185,7 @@ class s3
 	    $data = file_get_contents($filepath);
 	    try {
 		    $result = $this->s3Client->putObjectAsync([
-			    'ACL' => 'authenticated-read',
+			    'ACL' => 'private',
 			    'Body' => $data,
 			    'Bucket' => $this->s3BucketName,
 			    'Key' => $type . ".csv",
@@ -192,7 +196,7 @@ class s3
 	    }
     }
 
-    protected function getCsvFiles() {
+    public function getCsvFiles() {
         $filenames = array();
         $csvDir = $this->varDir . "/export/amazonpersonalize/";
         $filelist = scandir($csvDir, SCANDIR_SORT_DESCENDING);
@@ -206,6 +210,7 @@ class s3
                $filenames[$type] = $csvDir . $item;
             }
         }
+	$this->nameConfig->getLogger('info')->info( "\n getCsvFiles result:  " . print_r($filenames,true));
         return $filenames;
     }
 }

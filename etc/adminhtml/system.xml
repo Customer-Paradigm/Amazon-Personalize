@@ -33,50 +33,44 @@
 					<label>Campaign Active</label>
 					<frontend_model>CustomerParadigm\AmazonPersonalize\Block\System\Config\Form\Field\Readonly</frontend_model>
 				</field>
-				<!--
-		<field id="home_dir" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
-		    <label>File owner home directory</label>
-					<comment>Where the keys will be stored</comment>
-		</field>
--->
-		<field id="aws_region" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
-			<label>Aws Region</label>
-			<comment>Aws region in which your data will be located</comment>
-		</field>
-		<field id="aws_acct" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
-			<label>Aws Account Number</label>
-		</field>
-		<field id="access_key" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
-			<label>Access Key</label>
-			<comment>Amazon account access key</comment>
-		</field>
-		<field id="secret_key" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
-			<label>Secret Key</label>
-			<comment>Amazon account secret key</comment>
-		</field>
-		<field id="data_range" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
-			<label>Data Range</label>
-			<comment>How many previous months to include when creating training data</comment>
-		</field>
-		<field id="data_process_info" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
-			<frontend_model>CustomerParadigm\AmazonPersonalize\Block\Adminhtml\Config\Train</frontend_model>
-			<label>Export data and train campaign</label>
-		</field>
-	</group>
-	<group id="awsp_abtesting" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
-		<label>A/B Split Testing</label>
-		<comment><![CDATA[In order to evaluate the effectiveness of the Amazon Personalize System on your Magento store, we've built in an A/B split testing system.
-			<br><br>Control is default Magento; Test is the Amazon Personalize system.
-					<br><br>Please select from the following A/B Split test options:]]></comment>
-						<field id="abtest_enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
-							<label>Enabled</label>
-							<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-						</field>
-						<field id="percentage" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
-							<label>Set Percentage</label>
-							<source_model>CustomerParadigm\AmazonPersonalize\Model\Config\Source\PercentageList</source_model>
-						</field>
-					</group>
-				</section>
-			</system>
-		</config>
+				<field id="aws_region" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+					<label>Aws Region</label>
+					<comment>Aws region in which your data will be located</comment>
+				</field>
+				<field id="aws_acct" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+					<label>Aws Account Number</label>
+				</field>
+				<field id="access_key" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+					<label>Access Key</label>
+					<comment>Amazon account access key</comment>
+				</field>
+				<field id="secret_key" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+					<label>Secret Key</label>
+					<comment>Amazon account secret key</comment>
+				</field>
+				<field id="data_range" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+					<label>Data Range</label>
+					<comment>How many previous months to include when creating training data</comment>
+				</field>
+				<field id="data_process_info" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+					<frontend_model>CustomerParadigm\AmazonPersonalize\Block\Adminhtml\Config\Train</frontend_model>
+					<label>Export data and train campaign</label>
+				</field>
+			</group>
+			<group id="awsp_abtesting" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+				<label>A/B Split Testing</label>
+				<comment><![CDATA[In order to evaluate the effectiveness of the Amazon Personalize System on your Magento store, we've built in an A/B split testing system.
+					<br><br>Control is default Magento; Test is the Amazon Personalize system.
+							<br><br>Please select from the following A/B Split test options:]]></comment>
+								<field id="abtest_enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+									<label>Enabled</label>
+									<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+								</field>
+								<field id="percentage" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+									<label>Set Percentage</label>
+									<source_model>CustomerParadigm\AmazonPersonalize\Model\Config\Source\PercentageList</source_model>
+								</field>
+							</group>
+						</section>
+					</system>
+				</config>

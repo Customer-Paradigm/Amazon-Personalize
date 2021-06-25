@@ -18,6 +18,7 @@ define([
 			this.imgUrl = ko.observable('');
 			this.infoUrl = ko.observable(this.infoUrl);
 			this.mssg = ko.observable(this.initMssg);
+			this.errlog = ko.observable('testing error log');
 			this.buttonStatus = ko.observable('');
 			this.resetStatus = ko.observable('');
 			this.buttonError = ko.observable('');
@@ -51,6 +52,20 @@ define([
 			var mssg = jQuery('#train_message_wrapper');
 			mssg.css('display', 'none');
 		},
+		
+		displayErrorLog: function() {
+			var mssg = jQuery('#error_log_wrapper');
+			var url = self.ajaxErrorlogUrl;
+			jQuery.getJSON(url, function(data) { 
+				mssg.html(data);
+			});
+			mssg.css('display', 'block');
+		},
+		
+		closeErrorLog: function() {
+			var mssg = jQuery('#error_log_wrapper');
+			mssg.css('display', 'none');
+		},
 
 		displayErrorBttn: function(displaytype) {
 			var bttn = jQuery('#error_button');
@@ -73,25 +88,25 @@ define([
 		},
 
 		hideGauge: function() {
-			console.log('hide gauge');
+			//console.log('hide gauge');
 			var gauge = jQuery('#interaction-count');
 			gauge.hide()
 		},
 
 		displayGauge: function() {
-			console.log('display gauge');
+			//console.log('display gauge');
 			var gauge = jQuery('#interaction-count');
 			var number = jQuery('#interaction-number');
 			var url = self.ajaxInteractionUrl;
 			jQuery.getJSON(url, function(data) { 
-				console.log(data);
+				//console.log(data);
 				if( data.paused ) {
-					console.log('paused');
+					//console.log('paused');
 					self.showProgress();
 					var pct = (data.value / 1000) * 100;
 					gauge.css('width', pct + '%');
 					if(number[0]) {
-					console.log('number[0]');
+					//console.log('number[0]');
 						number[0].innerText = data.value + " of 1000";
 					}
 				} else {
@@ -102,15 +117,15 @@ define([
 
 		showProgress: function(startProcess){
 			self = this;
-			console.log('interactions');
-			console.log(self.interactionsCount);
-			console.log(self.needsInteractions);
+			//console.log('interactions');
+			//console.log(self.interactionsCount);
+			//console.log(self.needsInteractions);
 			var url = self.ajaxDisplayUrl;
 			var imgUrl = self.successUrl;
 			var infoUrl = self.infoUrl;
 
 			/* TODO -- debug */
-			//self.displayRstBttn('none');
+			self.displayRstBttn('none');
 			self.displayRstBttn('block');
 
 			if(typeof startProcess !== "undefined") { 
@@ -121,21 +136,22 @@ define([
 			}
 
 			jQuery.getJSON(url, function(data) { 
-					console.log(data.steps);
+					//console.log(data.steps);
 				var imgUrl = '';
 				var infoUrl = '';
 				self.steps([]);
 				jQuery.each(data.steps,function(idx,value){
-					console.log(value);
+					//console.log(value);
 					if(value.error) {
 						self.disableBttn(true);
 						imgUrl = self.errUrl;
 						infoUrl = self.infoUrl;
 						var html = '<div class="error-message-header"> Error in step ' + value.step_name + '</div>';
-						if(self.needsInteractions) {
+						var isCsvCreate = value.step_name == "Create Csv Files";
+						if(isCsvCreate && self.needsInteractions) {
 							self.setBttnMssg("Paused: Generating Interactions");
 							html += '<div class="error-message-body">';
-							html += '<div>You need at least 1000 interactions to train your model.</div>';
+							html += '<div>You need at least 1000 unique interactions to train your model.</div>';
 							html += '<div>The Interactions Progress Guage is tracking customer interactions on your site and will resume the traing process when you have enough interactions.</div>';
 							html += '<span>Details: </span>';
 							html += '<a href="https://docs.aws.amazon.com/personalize/latest/dg/limits.html#limits-table">Amazon Service quotas</a>';
@@ -143,7 +159,6 @@ define([
 						} else {
 							self.setBttnMssg("Processing Error");
 							html += '<div class="error-message-body">' + value.mssg + '</div>';
-							self.hideGauge();
 						}
 						self.mssg(html);
 						self.displayErrorBttn('block');
@@ -166,6 +181,7 @@ define([
 						return false;
 					} else {
 						imgUrl = self.successUrl;
+						self.hideGauge();
 					}
 
 					value.imgUrl = imgUrl;
@@ -175,6 +191,9 @@ define([
 				
 
 				self.buttonStatus(self.processStatus);
+				//location.reload();
+				//return false;
+				return true
 			});
 		},
 
@@ -188,7 +207,9 @@ define([
 				var imgUrl = '';
 				var infoUrl = '';
 			});
-			location.reload();
+			//location.reload();
+			//return false;
+			return true;
 		}
 	});
 });

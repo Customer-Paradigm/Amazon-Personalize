@@ -159,17 +159,28 @@ class PersonalizeConfig
     
     public function getInteractionsCount() {
 	$rtn = 0;
-//	$process_started = $this->scopeConfig->getValue('awsp_wizard/data_type_name/csvUserFile');
 	$process_started = $this->scopeConfig->getValue('awsp_settings/awsp_general/file-interactions-count');
 	if($process_started === NULL) {
 		return false;
 	}
-        $filecount = $this->scopeConfig->getValue('awsp_settings/awsp_general/file-interactions-count', 
-		\Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
-	$filecount = empty($filecount) ? 0 : $filecount;
-//	$eventcount = $this->interactionCheck->getTotal();
-	$rtn = $filecount; 
-	return $rtn;
+        $ordercount = $this->getOrderInteractionsCount();
+	$eventcount = $this->getEventInteractionsCount();
+	return $ordercount + $eventcount;
+    }
+
+    public function getEventInteractionsCount() {
+	    return $this->interactionCheck->getTotal();
+    }
+
+    public function getOrderInteractionsCount() {
+	    return $this->scopeConfig->getValue('awsp_settings/awsp_general/order-interactions-count');
+    }
+
+    public function getFileInteractionsCount() {
+	    $filecount = $this->scopeConfig->getValue('awsp_settings/awsp_general/file-interactions-count', 
+		    \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
+	    $filecount = empty($filecount) ? 0 : $filecount;
+	    return $filecount;
     }
     
     public function needsInteractions() {

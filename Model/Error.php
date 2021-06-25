@@ -39,18 +39,22 @@ class Error extends \Magento\Framework\Model\AbstractModel
     public function writeError($e,$type=null) {
 	    $mssg = $e['formatted'];
 	    $type = empty($type) ? $e['level_name'] : $type;
-	    /*
-	    echo('<pre>');
-	    var_dump($e->getLine());
-	    var_dump($e->getMessage());
-	    var_dump($e->getFile());
-	    echo('</pre>');
-	     */
 	    $this->addData([
 		    'error_type' => $type,
 		    'error_message' => $mssg
 	    ]);
 	    $this->save();
    }
+    
+    public function getAllErrors()
+    {
+	$rtn = array();
+	    $coll = $this->getCollection();
+	foreach($coll as $item) {
+		$data = $item->getData();
+		$rtn[] = array('date' => $data['created_at'], 'error_message' => $data['error_message'] );
+	    }
+	return $rtn;
+    }
 
 }

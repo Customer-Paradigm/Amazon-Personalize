@@ -74,6 +74,16 @@ class Train  extends Field {
      *
      * @return string
      */
+    public function getAjaxErrorlogUrl()
+    {
+        return $this->getUrl('cpaws/config/errorlog') . "?isAjax=true";
+    }
+    
+    /**
+     * Return ajax url for interactions progress gauge
+     *
+     * @return string
+     */
     public function getAjaxInteractionUrl()
     {
         return $this->getUrl('cpaws/config/gauge') . "?isAjax=true";

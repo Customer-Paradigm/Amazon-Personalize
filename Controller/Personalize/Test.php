@@ -12,8 +12,10 @@ class Test extends \Magento\Framework\App\Action\Action {
     protected $personalizeBase;
     protected $personalizeClient;
     protected $s3;
+    protected $iam;
     protected $importJob;
     protected $stepsReset;
+    protected $errorModel;
     protected $wizardTracking;
 
     public function __construct(
@@ -30,8 +32,10 @@ class Test extends \Magento\Framework\App\Action\Action {
 	\CustomerParadigm\AmazonPersonalize\Block\Widget\Display $prodDisplay,
 	\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
         \CustomerParadigm\AmazonPersonalize\Model\Training\s3 $s3,
+        \CustomerParadigm\AmazonPersonalize\Model\Training\Iam $iam,
 	\CustomerParadigm\AmazonPersonalize\Model\Training\ImportJob $importJob,
 	\CustomerParadigm\AmazonPersonalize\Model\Training\StepsReset $stepsReset,
+	\CustomerParadigm\AmazonPersonalize\Model\Error $errorModel,
         \CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
@@ -47,8 +51,10 @@ class Test extends \Magento\Framework\App\Action\Action {
         $this->pHelper = $pHelper;
         $this->homedir = $this->pConfig->getUserHomeDir();
         $this->s3 = $s3;
+        $this->iam = $iam;
         $this->importJob = $importJob;
         $this->stepsReset = $stepsReset;
+        $this->errorModel = $errorModel;
         $this->wizardTracking = $wizardTracking;
         putenv("HOME=$this->homedir");
 
@@ -79,11 +85,13 @@ class Test extends \Magento\Framework\App\Action\Action {
             $resultRedirect = $this->resultRedirectFactory->create();
            $resultRedirect->setPath('');
 	    return $resultRedirect;
-*/
+ */
+	$this->errorModel->getAllErrors();
 //	$this->stepsReset->execute();
-	$this->listS3();
-//	$this->listBucketContents('cprdgm-mage240-test-personalize-s3bucket');
 	/*
+	$this->testIam();
+	$this->listS3();
+	$this->listBucketContents('cprdgm-mage240-test-personalize-s3bucket');
 var_dump($this->getBucketAcl('cprdgm-mage240-test-personalize-s3bucket'));
 	$this->listPers('Schemas');
 	$this->listPers('DatasetGroups');
@@ -95,6 +103,30 @@ var_dump($this->getBucketAcl('cprdgm-mage240-test-personalize-s3bucket'));
 //	$this->listPers('EventTrackers');
 */
 	echo('done');
+    }
+
+    public function testIam() {
+	    echo('<pre>');
+	    var_dump($this->iam->getStatus());
+	    echo('</pre>');
+    }
+
+    public function testS3Upload() {
+	try {
+	 //   $this->s3->createS3Bucket();
+	    $this->s3->uploadCsvFiles();
+	    /*
+	    $files = $this->s3->getCsvFiles();
+	    echo('<pre>');
+	    var_dump($files);
+	    echo('</pre>');
+	    die('-------------testie');
+	     */
+	} catch (\Exception $e) {
+	    // output error message if fails
+	    var_dump($e->getMessage());
+	    echo "\n";
+	}
     }
 
     public function getBucketAcl($bucketName) {

@@ -17,7 +17,7 @@ use CustomerParadigm\AmazonPersonalize\Helper\Data;
 
 class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\AbstractGenerator
 {
-	protected $enablePadding = false;
+	protected $enablePadding = true;
 	/*
 	 * Array containing csv header keys
 	 */
@@ -113,6 +113,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 			}
 			$this->setItemCount($total);
 			$this->writer->close();
+			$this->pHelper->setConfigValue("awsp_settings/awsp_general/order-interactions-count",$rcount + $pcount);
 			$this->pHelper->setConfigValue("awsp_settings/awsp_general/file-interactions-count",$total);
 			// Aws needs at least 1000 interactions
 			if($total < 1000) {
