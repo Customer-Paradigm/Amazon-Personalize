@@ -190,10 +190,16 @@ class Wizard
         try {
             $this->campaign->createCampaign();
             $this->setStepError('create_campaign','');
-		$this->infoLogger->info("\nWizardTracking ) createCampaign() try block");
-        } catch (\Exception $e) {
-		$this->infoLogger->info("\nWizardTracking ) createCampaign() exception caught: " . $e->getMessage());
-            $this->setStepError('create_campaing',$e->getMessage());
+	    $this->infoLogger->info("\nWizardTracking createCampaign() try block");
+	} catch (\Exception $e) {
+	    $errMssg = $e->getMessage();
+		$this->errorLogger->error("\nWizardTracking createCampaign() exception caught: " . $errMssg);
+	    if( strpos($errMssg,'LimitExceededException') !== false ) {
+		    $readable = 'You have more than 5 campaigns in ACTIVE state. Please delete one or more, or request a quota increase. More info at: https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html';
+		    $this->setStepError('create_campaign',$readable);
+	    } else {
+		    $this->setStepError('create_campaign',$e->getMessage());
+	    }
         }
     }
     

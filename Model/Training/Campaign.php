@@ -18,34 +18,30 @@ class Campaign extends PersonalizeBase
         $this->campaignArn = $this->nameConfig->buildArn('campaign', $this->campaignName);
 	$this->campaignVersionName = $this->nameConfig->buildName('campaign-version');
 	$this->pHelper = $pHelper;
-
     }
 
-    public function createCampaign() {
-	$result = array();
-	try {    
-		if( ! $this->checkAssetCreatedAndSync('','campaign',$this->campaignName,$this->campaignArn) ) {
+	public function createCampaign() {
+		$result = array();
+			if( ! $this->checkAssetCreatedAndSync('','campaign',$this->campaignName,$this->campaignArn) ) {
+				$this->infoLogger->info( "\ncampaign createCampaign() checkAssetCreatedAndSync returns false, camapaign: " . $this->campaignName);
 
-		$solutionVersionArn = $this->nameConfig->getArn('solutionVersionArn');
-		$result = $this->personalizeClient->{$this->apiCreate}([
-		    'minProvisionedTPS' => 1,
-		    'name' => $this->campaignName,
-		    'solutionVersionArn' => $solutionVersionArn,
-		]
-		)->wait();
-			$this->nameConfig->saveName('campaignName', $this->campaignName);
-		$this->nameConfig->saveArn('campaignArn', $result['campaignArn']);
-		}
-	} catch(\Exception $e) {
-		$this->errorLogger->error( "\ncreate campaign error: " . $e->getMessage());
-		$this->wizardTracking->setStepError('create_campaign',$e->getMessage());
-        }
-	
-	return $result;
-    }
+				$solutionVersionArn = $this->nameConfig->getArn('solutionVersionArn');
+				$result = $this->personalizeClient->{$this->apiCreate}([
+					'minProvisionedTPS' => 1,
+					'name' => $this->campaignName,
+					'solutionVersionArn' => $solutionVersionArn,
+				]
+				)->wait();
+				$this->nameConfig->saveName('campaignName', $this->campaignName);
+				$this->nameConfig->saveArn('campaignArn', $result['campaignArn']);
+			}
+		return $result;
+	}
 
-    public function getStatus() {
-	if( ! $this->checkAssetCreatedAndSync('','campaign',$this->campaignName,$this->campaignArn) ) {
+	public function getStatus() {
+	$rslt = array();
+	$created = $this->checkAssetCreatedAndSync('','campaign',$this->campaignName,$this->campaignArn);
+	if( ! $created ) {
 		$this->infoLogger->info( "\ncampaign getStatus() checkAssetCreatedAndSync false, camapaign: " . $this->campaignName);
 		return 'not started';
 	}
@@ -57,9 +53,10 @@ class Campaign extends PersonalizeBase
                 ]);
         } catch (\Exception $e) {
             $this->nameConfig->getLogger()->info( "\ncampaign getStatus error: " . $e->getMessage());
-            return $e->getMessage();
+	    $this->pHelper->setStepError('create_campaign',$e->getMessage());
+            return 'error';
         }
-        if(empty($rslt)) {
+	if(empty($rslt)) {
             return 'not started';
         }
 
@@ -68,7 +65,7 @@ class Campaign extends PersonalizeBase
                 $rtn = 'complete';
                 break;
             case 'CREATE PENDING':
-            case 'CREATE IN_PROGRESS':
+	    case 'CREATE IN_PROGRESS':
                 $rtn = 'in progress';
                 break;
 	    case 'CREATE FAILED':

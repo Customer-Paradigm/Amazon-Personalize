@@ -101,21 +101,21 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         $rtn = array();
         $this->eventManager->dispatch('awsp_wizard_runsteps_before', ['obj' => $this]);
         try {
-            $process = $this->getProcessStepState();
+	    $process = $this->getProcessStepState();
 	    $this->infoLogger->info("WizardTracking runSteps() getProcessStepState rtn: " . print_r($process,true));
             $step = $process['step'];
             $rtn['steps'] = $this->displayProgress();
             $rtn['mssg'] = $process['mssg'];
             $rtn['state'] = $process['state'];
             switch($process['state']) {
-                case 'error':
+	    case 'error':
                    $this->errorLogger->error("WizardTracking runSteps() non-exeption error at step:  " . $step);
                    $this->errorLogger->error("WizardTracking runSteps() error message:  " . $rtn['mssg'] );
                    $this->setStepError($step, $rtn['mssg']);
 		   // $this->infoLogger->info("WizardTracking runSteps() error status -- try $step again");
                    // return $this->tryAgain($step);
                 case 'step ready':
-                case 'not started':
+		case 'not started':
                     $fname = $this->stepToFuncName($step);
 		    $this->infoLogger->info("WizardTracking runSteps() starting step " . $fname);
                     $this->setStepInprogress($step);
@@ -138,13 +138,18 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                     }
                     break;
                 case 'in progress':
-                    $rtn['steps'] = $this->displayProgress();
-                    $rtn['mssg'] = 'success';
-                    $rtn['state'] = 'complete';
                     $check = $wizard->checkStatus($step);
                     if($check == 'complete') {
                         $this->setStepComplete($step);
-                    }
+		    }
+		   /* 
+                    if($check == 'not started') {
+                        $this->setStepReady($step);
+		    }
+		    */
+                    $rtn['steps'] = $this->displayProgress();
+                    $rtn['mssg'] = 'success';
+		    $rtn['state'] = 'complete';
             }
             $this->pHelper->flushAllCache();
 	} catch(Exception $e) {
@@ -373,6 +378,11 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     public function setStepComplete($step) {
         $this->saveStepData($step,'is_completed', true);
         $this->saveStepData($step,'in_progress', false);
+    }
+    
+    public function setStepReady($step) {
+        $this->saveStepData($step,'is_completed', null);
+        $this->saveStepData($step,'in_progress', null);
     }
 
     public function setStepInprogress($step) {

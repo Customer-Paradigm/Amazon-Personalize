@@ -5,7 +5,6 @@ namespace CustomerParadigm\AmazonPersonalize\Controller\Adminhtml\Config;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Psr\Log\LoggerInterface;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 use CustomerParadigm\AmazonPersonalize\Model\Training\Wizard;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
@@ -15,7 +14,8 @@ class Train extends Action
 {
  
     protected $resultJsonFactory;
-    protected $loggerInterface;
+    protected $infoLogger;
+    protected $errorLogger;
     protected $helper;
     protected $wizard;
     protected $wizardTracking;
@@ -33,7 +33,6 @@ class Train extends Action
     public function __construct(
         Context $context,
         JsonFactory $resultJsonFactory,
-        LoggerInterface $loggerInterface,
         Data $helper,
         Wizard $wizard,
         WizardTracking $wizardTracking,
@@ -41,11 +40,12 @@ class Train extends Action
     )
     {
         $this->resultJsonFactory = $resultJsonFactory;
-        $this->loggerInterface = $loggerInterface;
         $this->helper = $helper;
         $this->wizard = $wizard;
         $this->wizardTracking = $wizardTracking;
-        $this->pConfig = $pConfig;
+	$this->pConfig = $pConfig;
+	$this->infoLogger = $pConfig->getLogger('info');
+	$this->errorLogger = $pConfig->getLogger('error');
 
         parent::__construct($context);
     }
@@ -55,25 +55,24 @@ class Train extends Action
      */
     public function execute()
     {
-        $this->loggerInterface->info('------------AWS data setup cotroller execute-----------');
+	$this->infoLogger->info("------------AWS data setup cotroller execute-----------");
+
         $rtn = array();
         $mssg = null;
         try {
-			$procStatus =  $this->wizardTracking->getProcessStatus()['status'];
+		$procStatus =  $this->wizardTracking->getProcessStatus()['status'];
 			// Enable/disable cron based on process status
 			if( $procStatus == 'hasError' || $procStatus == 'finished') {
-				$this->loggerInterface->info('Aws data setup Cron off -------------');
+			        $this->infoLogger->info("Aws data setup Cron off -------------");
 				$this->pConfig->setCron('aws_data_setup','off');
 			} else {
-				$this->loggerInterface->info('Aws data setup Cron on -------------');
-/* TODO debug */
+			        $this->infoLogger->info("Aws data setup Cron on -------------");
 				$this->pConfig->setCron('aws_data_setup','on');
-			//	$this->pConfig->setCron('aws_data_setup','off');
 			}
-            $rtn = $this->wizard->execute();
+		$rtn = $this->wizard->execute();
         } catch (\Exception $e) {
-            $this->loggerInterface->critical($e);
             $err_mssg = "AWS API error: " . $e->getMessage();
+	    $this->errorLogger->error($err_mssg);
             $rtn = array('mssg'=>$err_mssg,'steps'=>array(), 'state'=>'error');
         }
         /* @var \Magento\Framework\Controller\Result\Json $result */
