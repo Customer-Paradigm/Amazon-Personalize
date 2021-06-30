@@ -53,7 +53,7 @@ class ErrorlogDownload extends Action
 	$this->array_csv_download($log);
     }
 
-public function array_csv_download( $array, $filename = "export.csv", $delimiter=";" )
+public function array_csv_download( $array, $filename = "aws_campaign_logs.csv", $delimiter=";" )
 {
     header( 'Content-Type: application/csv' );
     header( 'Content-Disposition: attachment; filename="' . $filename . '";' );
@@ -72,9 +72,6 @@ public function array_csv_download( $array, $filename = "export.csv", $delimiter
 
     fclose( $handle );
 
-    // flush buffer
-    ob_flush();
-    
     // use exit to get rid of unexpected output afterward
     exit();
 }

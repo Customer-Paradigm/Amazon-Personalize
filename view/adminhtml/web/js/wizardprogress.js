@@ -69,8 +69,8 @@ define([
 			var wrapper = jQuery('#error_log_wrapper');
 			var mssg = jQuery('#error_log');
 			var url = self.ajaxErrorlogUrl;
-			var button = '<button title="Download" type="button" class="action-default scalable" data-bind="click: displayErrorLog" > <span>Download</span> </button>'
-//			field.html(button);
+			var link = '<a id="errorlog_download_link" href="' + self.ajaxErrorlogDownloadUrl + '"><span>Download</span> </a>'
+			field.html(link);
 			jQuery.getJSON(url, function(data) { 
 			var html = '<table id="error_log_table">';
 				data.each(function( item ) {
