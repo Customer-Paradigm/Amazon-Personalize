@@ -8,6 +8,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Psr\Log\LoggerInterface;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
+use CustomerParadigm\AmazonPersonalize\Model\Error;
  
 class Errorlog extends Action
 {
@@ -15,6 +16,7 @@ class Errorlog extends Action
     protected $loggerInterface;
     protected $helper;
     protected $wizardTracking;
+    protected $errorLog;
  
     /**
      * @param Context $context
@@ -28,13 +30,15 @@ class Errorlog extends Action
         JsonFactory $resultJsonFactory,
         LoggerInterface $loggerInterface,
         Data $helper,
-        wizardTracking $wizardTracking
+	WizardTracking $wizardTracking,
+	Error $errorLog
     )
     {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->loggerInterface = $loggerInterface;
         $this->helper = $helper;
         $this->wizardTracking = $wizardTracking;
+        $this->errorLog = $errorLog;
         parent::__construct($context);
     }
  
@@ -43,18 +47,13 @@ class Errorlog extends Action
      */
     public function execute()
     {
+	$data = array();
         $result = $this->resultJsonFactory->create();
-	$count = $this->wizardTracking->pConfig->getInteractionsCount();
-	$result->setData(['date'=>'today','error_message'=>'oh bother']);
-	/*
-	$result->setData(['value'=>$count,'paused'=>true]);
-	if($count >= 1000) {
-		$this->wizardTracking->resetStep('create_csv_files');
-		$result->setData(['value'=>$count,'paused'=>false]);
-	} else {
-		$this->wizardTracking->setStepInprogress('create_csv_files');
+	$log = $this->errorLog->getAllErrors();
+	foreach($log as $item) {
+		$data[] = str_replace("\n","<br>",$item['error_message']);
 	}
-	 */
+	$result->setData($data);
         return $result;
     }
  

@@ -54,12 +54,18 @@ define([
 		},
 		
 		displayErrorLog: function() {
-			var mssg = jQuery('#error_log_wrapper');
+			var wrapper = jQuery('#error_log_wrapper');
+			var mssg = jQuery('#error_log');
 			var url = self.ajaxErrorlogUrl;
 			jQuery.getJSON(url, function(data) { 
-				mssg.html(data);
+				var html = '';
+				data.each(function( item ) {
+					html += JSON.stringify(item) + '<br><br>';
+				});
+				//console.log(data);
+				mssg.html(html);
 			});
-			mssg.css('display', 'block');
+			wrapper.css('display', 'block');
 		},
 		
 		closeErrorLog: function() {
@@ -88,9 +94,15 @@ define([
 		},
 
 		hideGauge: function() {
-			//console.log('hide gauge');
-			var gauge = jQuery('#interaction-count');
+			console.log('hide gauge');
+			var gauge = jQuery('.interaction-wrapper');
 			gauge.hide()
+		},
+		
+		showGauge: function() {
+			console.log('show gauge');
+			var gauge = jQuery('.interaction-wrapper');
+			gauge.show()
 		},
 
 		displayGauge: function() {
@@ -140,6 +152,7 @@ define([
 				var imgUrl = '';
 				var infoUrl = '';
 				self.steps([]);
+				self.hideGauge();
 				jQuery.each(data.steps,function(idx,value){
 					//console.log(value);
 					if(value.error) {
@@ -152,10 +165,11 @@ define([
 							self.setBttnMssg("Paused: Generating Interactions");
 							html += '<div class="error-message-body">';
 							html += '<div>You need at least 1000 unique interactions to train your model.</div>';
-							html += '<div>The Interactions Progress Guage is tracking customer interactions on your site and will resume the traing process when you have enough interactions.</div>';
+							html += '<div>The Interactions Progress Gauge is tracking customer interactions on your site and will resume the traing process when you have enough interactions.</div>';
 							html += '<span>Details: </span>';
 							html += '<a href="https://docs.aws.amazon.com/personalize/latest/dg/limits.html#limits-table">Amazon Service quotas</a>';
 							html += '</div>';
+							self.showGauge();
 						} else {
 							self.setBttnMssg("Processing Error");
 							html += '<div class="error-message-body">' + value.mssg + '</div>';
@@ -181,7 +195,6 @@ define([
 						return false;
 					} else {
 						imgUrl = self.successUrl;
-						self.hideGauge();
 					}
 
 					value.imgUrl = imgUrl;
