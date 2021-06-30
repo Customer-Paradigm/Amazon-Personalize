@@ -36,6 +36,12 @@
     width: 280px;
 }
 
+#row_awsp_settings_awsp_logs_log_display {
+  position: relative;
+  left: -15%;
+  top: -20px;
+}
+
 #error_log_wrapper {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */

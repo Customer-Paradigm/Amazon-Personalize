@@ -10,7 +10,7 @@ use CustomerParadigm\AmazonPersonalize\Helper\Data;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
 use CustomerParadigm\AmazonPersonalize\Model\Error;
  
-class Errorlog extends Action
+class ErrorlogDownload extends Action
 {
     protected $resultJsonFactory;
     protected $loggerInterface;
@@ -50,12 +50,34 @@ class Errorlog extends Action
 	$data = array();
         $result = $this->resultJsonFactory->create();
 	$log = $this->errorLog->getAllErrors();
-	foreach($log as $item) {
-		$data[] = str_replace("\n","<br>",trim($item['error_message'],'"'));
-	}
-	$result->setData($data);
-        return $result;
+	$this->array_csv_download($log);
     }
+
+public function array_csv_download( $array, $filename = "export.csv", $delimiter=";" )
+{
+    header( 'Content-Type: application/csv' );
+    header( 'Content-Disposition: attachment; filename="' . $filename . '";' );
+
+    // clean output buffer
+    ob_end_clean();
+    
+    $handle = fopen( 'php://output', 'w' );
+
+    // use keys as column titles
+    fputcsv( $handle, array_keys( $array['0'] ) , $delimiter );
+
+    foreach ( $array as $value ) {
+        fputcsv( $handle, $value , $delimiter );
+    }
+
+    fclose( $handle );
+
+    // flush buffer
+    ob_flush();
+    
+    // use exit to get rid of unexpected output afterward
+    exit();
+}
  
  
     protected function _isAllowed()

@@ -17,7 +17,7 @@ use CustomerParadigm\AmazonPersonalize\Helper\Data;
 
 class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\AbstractGenerator
 {
-	protected $enablePadding = true;
+	protected $enablePadding = false;
 	/*
 	 * Array containing csv header keys
 	 */

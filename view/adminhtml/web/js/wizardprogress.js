@@ -51,21 +51,37 @@ define([
 		closeErrorMssg: function() {
 			var mssg = jQuery('#train_message_wrapper');
 			mssg.css('display', 'none');
+	//		if(self.needsInteractions) {
+			   location.reload();
+			   return false;
+	//		}
 		},
 		
+		dowloadErrorLog: function() {
+			alert('gettin there');
+		},
+
 		displayErrorLog: function() {
+			// hide the '[global]' tag on hidden display field
+			jQuery("#row_awsp_settings_awsp_logs_log_display > td.label > label > span").hide();
+
+			var field = jQuery("#row_awsp_settings_awsp_logs_log_display > td.value > p");
 			var wrapper = jQuery('#error_log_wrapper');
 			var mssg = jQuery('#error_log');
 			var url = self.ajaxErrorlogUrl;
+			var button = '<button title="Download" type="button" class="action-default scalable" data-bind="click: displayErrorLog" > <span>Download</span> </button>'
+//			field.html(button);
 			jQuery.getJSON(url, function(data) { 
-				var html = '';
+			var html = '<table id="error_log_table">';
 				data.each(function( item ) {
-					html += JSON.stringify(item) + '<br><br>';
+				   html += '<tr>';
+					html += "<td>" + JSON.stringify(item).replace(/^"|"$/g, ''); + '</td>';
+				   html += '</tr>';
 				});
-				//console.log(data);
-				mssg.html(html);
+				html += '</table>';
+				field.append(html);
 			});
-			wrapper.css('display', 'block');
+			//wrapper.css('display', 'block');
 		},
 		
 		closeErrorLog: function() {
@@ -94,31 +110,25 @@ define([
 		},
 
 		hideGauge: function() {
-			console.log('hide gauge');
 			var gauge = jQuery('.interaction-wrapper');
 			gauge.hide()
 		},
 		
 		showGauge: function() {
-			console.log('show gauge');
 			var gauge = jQuery('.interaction-wrapper');
 			gauge.show()
 		},
 
 		displayGauge: function() {
-			//console.log('display gauge');
 			var gauge = jQuery('#interaction-count');
 			var number = jQuery('#interaction-number');
 			var url = self.ajaxInteractionUrl;
 			jQuery.getJSON(url, function(data) { 
-				//console.log(data);
 				if( data.paused ) {
-					//console.log('paused');
 					self.showProgress();
 					var pct = (data.value / 1000) * 100;
 					gauge.css('width', pct + '%');
 					if(number[0]) {
-					//console.log('number[0]');
 						number[0].innerText = data.value + " of 1000";
 					}
 				} else {
@@ -129,15 +139,12 @@ define([
 
 		showProgress: function(startProcess){
 			self = this;
-			//console.log('interactions');
-			//console.log(self.interactionsCount);
-			//console.log(self.needsInteractions);
 			var url = self.ajaxDisplayUrl;
 			var imgUrl = self.successUrl;
 			var infoUrl = self.infoUrl;
 
 			/* TODO -- debug */
-			self.displayRstBttn('none');
+//			self.displayRstBttn('none');
 			self.displayRstBttn('block');
 
 			if(typeof startProcess !== "undefined") { 
@@ -146,15 +153,14 @@ define([
 				self.steps([]);
 				self.disableBttn(true);
 			}
+			self.displayErrorLog();
 
 			jQuery.getJSON(url, function(data) { 
-					//console.log(data.steps);
 				var imgUrl = '';
 				var infoUrl = '';
 				self.steps([]);
 				self.hideGauge();
 				jQuery.each(data.steps,function(idx,value){
-					//console.log(value);
 					if(value.error) {
 						self.disableBttn(true);
 						imgUrl = self.errUrl;

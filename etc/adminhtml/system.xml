@@ -57,6 +57,12 @@
 					<label>Export data and train campaign</label>
 				</field>
 			</group>
+			<group id="awsp_logs" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+				<label>Campaign Creation Logs</label>
+				<field id="log_display" translate="label" type="hidden" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+					<comment>Error logs will display here when loaded.</comment>
+				</field>
+			</group>
 			<group id="awsp_abtesting" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
 				<label>A/B Split Testing</label>
 				<comment><![CDATA[In order to evaluate the effectiveness of the Amazon Personalize System on your Magento store, we've built in an A/B split testing system.
