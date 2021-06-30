@@ -175,6 +175,7 @@ define([
 							html += '<span>Details: </span>';
 							html += '<a href="https://docs.aws.amazon.com/personalize/latest/dg/limits.html#limits-table">Amazon Service quotas</a>';
 							html += '</div>';
+							self.displayGauge();
 							self.showGauge();
 						} else {
 							self.setBttnMssg("Processing Error");
