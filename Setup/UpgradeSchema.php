@@ -224,7 +224,7 @@ class UpgradeSchema implements  UpgradeSchemaInterface
             $installer = $setup;
 	    $installer->startSetup();
 	    // Remove the old table and start over
-	    $installer->getConnection()->dropTable('aws_erors');
+	    $installer->getConnection()->dropTable('aws_errors');
 	    $table = $installer->getConnection()->newTable($installer->getTable('aws_errors')
             )->addColumn(
                 'error_id',
