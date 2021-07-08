@@ -92,7 +92,13 @@ class Data extends AbstractHelper {
 		return 
 			$this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/enable', $this->scope )
 			&& $this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/campaign_exists', $this->scope )
-			//&& $this->db->enabled('inst');
+			&& $this->db->enabled();
+	}
+	
+	public function canDisplayAdmin() {
+		return 
+			$this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/enable', $this->scope )
+			&& $this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/aws_acct', $this->scope )
 			&& $this->db->enabled();
 	}
 

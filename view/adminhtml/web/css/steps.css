@@ -36,6 +36,16 @@
     width: 280px;
 }
 
+#row_awsp_settings_awsp_general_calc_error > td.label > label > span {
+   display:none;
+}
+
+#license-error-mssg {
+   width: 310px;
+   margin: 20px;
+   text-align: center;
+}
+
 #row_awsp_settings_awsp_logs_log_display {
   position: relative;
   left: -15%;
@@ -144,8 +154,6 @@
 
 .interaction-wrapper {
   width:400px;
-  position:relative;
-  left:-58%;
 }
 
 .interaction-wrapper .label {

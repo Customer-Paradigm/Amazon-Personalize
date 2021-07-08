@@ -46,7 +46,9 @@ class Gauge extends Action
         $result = $this->resultJsonFactory->create();
 	$count = $this->wizardTracking->pConfig->getInteractionsCount();
 	$result->setData(['value'=>$count,'paused'=>true]);
-	if($count >= 1000) {
+	if(! $this->helper->canDisplayAdmin() ) {
+		$result->setData(['value'=>0,'paused'=>false]);
+	} else if($count >= 1000) {
 		$this->wizardTracking->resetStep('create_csv_files');
 		$result->setData(['value'=>$count,'paused'=>false]);
 	} else {

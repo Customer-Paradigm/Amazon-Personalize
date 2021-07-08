@@ -8,8 +8,12 @@ class LicenseMessage extends  \Magento\Config\Block\System\Config\Form\Field
     protected function _getElementHtml(AbstractElement $element)
     {
 	$val = $element->getValue();
-        $newval = strpos($val,'error') !== false ? $val : '';
-        $element->setValue($newval);
+	$newval = strpos($val,'error') !== false ? $val : '';
+	$pattern = '/^Configuration.+salt;/';
+	$newval = preg_replace($pattern,'',$newval);
+	$pattern = '/Configuration.+installation;/';
+	$newval = preg_replace($pattern,'',$newval);
+	$element->setValue($newval);
         return $element->getValue();
     }
 }

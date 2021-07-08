@@ -46,10 +46,17 @@ class Display extends Action
     {
         $rtn = array();
         $mssg = null;
-        try {
+	try {
+		if(array_key_exists('license',$rtn) && $rtn['license'] === false ) {
+			$rtn['steps'] = array();
+			$rtn['mssg'] = 'License or AWS credentials are incorrect';
+			$rtn['state'] = 'error';
+		} else {
+
 			$rtn['steps'] = $this->wizardTracking->displayProgress();
 			$rtn['mssg'] = '';
 			$rtn['state'] = 'success';
+		}
 
         } catch (\Exception $e) {
             $this->loggerInterface->critical($e);

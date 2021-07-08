@@ -8,7 +8,7 @@ define([
 	return Component.extend({
 		defaults: {
 			template: 'CustomerParadigm_AmazonPersonalize/system/config/training_section',
-			buttonMssg: "Start Process---",
+			buttonMssg: "Start Process",
 			initMssg: 'Click \'Start Process\' button to kick off data creation process'
 		},
 
@@ -38,9 +38,19 @@ define([
 			bttn.find('span').html(txt);
 		},
 
-		disableBttn: function(disabled) {
+		disableTrainBttn: function(disabled) {
 			var bttn = jQuery('#train_button');
 			bttn.prop('disabled', disabled);
+		},
+		
+		hideTrainBttn: function() {
+			var bttn = jQuery('#train_button');
+			bttn.css('display', 'none');
+		},
+		
+		showTrainBttn: function() {
+			var bttn = jQuery('#train_button');
+			bttn.css('display', 'block');
 		},
 
 		displayErrorMssg: function() {
@@ -125,7 +135,7 @@ define([
 			var url = self.ajaxInteractionUrl;
 			jQuery.getJSON(url, function(data) { 
 				if( data.paused ) {
-					self.showProgress();
+				//	self.showProgress();
 					var pct = (data.value / 1000) * 100;
 					gauge.css('width', pct + '%');
 					if(number[0]) {
@@ -145,24 +155,34 @@ define([
 
 			/* TODO -- debug */
 //			self.displayRstBttn('none');
-			self.displayRstBttn('block');
+		//	self.displayRstBttn('block');
 
 			if(typeof startProcess !== "undefined") { 
 				url = self.ajaxRunUrl; 
 				// clear steps
 				self.steps([]);
-				self.disableBttn(true);
+				self.disableTrainBttn(true);
 			}
+			self.hideGauge();
 			self.displayErrorLog();
 
 			jQuery.getJSON(url, function(data) { 
 				var imgUrl = '';
 				var infoUrl = '';
 				self.steps([]);
-				self.hideGauge();
+		//		self.hideGauge();
+				if( data.steps['license'] == false ) {
+					self.hideTrainBttn();
+					self.displayErrorBttn('none');
+					self.displayRstBttn('none');
+					jQuery('#train_steps').html("<div id='license-error-mssg'>" + data.steps['mssg'] + "</div>");
+					return false;
+				} else {
+					self.showTrainBttn();
+				}
 				jQuery.each(data.steps,function(idx,value){
 					if(value.error) {
-						self.disableBttn(true);
+						self.disableTrainBttn(true);
 						imgUrl = self.errUrl;
 						infoUrl = self.infoUrl;
 						var html = '<div class="error-message-header"> Error in step ' + value.step_name + '</div>';

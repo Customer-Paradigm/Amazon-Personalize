@@ -285,6 +285,9 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     }
 
     public function displayProgress() {
+	if( ! $this->pHelper->canDisplayAdmin() ) {
+		return array('steps'=>array(), 'license'=>false, 'stat'=>'error','mssg'=>'Please enter and save your license key and AWS credentials to enable Campaign Setup Wizard');
+	}
         $summary = $this->getStepStateSummary();
         foreach($summary as $idx=>$info) {
             $summary[$idx]['step_name'] = $this->stepToDisplayName($info['step_name']);

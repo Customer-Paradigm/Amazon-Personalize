@@ -233,7 +233,7 @@ class PersonalizeConfig
 		if(!empty($client_key)){
 			putEnv("AWS_ACCESS_KEY_ID=$client_key");
 			var_dump(getEnv("AWS_ACCESS_KEY_ID"));
-			die("----------------haha");
+			die("----------------");
 		}
 		if(!empty($client_secret)){
 			putEnv("AWS_SECRET_ACCESS_KEY=$client_secret");

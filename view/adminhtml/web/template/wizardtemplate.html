@@ -1,5 +1,5 @@
 <div class="label" id='train_steps_container'>
-<button id="train_button" title="Start Process" type="button" class="action-default scalable" data-bind=", click: startProcess, css: buttonStatus"> 
+<button id="train_button" title="Start Process" type="button" style="display:none" class="action-default scalable" data-bind=", click: startProcess, css: buttonStatus"> 
         <span>Start Process</span>
 </button>
 <div class="interaction-wrapper" data-bind="if: needsInteractions">
@@ -44,7 +44,7 @@
 </button>
 -->
 
-<button id="reset_button" title="Reset Process" type="button" class="action-default scalable" data-bind=", click: resetProcess, css: resetStatus"> 
+<button id="reset_button" title="Reset Process" style="display:none" type="button" class="action-default scalable" data-bind=", click: resetProcess, css: resetStatus"> 
         <span>Reset Process</span>
 </button>
 </div>

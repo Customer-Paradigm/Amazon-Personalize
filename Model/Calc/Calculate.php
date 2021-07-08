@@ -26,7 +26,8 @@ define("APL_CORE_NOTIFICATION_INVALID_LICENSE_FILE", "Configuration error: inval
 define("APL_CORE_NOTIFICATION_INVALID_ROOT_IP", "Configuration error: invalid IP address of your Auto PHP Licenser installation");
 define("APL_CORE_NOTIFICATION_INVALID_ROOT_NAMESERVERS", "Configuration error: invalid nameservers of your Auto PHP Licenser installation");
 define("APL_CORE_NOTIFICATION_INVALID_DNS", "License error: actual IP address and/or nameservers of your Auto PHP Licenser installation don't match specified IP address and/or nameservers");
-
+define("APL_DELETE_CANCELLED", "NO");
+define("APL_DELETE_CRACKED", "YES");
 
 use \Magento\Framework\Stdlib\DateTime\DateTime;
 use \Magento\Framework\App\Config\ScopeConfigInterface;

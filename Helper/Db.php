@@ -57,10 +57,13 @@ class Db extends AbstractHelper {
 		} else {
 			$canCalc = $this->calc->canCalc(null, true);
 			if ($this->db() && $canCalc['notification_case']=="notification_license_ok") {
+				$this->configWriter->save('awsp_settings/awsp_general/calc_active',1, $this->scope);
 				return true;
                         } else {
+				$this->configWriter->save('awsp_settings/awsp_general/calc_active',0, $this->scope);
                                 if($this->db()) {
                                         $this->logger->error("License Error " . $canCalc['notification_text']);
+					$this->setError($canCalc['notification_text']);
                                 } else {
                                         $this->logger->error("License Error this->db() returns false");
                                 }
@@ -99,6 +102,7 @@ class Db extends AbstractHelper {
 
 	public function setInstalled() {
 		$this->configWriter->save('awsp_settings/awsp_general/calc_active',true, $this->scope);
+		$this->setError(null);
 		$this->configWriter->save('awsp_settings/awsp_general/rule_ft1', filemtime($this->f1), $this->scope);
 		$this->configWriter->save('awsp_settings/awsp_general/rule_ft2', filemtime($this->f2), $this->scope);
 		$this->configWriter->save('awsp_settings/awsp_general/rule_fh1', hash_file("haval160,4", $this->f1), $this->scope);
