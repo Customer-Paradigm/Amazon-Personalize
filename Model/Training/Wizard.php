@@ -145,6 +145,7 @@ class Wizard
             $this->datasetGroup->createDatasetGroup();
             $this->setStepError('create_dataset_group','');
         } catch (\Exception $e) {
+	    $this->errorLogger->error("\nCreate DatasetGroup error: \n" . $e->getMessage());
             $this->setStepError('create_dataset_group',$e->getMessage());
         }
     }
@@ -154,6 +155,7 @@ class Wizard
             $this->dataset->createDatasets();
             $this->setStepError('create_datasets','');
         } catch (\Exception $e) {
+	    $this->errorLogger->error("\nCreate Dataset error: \n" . $e->getMessage());
             $this->setStepError('create_datasets',$e->getMessage());
         }
     }
@@ -163,6 +165,7 @@ class Wizard
             $this->importJob->createImportJobs();
             $this->setStepError('create_datasets','');
         } catch (\Exception $e) {
+	    $this->errorLogger->error("\nCreate ImportJobs error: \n" . $e->getMessage());
             $this->setStepError('create_import_jobs',$e->getMessage());
         }
     }
@@ -172,6 +175,7 @@ class Wizard
             $this->solution->createSolution();
             $this->setStepError('create_solution','');
         } catch (\Exception $e) {
+	    $this->errorLogger->error("\nCreate Solution error: \n" . $e->getMessage());
             $this->setStepError('create_solution',$e->getMessage());
         }
     }
@@ -181,6 +185,7 @@ class Wizard
             $this->solutionVersion->createSolutionVersion();
             $this->setStepError('create_solution_version','');
         } catch (\Exception $e) {
+	    $this->errorLogger->error("\nCreate SolutionVersion error: \n" . $e->getMessage());
             $this->setStepError('create_solution_version',$e->getMessage());
         }
     }
@@ -208,6 +213,7 @@ class Wizard
             $this->eventTracker->createEventTracker();
             $this->setStepError('create_event_tracker','');
         } catch (\Exception $e) {
+	    $this->errorLogger->error("\nCreate EventTracker error: \n" . $e->getMessage());
             $this->setStepError('create_event_tracker',$e->getMessage());
         }
     }

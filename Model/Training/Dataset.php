@@ -43,9 +43,17 @@ class Dataset extends PersonalizeBase
 	}
 
 	public function getStatus() {
-		$checklist[] = $this->datasetExists('users');
-		$checklist[] = $this->datasetExists('items');
-		$checklist[] = $this->datasetExists('interactions');
+		$checklist = array();
+                
+		if($rtn = $this->datasetExists($this->usersDatasetName)) {
+                        $checklist[] = $rtn;
+                }
+                if($rtn = $this->datasetExists($this->itemsDatasetName)) {
+                        $checklist[] = $rtn;
+                }
+                if($rtn = $this->datasetExists($this->interactionsDatasetName)) {
+                        $checklist[] = $rtn;
+                }
 
 		switch (true) {
 			CASE (count($checklist) == 3):

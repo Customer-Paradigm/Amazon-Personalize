@@ -53,7 +53,14 @@ class ImportJob extends PersonalizeBase
 					$checklist[] = $rtn['datasetImportJobs'][$idx];
 				}
 			}
-			if(count($checklist) < 3) {
+			if(count($checklist) == 0) {
+				$result = 'not started';
+/*
+				$result = 'error';
+                        	$this->pHelper->setStepError('create_import_jobs',"No import jobs have been started");
+				$this->nameConfig->getLogger()->error( "\ncheck datasetImportJobs status error: no jobs found for names " . print_r($checkArray,true));
+*/
+			} else if(count($checklist) < 3) {
 				$result = 'in progress';
 			} else {
 				foreach($checklist as $idx=>$item) {
@@ -82,7 +89,6 @@ class ImportJob extends PersonalizeBase
 	}
 
 	public function createImportJobs() {
-		try {
 			$result = $this->personalizeClient->createDatasetImportJobAsync([
 				'jobName' => $this->usersImportJobName,
 				'datasetArn' => $this->usersDatasetArn,
@@ -91,11 +97,7 @@ class ImportJob extends PersonalizeBase
 			)->wait();
 			$this->nameConfig->saveName('usersImportJobName', $this->usersImportJobName);
 			$this->nameConfig->saveArn('usersImportJobArn', $result['datasetImportJobArn']);
-		} catch(\Exception $e) {
-			$this->nameConfig->getLogger()->error( "\ncreate users dataset import  error : \n" . $e->getMessage());
-		}
-
-		try {
+			
 			$result = $this->personalizeClient->createDatasetImportJobAsync([
 				'jobName' => $this->itemsImportJobName,
 				'datasetArn' => $this->itemsDatasetArn,
@@ -104,11 +106,7 @@ class ImportJob extends PersonalizeBase
 			)->wait();
 			$this->nameConfig->saveName('itemsImportJobName', $this->itemsImportJobName);
 			$this->nameConfig->saveArn('itemsImportJobArn', $result['datasetImportJobArn']);
-		} catch(\Exception $e) {
-			$this->nameConfig->getLogger()->error( "\ncreate items dataset  error : \n" . $e->getMessage());
-		}
 
-		try {
 			$result = $this->personalizeClient->createDatasetImportJobAsync([
 				'jobName' => $this->interactionsImportJobName,
 				'datasetArn' => $this->interactionsDatasetArn,
@@ -117,8 +115,5 @@ class ImportJob extends PersonalizeBase
 			)->wait();
 			$this->nameConfig->saveName('interactionsImportJobName', $this->interactionsImportJobName);
 			$this->nameConfig->saveArn('interactionsImportJobArn', $result['datasetImportJobArn']);
-		} catch(\Exception $e) {
-			$this->nameConfig->getLogger()->error( "\ncreate interactions dataset  error : \n" . $e->getMessage());
-		}
 	}
 }

@@ -38,21 +38,17 @@ class Schema extends PersonalizeBase
 	}
 
 	public function getStatus() {
-               $checklist[] = $this->schemaExists('awsp_wizard/data_type_arn/usersSchemaName');
-               $checklist[] = $this->schemaExists('awsp_wizard/data_type_arn/itemsSchemaName');
-               $checklist[] = $this->schemaExists('awsp_wizard/data_type_arn/interactionsSchemaName');
-
-/*
-		if($rtn = $this->schemaExists('users')) {
+		$checklist = array();
+		if($rtn = $this->schemaExists($this->usersSchemaName)) {
                         $checklist[] = $rtn;
                 }
-		if($rtn = $this->schemaExists('items')) {
+		if($rtn = $this->schemaExists($this->itemsSchemaName)) {
                         $checklist[] = $rtn;
                 }
-		if($rtn = $this->schemaExists('interactions')) {
+		if($rtn = $this->schemaExists($this->interactionsSchemaName)) {
                         $checklist[] = $rtn;
 		}
-*/
+
 		switch (true) {
 			CASE (count($checklist) == 3):
 				return 'complete';
