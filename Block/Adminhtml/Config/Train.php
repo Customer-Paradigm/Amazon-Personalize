@@ -80,6 +80,16 @@ class Train  extends Field {
     }
     
     /**
+     * Return ajax url for asset display 
+     *
+     * @return string
+     */
+    public function getAjaxAssetDisplayUrl()
+    {
+        return $this->getUrl('cpaws/config/assetdisplay') . "?isAjax=true";
+    }
+    
+    /**
      * Return ajax url for error log entries
      *
      * @return string

@@ -49,7 +49,7 @@ class Error extends \Magento\Framework\Model\AbstractModel
     public function getAllErrors()
     {
 	$rtn = array();
-	    $coll = $this->getCollection();
+	$coll = $this->getCollection();
 	foreach($coll as $item) {
 		$data = $item->getData();
 		$rtn[] = array('date' => $data['created_at'], 'error_message' => $data['error_message'] );

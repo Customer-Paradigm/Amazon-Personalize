@@ -66,23 +66,42 @@ define([
 			   return false;
 	//		}
 		},
-		
-		dowloadErrorLog: function() {
-			alert('gettin there');
+
+		displayAssets: function() {
+			var field = jQuery("#row_awsp_settings_awsp_assets_asset_display > td.value > p");
+			var url = self.ajaxAssetDisplayUrl;
+			var link = '<a id="asset_download_link" href="' + self.ajaxErrorlogDownloadUrl + '"><span>Download</span> </a>'
+			field.html(link);
+			jQuery.getJSON(url, function(data) { 
+				var html = '<table id="asset_display_table">';
+				// Header
+				   html += '<tr class="asset-header">';
+					html += '<td>Name</td>';
+					html += '<td>Config Path</td>';
+					html += '<td>Value</td>';
+					html += '<td>Last Updated</td>';
+				   html += '</tr>';
+				// Rows
+				data.each(function( item ) {
+				   html += '<tr class="asset-row">';
+					html += '<td class="aName-cell">' + item.name + '</td>';
+					html += '<td class="aPath-cell">' + item.path + '</td>';
+					html += '<td class="aValue-cell">' + item.value + '</td>';
+					html += '<td class="aUpdated-cell">' + item.updated_at + '</td>';
+				   html += '</tr>';
+				});
+				html += '</table>';
+				field.append(html);
+			});
 		},
 
 		displayErrorLog: function() {
-			// hide the '[global]' tag on hidden display field
-			jQuery("#row_awsp_settings_awsp_logs_log_display > td.label > label > span").hide();
-
 			var field = jQuery("#row_awsp_settings_awsp_logs_log_display > td.value > p");
-			var wrapper = jQuery('#error_log_wrapper');
-			var mssg = jQuery('#error_log');
 			var url = self.ajaxErrorlogUrl;
 			var link = '<a id="errorlog_download_link" href="' + self.ajaxErrorlogDownloadUrl + '"><span>Download</span> </a>'
 			field.html(link);
 			jQuery.getJSON(url, function(data) { 
-			var html = '<table id="error_log_table">';
+				var html = '<table id="error_log_table">';
 				data.each(function( item ) {
 				   html += '<tr>';
 					html += "<td>" + JSON.stringify(item).replace(/^"|"$/g, ''); + '</td>';
@@ -91,7 +110,6 @@ define([
 				html += '</table>';
 				field.append(html);
 			});
-			//wrapper.css('display', 'block');
 		},
 		
 		closeErrorLog: function() {
@@ -164,6 +182,7 @@ define([
 				self.disableTrainBttn(true);
 			}
 			self.hideGauge();
+			self.displayAssets();
 			self.displayErrorLog();
 
 			jQuery.getJSON(url, function(data) { 

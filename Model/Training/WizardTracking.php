@@ -119,7 +119,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                     $fname = $this->stepToFuncName($step);
 		    $this->infoLogger->info("WizardTracking runSteps() starting step " . $fname);
                     $this->setStepInprogress($step);
-        	    $this->saveStepData($step,'attempt_number',$this->attempts);
+        	    $this->pHelper->saveStepData($step,'attempt_number',$this->attempts);
                     try {
                         $rtn = $wizard->{$fname}();
                         $check = $wizard->checkStatus($step);
@@ -379,28 +379,28 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
 	}
 
     public function setStepComplete($step) {
-        $this->saveStepData($step,'is_completed', true);
-        $this->saveStepData($step,'in_progress', false);
+        $this->pHelper->saveStepData($step,'is_completed', true);
+        $this->pHelper->saveStepData($step,'in_progress', false);
     }
     
     public function setStepReady($step) {
-        $this->saveStepData($step,'is_completed', null);
-        $this->saveStepData($step,'in_progress', null);
+        $this->pHelper->saveStepData($step,'is_completed', null);
+        $this->pHelper->saveStepData($step,'in_progress', null);
     }
 
     public function setStepInprogress($step) {
-        $this->saveStepData($step,'is_completed', false);
-        $this->saveStepData($step,'in_progress', true);
+        $this->pHelper->saveStepData($step,'is_completed', false);
+        $this->pHelper->saveStepData($step,'in_progress', true);
     }
     
     public function setStepError($step,$message) {
-        $this->saveStepData($step,'error',$message);
+        $this->pHelper->setStepError($step,$message);
     }
     
     public function resetStep($step) {
-        $this->saveStepData($step,'error',null);
-        $this->saveStepData($step,'in_progress', null);
-        $this->saveStepData($step,'is_completed', null);
+        $this->pHelper->saveStepData($step,'error',null);
+        $this->pHelper->saveStepData($step,'in_progress', null);
+        $this->pHelper->saveStepData($step,'is_completed', null);
     }
    
     protected function setStepRetry($step) {
@@ -410,14 +410,14 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
 	    }
 	    $this->infoLogger->info("WizardTracking setStepRetry() -- attempt #: " . $attempt);
 	    if( $attempt >= $this->maxAttempts ) {
-		    $this->saveStepData($step,'in_progress',true);
-		    $this->saveStepData($step,'is_completed',false);
-		    $this->saveStepData($step,'error',"unknown error after $attempt tries");
+		    $this->pHelper->saveStepData($step,'in_progress',true);
+		    $this->pHelper->saveStepData($step,'is_completed',false);
+		    $this->pHelper->saveStepData($step,'error',"unknown error after $attempt tries");
 		    return array();
 	    } else {
-		    $this->saveStepData($step,'attempt_number',$attempt);
-		    $this->saveStepData($step,'is_completed',null);
-		    $this->saveStepData($step,'error',null);
+		    $this->pHelper->saveStepData($step,'attempt_number',$attempt);
+		    $this->pHelper->saveStepData($step,'is_completed',null);
+		    $this->pHelper->saveStepData($step,'error',null);
 		    return $step;
 	    }
     }

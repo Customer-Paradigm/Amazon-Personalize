@@ -17,7 +17,7 @@ use CustomerParadigm\AmazonPersonalize\Helper\Data;
 
 class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\AbstractGenerator
 {
-	protected $enablePadding = false;
+	protected $enablePadding = true;
 	/*
 	 * Array containing csv header keys
 	 */
@@ -69,7 +69,6 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 			// bypass all the collection counting if file is already created with > 1000 entries
 			$file_total = $this->checkActualFileCount();
 			if($file_total > 1001) {
-				var_dump('inside');
 				$this->setDataError(null);
 				return $this;
 			}
@@ -130,8 +129,6 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 	public function checkActualFileCount() {
 		$linecount = 0;
 		$current_file_path = $this->pHelper->getConfigValue('awsp_wizard/data_type_name/interactionUserFile');
-		//var_dump($current_file_path);
-		//die("-=------------'");
 		if( !empty($current_file_path) ) {
 			// Don't include header in data count
 			$linecount = count(file($current_file_path) - 1);

@@ -40,6 +40,38 @@
    display:none;
 }
 
+#row_awsp_settings_awsp_assets_asset_display > td.label > label > span {
+   display:none;
+}
+
+.#asset_display_table > tbody > tr.asset-header {
+	font-weight:bold;
+	font-size:12px;
+	border-bottom: 3px solid black;
+}
+
+#asset_display_table > tbody > tr.asset-row {
+	font-size:10px;
+	border-bottom: 1px solid black;
+}
+
+#asset_display_table > tbody > tr.asset-row > td {
+	border-right: 1px solid black;
+}
+
+#asset_display_table > tbody > tr.asset-row > td.aPath-cell {
+	width: 100px;
+	border-right: 1px solid black;
+}
+
+#asset_display_table > tbody > tr.asset-row > td.aValue-cell {
+	width: 100px;
+}
+
+#row_awsp_settings_awsp_logs_log_display > td.label > label > span {
+   display:none
+}
+
 #license-error-mssg {
    width: 310px;
    margin: 20px;

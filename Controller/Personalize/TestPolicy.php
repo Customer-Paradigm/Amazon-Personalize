@@ -12,12 +12,8 @@ class Test extends \Magento\Framework\App\Action\Action {
     protected $personalizeBase;
     protected $personalizeClient;
     protected $s3;
-    protected $iam;
     protected $importJob;
     protected $stepsReset;
-    protected $errorModel;
-    protected $assetModel;
-    protected $wizardTracking;
 
     public function __construct(
 	\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
@@ -33,12 +29,8 @@ class Test extends \Magento\Framework\App\Action\Action {
 	\CustomerParadigm\AmazonPersonalize\Block\Widget\Display $prodDisplay,
 	\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
         \CustomerParadigm\AmazonPersonalize\Model\Training\s3 $s3,
-        \CustomerParadigm\AmazonPersonalize\Model\Training\Iam $iam,
 	\CustomerParadigm\AmazonPersonalize\Model\Training\ImportJob $importJob,
-	\CustomerParadigm\AmazonPersonalize\Model\Training\StepsReset $stepsReset,
-	\CustomerParadigm\AmazonPersonalize\Model\Error $errorModel,
-	\CustomerParadigm\AmazonPersonalize\Model\Asset $assetModel,
-	\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking
+	\CustomerParadigm\AmazonPersonalize\Model\Training $stepsReset
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->productFactory = $productFactory;
@@ -53,12 +45,8 @@ class Test extends \Magento\Framework\App\Action\Action {
         $this->pHelper = $pHelper;
         $this->homedir = $this->pConfig->getUserHomeDir();
         $this->s3 = $s3;
-        $this->iam = $iam;
         $this->importJob = $importJob;
         $this->stepsReset = $stepsReset;
-        $this->errorModel = $errorModel;
-        $this->assetModel = $assetModel;
-        $this->wizardTracking = $wizardTracking;
         putenv("HOME=$this->homedir");
 
 	parent::__construct($context);
@@ -78,107 +66,48 @@ class Test extends \Magento\Framework\App\Action\Action {
             'version' => 'latest',
             'region' => "$this->region" ]
         );
+
     }
 
     public function execute()
     {
 /* Comment out this redirect to homepage to use the test controller 
 */
-/*
             $resultRedirect = $this->resultRedirectFactory->create();
            $resultRedirect->setPath('');
 	    return $resultRedirect;
+try {
+//    foreach($buckets['Buckets'] as $bucket) {
+    $policy = $this->s3Client->getBucketPolicy([
+        'Bucket' => 'cprdgm-nestle-magento-library-personalize-s3bucket'
+    ]);
+    $location = $this->s3Client->getBucketLocation([
+        'Bucket' => 'cprdgm-nestle-magento-library-personalize-s3bucket'
+    ]);
+    echo "Bucket policy:\n";
+    echo (string) $policy->get('Policy');
+    echo "Location:\n";
+    var_dump($location->get('LocationConstraint'));
+    echo "\n";
+
+} catch (AwsException $e) {
+    // output error message if fails
+    var_dump($e->getMessage());
+}
+die("\n---------End");
+
+/*
+	// test non existant config value
+	    $itemsSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_arn/itemsDatasetArn');
+	// test assetExists function
+	    var_dump($this->assetExists('Datasets', 'cprdgm-mage240-test-users-dataset'));
+	    var_dump($this->assetExists('Datasets', 'cprdgm-mage240-test-items-dataset'));
+	    $schemas = $this->personalizeClient->listSchemas(array('maxResults'=>100));
+	    echo('<pre>');
+	    var_dump($schemas);
+	    echo('</pre>');
+	    die("<br>----hit test");
  */
-	$this->testAssetModel();
-	//$this->testEmail();
-//	$this->errorModel->getAllErrors();
-//	$this->stepsReset->execute();
-	/*
-	$this->testIam();
-	$this->listS3();
-	$this->listBucketContents('cprdgm-mage240-test-personalize-s3bucket');
-var_dump($this->getBucketAcl('cprdgm-mage240-test-personalize-s3bucket'));
-	$this->listPers('Schemas');
-	$this->listPers('DatasetGroups');
-	$this->listPers('Datasets');
-	$this->listPers('DatasetImportJobs');
-	$this->listPers('Solutions');
-	$this->listPers('SolutionVersions');
-	$this->listPers('Campaigns');
-//	$this->listPers('EventTrackers');
-*/
-	echo('done');
-    }
-
-    public function testIam() {
-	    echo('<pre>');
-	    var_dump($this->iam->getStatus());
-	    echo('</pre>');
-    }
-
-    public function testS3Upload() {
-	try {
-	    $this->s3->uploadCsvFiles();
-	} catch (\Exception $e) {
-	    // output error message if fails
-	    var_dump($e->getMessage());
-	    echo "\n";
-	}
-    }
-
-    public function getBucketAcl($bucketName) {
-	try {
-	    $resp = $this->s3Client->getBucketAcl([
-		'Bucket' => $bucketName
-	    ]);
-	    echo "Succeed in retrieving bucket ACL as follows: \n";
-	    var_dump($resp);
-	} catch (AwsException $e) {
-	    // output error message if fails
-	    echo $e->getMessage();
-	    echo "\n";
-	}
-    }
-
-    public function listBucketContents($bucketName) {
-	    echo('<pre>');
-	    var_dump($this->s3Client->listObjectsV2([
-    		'Bucket' => "$bucketName", // REQUIRED
-	    ]));
-	    echo('</pre>');
-    }
-    
-    public function deleteBucketContents($bucketName,$objectKey) {
-	    echo('<pre>');
-	    var_dump($this->s3Client->deleteObject([
-    		'Bucket' => "$bucketName", // REQUIRED
-    		'Key' => "$objectKey", // REQUIRED
-	    ]));
-	    echo('</pre>');
-    }
-
-    public function listS3() {
-	    echo('<pre>');
-	    var_dump($this->s3Client->listBuckets([]));
-	    echo('</pre>');
-	}
-    
-    public function listPers($type) {
-	    echo('<pre>');
-	    $func = 'list' . $type;
-	    var_dump($this->personalizeClient->$func([]));
-	    echo('</pre>');
-    }
-
-    public function testEmail() {
-	    $this->pHelper->sendEmail();
-    }
-
-    public function testAssetModel() {
-	    $rtn = $this->assetModel->getPublicAwsAssetsDisplayData();
-	    echo('<pre>');
-		print_r($rtn);
-	    echo('</pre>');
     }
 
     protected function assetExists($type, $name) {
