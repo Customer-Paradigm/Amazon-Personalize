@@ -10,10 +10,11 @@ class EventTracker extends PersonalizeBase
 
 	public function __construct(
 		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
-		\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper
+		\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
+		\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
 	)
 	{
-		parent::__construct($nameConfig);
+		parent::__construct($nameConfig, $sdkClient);
 		$this->eventTrackerName = $this->nameConfig->buildName('eventTracker');
 		$this->eventTrackerVersionName = $this->nameConfig->buildName('eventTracker-version');
 		$this->pHelper = $pHelper;

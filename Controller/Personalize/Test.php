@@ -1,10 +1,5 @@
 <?php
 namespace CustomerParadigm\AmazonPersonalize\Controller\Personalize;
-
-Use Aws\Personalize\PersonalizeClient;
-Use Aws\Iam\IamClient;
-use Aws\S3\S3Client;
-
 class Test extends \Magento\Framework\App\Action\Action {
 
     protected $pRuntimeClient;

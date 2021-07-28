@@ -13,9 +13,10 @@ class StepsReset extends PersonalizeBase
 	public function __construct(
 		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
 		\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
-		\CustomerParadigm\AmazonPersonalize\Model\Training\s3 $s3Client
+		\CustomerParadigm\AmazonPersonalize\Model\Training\s3 $s3Client,
+		\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
 	) {
-		parent::__construct($nameConfig);
+		parent::__construct($nameConfig,$sdkClient);
 		$this->infoLogger = $nameConfig->getLogger('info');
 		$this->errorLogger = $nameConfig->getLogger('error');
 

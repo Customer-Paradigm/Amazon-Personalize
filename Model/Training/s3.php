@@ -8,22 +8,21 @@ class s3
     protected $nameConfig;
     protected $s3Bucketname;
     protected $s3Client;
+    protected $sdkClient;
     protected $region;
     protected $varDir;
 
     public function __construct(
-        \CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig
+	\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
+	\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
     )
     {
         $this->nameConfig = $nameConfig;
         $this->region = $this->nameConfig->getAwsRegion();
         $this->s3BucketName = $this->nameConfig->buildName('personalize-s3bucket');
 	$this->varDir = $this->nameConfig->getVarDir();
-        $this->s3Client =   new S3Client(
-            [ 'profile' => 'default',
-            'version' => 'latest',
-            'region' => "$this->region" ]
-		);
+	$this->sdkClient = $sdkClient;
+	$this->s3Client =    $this->sdkClient->getClient('s3');
     }
 /* Maybe later
     public function createS3BucketAsync() {
@@ -134,6 +133,7 @@ class s3
     }
 
     public function getUploadStatus() {
+	    $this->s3BucketName = 'calibrated-power-solutions-personalize-s3bucket';
 	    $result = $this->s3Client->listObjects([
 		    'Bucket' => $this->s3BucketName,
 		    'Delimiter' => ',',

@@ -1,11 +1,7 @@
 <?php
 namespace CustomerParadigm\AmazonPersonalize\Controller\Personalize;
 
-Use Aws\Personalize\PersonalizeClient;
-Use Aws\Iam\IamClient;
-use Aws\S3\S3Client;
-
-class Test extends \Magento\Framework\App\Action\Action {
+class TestPolicy extends \Magento\Framework\App\Action\Action {
 
     protected $pRuntimeClient;
     protected $nameConfig;
@@ -13,7 +9,6 @@ class Test extends \Magento\Framework\App\Action\Action {
     protected $personalizeClient;
     protected $s3;
     protected $importJob;
-    protected $stepsReset;
 
     public function __construct(
 	\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
@@ -30,7 +25,7 @@ class Test extends \Magento\Framework\App\Action\Action {
 	\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
         \CustomerParadigm\AmazonPersonalize\Model\Training\s3 $s3,
 	\CustomerParadigm\AmazonPersonalize\Model\Training\ImportJob $importJob,
-	\CustomerParadigm\AmazonPersonalize\Model\Training $stepsReset
+        \CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->productFactory = $productFactory;
@@ -45,44 +40,31 @@ class Test extends \Magento\Framework\App\Action\Action {
         $this->pHelper = $pHelper;
         $this->homedir = $this->pConfig->getUserHomeDir();
         $this->s3 = $s3;
-        $this->importJob = $importJob;
-        $this->stepsReset = $stepsReset;
+	$this->importJob = $importJob;
+	$this->sdkClient = $sdkClient;
         putenv("HOME=$this->homedir");
 
 	parent::__construct($context);
-        $this->region = $this->nameConfig->getAwsRegion();
-	$this->personalizeClient = new PersonalizeClient(
-		[ 'profile' => 'default',
-		'version' => 'latest',
-		'region' => "$this->region" ]
-	);
-        $this->iamClient = new IamClient(
-                [ 'profile' => 'default',
-                'version' => 'latest',
-                'region' => "$this->region" ]
-        );
-        $this->s3Client =   new S3Client(
-            [ 'profile' => 'default',
-            'version' => 'latest',
-            'region' => "$this->region" ]
-        );
-
+	$this->region = $this->nameConfig->getAwsRegion();
+        $this->personalizeClient = $this->sdkClient->getClient('Personalize');
+        $this->iamClient = $this->sdkClient->getClient('Iam');
+        $this->s3Client = $this->sdkClient->getClient('S3');
     }
 
     public function execute()
     {
 /* Comment out this redirect to homepage to use the test controller 
-*/
             $resultRedirect = $this->resultRedirectFactory->create();
            $resultRedirect->setPath('');
 	    return $resultRedirect;
+*/
 try {
 //    foreach($buckets['Buckets'] as $bucket) {
     $policy = $this->s3Client->getBucketPolicy([
-        'Bucket' => 'cprdgm-nestle-magento-library-personalize-s3bucket'
+        'Bucket' => 'calibrated-power-solutions-personalize-s3bucket'
     ]);
     $location = $this->s3Client->getBucketLocation([
-        'Bucket' => 'cprdgm-nestle-magento-library-personalize-s3bucket'
+        'Bucket' => 'calibrated-power-solutions-personalize-s3bucket'
     ]);
     echo "Bucket policy:\n";
     echo (string) $policy->get('Policy');

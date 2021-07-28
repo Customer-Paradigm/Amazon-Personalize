@@ -120,12 +120,18 @@ class Data extends AbstractHelper {
 		$required = array();
 		$simple = array();
 		$customOptions = $this->optionFactory->create()->getProductOptionCollection($product);
+		if(empty($customOptions)) {
+			return $rtn;
+		}
 
 		foreach ($customOptions as $customOption) {
 			$isRequired = $customOption->getIsRequire();
 			$values = $customOption->getValues();
 			$localmax = 0;
 			$localmin = 100000000;
+			if(empty($values)) {
+				continue;
+			}
 			foreach ($values as $value) {
 				$valueData = $value->getData();
 				if(array_key_exists('price', $valueData)) {
@@ -216,8 +222,8 @@ class Data extends AbstractHelper {
             $transport->sendMessage();
             $this->inlineTranslation->resume();
 	} catch (\Exception $e) {
-		die($e->getMessage());
             $this->_logger->info($e->getMessage());
+	    die($e->getMessage());
         }
     }
 }

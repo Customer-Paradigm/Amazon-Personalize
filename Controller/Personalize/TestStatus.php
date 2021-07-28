@@ -13,8 +13,11 @@ class TestStatus extends \Magento\Framework\App\Action\Action {
     protected $schema;
     protected $dataset;
     protected $importjob;
+    protected $solution;
+    protected $solutionVersion;
     protected $errorModel;
     protected $wizardTracking;
+    protected $sdkClient;
 
     public function __construct(
         \CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
@@ -33,8 +36,12 @@ class TestStatus extends \Magento\Framework\App\Action\Action {
         \CustomerParadigm\AmazonPersonalize\Model\Training\Schema $schema,
         \CustomerParadigm\AmazonPersonalize\Model\Training\Dataset $dataset,
         \CustomerParadigm\AmazonPersonalize\Model\Training\ImportJob $importjob,
+        \CustomerParadigm\AmazonPersonalize\Model\Training\Solution $solution,
+        \CustomerParadigm\AmazonPersonalize\Model\Training\SolutionVersion $solutionVersion,
         \CustomerParadigm\AmazonPersonalize\Model\Error $errorModel,
-        \CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking
+	\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
+	\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
+
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->productFactory = $productFactory;
@@ -52,17 +59,16 @@ class TestStatus extends \Magento\Framework\App\Action\Action {
         $this->schema = $schema;
         $this->dataset = $dataset;
         $this->importjob = $importjob;
+        $this->solution = $solution;
+        $this->solutionVersion = $solutionVersion;
         $this->errorModel = $errorModel;
         $this->wizardTracking = $wizardTracking;
+        $this->sdkClient = $sdkClient;
         putenv("HOME=$this->homedir");
 
         parent::__construct($context);
-        $this->region = $this->nameConfig->getAwsRegion();
-        $this->personalizeClient = new PersonalizeClient(
-                [ 'profile' => 'default',
-                'version' => 'latest',
-                'region' => "$this->region" ]
-        );
+	$this->region = $this->nameConfig->getAwsRegion();
+	$this->personalizeClient = $this->sdkClient->getClient('Personalize');
     }
 
     public function execute()
@@ -74,41 +80,56 @@ class TestStatus extends \Magento\Framework\App\Action\Action {
            $resultRedirect->setPath('');
             return $resultRedirect;
  */
-	$this->s3Status();
-	$this->uploadStatus();
-	$this->schemaStatus();
-	$this->datasetStatus();
-	$this->importJobStatus();
+        $this->s3Status();
+        $this->uploadStatus();
+        $this->schemaStatus();
+        $this->datasetStatus();
+        $this->importJobStatus();
+        $this->importJobStatus();
+        $this->solutionStatus();
+        $this->solutionVersionStatus();
         echo("\n--------end tests---------");
     }
 
     public function s3Status() {
-	echo("<pre><div>s3Status</div>");
+        echo("<pre><div>s3Status</div>");
         var_dump($this->s3->checkBucketExists());
-	echo("</pre>");
+        echo("</pre>");
     }
-    
+
     public function uploadStatus() {
-	echo("<pre><div>uploadStatus</div>");
-	var_dump($this->s3->getUploadStatus());
-	echo("</pre>");
+        echo("<pre><div>uploadStatus</div>");
+        var_dump($this->s3->getUploadStatus());
+        echo("</pre>");
     }
-    
+
     public function schemaStatus() {
-	echo("<pre><div>schemaStatus</div>");
-	var_dump($this->schema->getStatus());
-	echo("</pre>");
+        echo("<pre><div>schemaStatus</div>");
+        var_dump($this->schema->getStatus());
+        echo("</pre>");
     }
-    
+
     public function datasetStatus() {
-	echo("<pre><div>datasetStatus</div>");
-	var_dump($this->dataset->getStatus());
-	echo("</pre>");
+        echo("<pre><div>datasetStatus</div>");
+        var_dump($this->dataset->getStatus());
+        echo("</pre>");
     }
 
     public function importJobStatus() {
-	echo("<pre><div>importJobStatus</div>");
+        echo("<pre><div>importJobStatus</div>");
         var_dump($this->importjob->getStatus());
-	echo("</pre>");
+        echo("</pre>");
+    }
+
+    public function solutionStatus() {
+        echo("<pre><div>importJobStatus</div>");
+        var_dump($this->solution->getStatus());
+        echo("</pre>");
+    }
+
+    public function solutionVersionStatus() {
+        echo("<pre><div>importJobStatus</div>");
+        var_dump($this->solutionVersion->getStatus());
+        echo("</pre>");
     }
 }

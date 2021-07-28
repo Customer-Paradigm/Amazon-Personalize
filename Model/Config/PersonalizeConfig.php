@@ -3,7 +3,6 @@
 namespace CustomerParadigm\AmazonPersonalize\Model\Config;
 
 use \Magento\Framework\App\Config\Storage\WriterInterface;
-use \Magento\Framework\App\Config\ScopeConfigInterface;
 use \Magento\Store\Model\StoreManagerInterface;
 use Aws\PersonalizeRuntime\PersonalizeRuntimeClient;
 use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
@@ -11,6 +10,7 @@ use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
 use \Magento\Framework\App\Filesystem\DirectoryList;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 use CustomerParadigm\AmazonPersonalize\Model\InteractionCheck;
+use CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient;
 
 class PersonalizeConfig
 {
@@ -27,6 +27,7 @@ class PersonalizeConfig
     protected $infoLogger;
     protected $clientAccessKey;
     protected $clientSecretKey;
+    protected $sdkClient;
     protected $storeManager;
     protected $storeId;
     protected $directoryList;
@@ -40,30 +41,32 @@ class PersonalizeConfig
      */
     public function __construct(
         WriterInterface $configWriter,
-        ScopeConfigInterface $scopeConfig,
         InfoLogger $infoLogger,
         ErrorLogger $errorLogger,
         StoreManagerInterface $storeManager,
         DirectoryList $directoryList,
 	Data $helper,
-	InteractionCheck $interactionCheck
+	InteractionCheck $interactionCheck,
+	AwsSdkClient $sdkClient
     ) {
         $this->configWriter = $configWriter;
-        $this->scopeConfig = $scopeConfig;
         $this->infoLogger = $infoLogger;
         $this->errorLogger= $errorLogger;
         $this->storeManager = $storeManager;
         $this->directoryList = $directoryList;
         $this->helper = $helper;
         $this->interactionCheck = $interactionCheck;
+        $this->sdkClient = $sdkClient;
         $this->webdir = $this->directoryList->getRoot();
         $this->storeId = $this->storeManager->getStore()->getId();
+        $this->scopeConfig = $sdkClient->getScopeConfig();
         $this->homedir = $this->scopeConfig->getValue('awsp_settings/awsp_general/home_dir', 
 		\Magento\Store\Model\ScopeInterface::SCOPE_STORE,$this->storeId);
 	if(!is_writable($this->homedir)) {
 		$this->homedir =  $this->webdir . "/pub/media";
         	$this->configWriter->save('awsp_settings/awsp_general/home_dir', $this->homedir);
-        }
+	}
+	/*
         $this->region = $this->scopeConfig->getValue('awsp_settings/awsp_general/aws_region', 
                         \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
 	
@@ -71,15 +74,12 @@ class PersonalizeConfig
 	if(empty($this->region)) {
 		$this->region = "us-east-1";
 	}
+	 */
 	
         putenv("HOME=$this->homedir");
 
-        $this->pRuntimeClient = new PersonalizeRuntimeClient (
-            [
-                'profile' => 'default',
-                'version' => 'latest',
-                'region' => "$this->region" ]
-            );
+	$this->region = $this->sdkClient->getAwsRegion('PersonalizeRuntime');
+	$this->pRuntimeClient = $this->sdkClient->getClient('PersonalizeRuntime');
     }
     
     public function saveConfigSetting($path,$value) {
@@ -324,6 +324,10 @@ class PersonalizeConfig
 
         }
         return $rtn;
+    }
+    
+    public function getScopeConfig() {
+	    return $this->scopeConfig;
     }
 
 }

@@ -1,8 +1,5 @@
 <?php
-
 namespace CustomerParadigm\AmazonPersonalize\Controller\Personalize\Runtime;
-
-//use \Aws\PersonalizeRuntime\PersonalizeRuntimeClient;
 
 class Client extends \Magento\Framework\App\Action\Action {
 

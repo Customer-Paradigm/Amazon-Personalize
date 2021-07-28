@@ -20,10 +20,11 @@ class ImportJob extends PersonalizeBase
 
 	public function __construct(
 		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
-                \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper
+		\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
+		\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
 	)
 	{
-		parent::__construct($nameConfig);
+		parent::__construct($nameConfig, $sdkClient);
 		$acct_num = $this->nameConfig->getAwsAccount();
                 $this->pHelper = $pHelper;
 
