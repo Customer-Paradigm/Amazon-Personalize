@@ -8,19 +8,27 @@ use Aws\S3\S3Client;
  */
 use \Magento\Store\Model\StoreManagerInterface;
 use \Magento\Framework\App\Config\ScopeConfigInterface;
+use \Magento\Framework\HTTP\Client\Curl;
+use Magento\Framework\App\Config\Storage\WriterInterface;
 
 class AwsSdkClient implements AwsSdkClientInterface {
 
 	protected $scopeConfig;
+	protected $configWriter;
 	protected $storeId;
 	protected $region;
+	protected $curl;
 
 	public function __construct(
 		ScopeConfigInterface $scopeConfig,
-		StoreManagerInterface $storeManager
+		WriterInterface $configWriter,
+		StoreManagerInterface $storeManager,
+		Curl $curl
 	) {
 		$this->scopeConfig = $scopeConfig;
+		$this->configWriter = $configWriter;
 		$this->storeManager = $storeManager;
+		$this->curl = $curl;
 		$this->storeId = $this->storeManager->getStore()->getId();
 		$this->region = $this->scopeConfig->getValue('awsp_settings/awsp_general/aws_region',
 			\Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
@@ -34,12 +42,16 @@ class AwsSdkClient implements AwsSdkClientInterface {
 
 	public function getClient($type) {
 		$classname = $this->getClientClass($type);
-		$client = new $classname(
-			[ 
-			//'profile' => 'default',
-			'version' => 'latest',
-			'region' => "$this->region" ]
-		);
+		$params = [
+                        'version' => 'latest',
+			'region' => "$this->region" ];
+		
+		// if this module's website is not running on ec2 instance
+		// check for local credentials
+		if(!$this->isEc2Install()) {
+			$params['profile'] = 'default';
+		}
+		$client = new $classname( $params );
 		return $client;
 	}
 
@@ -49,6 +61,27 @@ class AwsSdkClient implements AwsSdkClientInterface {
 	
 	public function getScopeConfig() {
 		return $this->scopeConfig;
+	}
+
+	public function isEc2Install(){
+	  $check = $this->scopeConfig->getValue('awsp_settings/awsp_general/ec2_install',
+		  \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
+	  if($check === NULL) {
+		  $URL = 'http://169.254.169.254/latest/meta-data/ami-id';
+		  $this->curl->setOption(CURLOPT_HEADER, 0);
+		  $this->curl->setOption(CURLOPT_TIMEOUT, 3);
+		  $this->curl->setOption(CURLOPT_RETURNTRANSFER, true);
+		  $this->curl->get($URL);
+		  $response = $this->curl->getBody();
+		  if($response === false) {
+			  $this->configWriter->save('awsp_settings/awsp_general/ec2_install', 0, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,$this->storeId);
+			  return false;
+		  } else {
+			  $this->configWriter->save('awsp_settings/awsp_general/ec2_install', 1, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,$this->storeId);
+			  return true;
+		  }
+	  }
+  	  return $check;
 	}
 
 	protected function getClientClass($typename) {

@@ -4,6 +4,7 @@ namespace CustomerParadigm\AmazonPersonalize\Plugin\Config;
 
 use Psr\Log\LoggerInterface;
 use \Magento\Framework\Shell;
+use \Magento\Framework\Module\Dir;
 use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 use CustomerParadigm\AmazonPersonalize\Model\AbTracking;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
@@ -22,6 +23,11 @@ class AfterSaveConfig
 	 * @var \Magento\Framework\Shell
 	 */
 	protected $shell;
+	
+	/**
+	 * @var \Magento\Framework\Module\Dir
+	 */
+	protected $moduleDir;
 
 	/**
 	 * @var CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig
@@ -55,6 +61,7 @@ class AfterSaveConfig
 	public function __construct(
 		LoggerInterface $logger,
 		Shell $shell,
+		Dir $moduleDir,
 		PersonalizeConfig $pConfig,
 		AbTracking $abTracking,
 		WizardTracking $wizardTracking,
@@ -63,6 +70,7 @@ class AfterSaveConfig
 	) {
 		$this->logger = $logger;
 		$this->shell = $shell;
+		$this->moduleDir = $moduleDir;
 		$this->pConfig = $pConfig;
 		$this->abTracking = $abTracking;
 		$this->wizardTracking = $wizardTracking;
@@ -89,7 +97,8 @@ class AfterSaveConfig
 			// Set credentials for aws php sdk
 			try {
 				//$home_dir = $this->pConfig->getUserHomeDir();
-				$home_dir = getenv("HOME");
+				//$home_dir = getenv("HOME");
+				$cred_dir = $this->moduleDir->getDir('CustomerParadigm_AmazonPersonalize', Dir::MODULE_SETUP_DIR);
 				$region = $this->pConfig->getAwsRegion();
 				$access_key = $this->pConfig->getAccessKey();
 				$secret_key = $this->pConfig->getSecretKey();
@@ -111,10 +120,10 @@ class AfterSaveConfig
 					$save_secret = $client_secret_key;
 				}
 
-				$config_dir = $home_dir .'/.aws';
-				$cred_file = $home_dir . '/.aws/credentials';
-				$config_file = $home_dir . '/.aws/config';
-				$htaccess_file = $home_dir . '/.aws/.htaccess';
+				$config_dir = $cred_dir .'/.aws';
+				$cred_file = $cred_dir . '/.aws/credentials';
+				$config_file = $cred_dir . '/.aws/config';
+				$htaccess_file = $cred_dir . '/.aws/.htaccess';
 				$cmd = "mkdir -p $config_dir && touch $config_file";
 				$output = $this->shell->execute($cmd);
 				$cmd = "touch $cred_file";

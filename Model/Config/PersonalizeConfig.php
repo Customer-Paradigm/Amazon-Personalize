@@ -66,16 +66,7 @@ class PersonalizeConfig
 		$this->homedir =  $this->webdir . "/pub/media";
         	$this->configWriter->save('awsp_settings/awsp_general/home_dir', $this->homedir);
 	}
-	/*
-        $this->region = $this->scopeConfig->getValue('awsp_settings/awsp_general/aws_region', 
-                        \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
-	
-	// Set default region for setup:upgrade, when admin settings are not yet populated
-	if(empty($this->region)) {
-		$this->region = "us-east-1";
-	}
-	 */
-	
+
         putenv("HOME=$this->homedir");
 
 	$this->region = $this->sdkClient->getAwsRegion('PersonalizeRuntime');
