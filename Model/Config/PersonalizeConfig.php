@@ -281,7 +281,7 @@ class PersonalizeConfig
         $acctnum = $this->scopeConfig->getValue('google/analytics/account', 
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
         $hasgatag = strpos($includes, "www.googletagmanager.com/gtag/js?") !== false;
-        $acct_matches = strpos($includes, $acctnum) !== false;
+        $acct_matches = strpos($includes, chr($acctnum)) !== false;
         return $hasgatag && $acct_matches;
     }
 
