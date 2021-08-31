@@ -85,7 +85,9 @@ class Db extends AbstractHelper {
 		$site = $this->storeManager->getStore()->getBaseUrl();
 		$site = rtrim($site,'/');
 		$installed=$this->calc->calcCoupon($site, $val, ""); 
-		if ($installed['notification_case']=="notification_license_ok") {
+		if ($installed['notification_case']=="notification_license_ok"
+		    || $installed['notification_case']=="notification_already_installed"
+		) {
 			$this->logger->info("Amazon personalize " . $installed['notification_case']);
 			$this->setInstalled();
 		} else {

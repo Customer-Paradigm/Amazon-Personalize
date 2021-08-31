@@ -220,13 +220,12 @@ class PersonalizeConfig
         try {
 	    $cred_class = $client->getCredentials();
             $status = $cred_class->getState();
-
             if($status === 'rejected' ) {
                 $this->errorLogger->error("Aws Credentials failed. Looks like .aws file is missing or can't be read");
             }
 
-            if($status === 'fulfilled' ) {
-                $response = $cred_class->wait(true);
+            if($status === 'fulfilled' || $status === 'pending') {
+		$response = $cred_class->wait(true);
                 $client_key = $response->getAccessKeyId();
 		$client_secret = $response->getSecretKey();
 		/*
@@ -255,7 +254,7 @@ class PersonalizeConfig
         } catch( Exception $e ) {
             $this->errorLogger->error('Error checking Aws Creds: ', ['exception' => $e]);
             return false;
-        }
+	}
         return $config_valid;
     }
 
