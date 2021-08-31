@@ -733,7 +733,7 @@ class Calculate
         {
 			if (!empty($this->aplGetLicenseData($this->connection)) && is_array($this->aplGetLicenseData($this->connection))) //license already installed
 			{
-				$notifications_array['notification_case']="notification_already_installed";
+				$notifications_array['notification_case']="notification_license_ok";
 				$notifications_array['notification_text']=APL_NOTIFICATION_SCRIPT_ALREADY_INSTALLED;
 			}
 			else //license not yet installed, do it now
