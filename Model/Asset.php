@@ -69,9 +69,9 @@ class Asset extends \Magento\Framework\Model\AbstractModel
 	$coll->addFieldToFilter('path', ['nlike' => '%rule_%']);
 	$coll->addFieldToFilter('path', ['nlike' => '%crontab%']);
 	$coll->addFieldToFilter('path', ['nlike' => '%calc_error']);
-	$coll->addFieldToFilter('path', ['nlike' => '%calc_coupon']);
+//	$coll->addFieldToFilter('path', ['nlike' => '%calc_coupon']);
 	$coll->addFieldToFilter('path', ['nlike' => '%home_dir']);
-	$coll->addFieldToFilter('path', ['nlike' => '%aws_acct']);
+//	$coll->addFieldToFilter('path', ['nlike' => '%aws_acct']);
 	$coll->addFieldToFilter('path', ['nlike' => '%log_display']);
 	$coll->addFieldToFilter('path', ['nlike' => '%last_val']);
 	return $coll;
