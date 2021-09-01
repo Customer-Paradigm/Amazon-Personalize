@@ -85,7 +85,6 @@ class TestStatus extends \Magento\Framework\App\Action\Action {
         $this->schemaStatus();
         $this->datasetStatus();
         $this->importJobStatus();
-        $this->importJobStatus();
         $this->solutionStatus();
         $this->solutionVersionStatus();
         echo("\n--------end tests---------");
