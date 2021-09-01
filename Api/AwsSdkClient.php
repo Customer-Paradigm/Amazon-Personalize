@@ -66,14 +66,15 @@ class AwsSdkClient implements AwsSdkClientInterface {
 	public function isEc2Install(){
 	  $check = $this->scopeConfig->getValue('awsp_settings/awsp_general/ec2_install',
 		  \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
-	  if($check === NULL) {
-		  $URL = 'http://169.254.169.254/latest/meta-data/ami-id';
+	  if($check === "" || $check === NULL) {
+		  $URL = 'http://169.254.169.254/latest/user-data';
 		  $this->curl->setOption(CURLOPT_HEADER, 0);
 		  $this->curl->setOption(CURLOPT_TIMEOUT, 3);
 		  $this->curl->setOption(CURLOPT_RETURNTRANSFER, true);
 		  $this->curl->get($URL);
 		  $response = $this->curl->getBody();
-		  if($response === false) {
+		  $findLightsail = strpos($response,'Lightsail');
+		  if($response === false || $findLightsail !== false) {
 			  $this->configWriter->save('awsp_settings/awsp_general/ec2_install', 0, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,$this->storeId);
 			  return false;
 		  } else {
