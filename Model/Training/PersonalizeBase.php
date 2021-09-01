@@ -71,6 +71,29 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
                         exit;
                 }
                 return false;
+	}
+
+        public function getAssetArn($type, $name) {
+                try {   
+                        $type = ucfirst($type);
+                        $func_name = "list" . $type;
+                        
+                        $assets = $this->personalizeClient->$func_name(array('maxResults'=>100));
+                        if(empty($assets)) {
+                                return false;
+                        }
+			$type_key = array_key_first($assets->toArray());
+                        foreach($assets[$type_key] as $idx=>$item) {
+                                if($item['name'] === $name) {
+                                        return $item['eventTrackerArn'];
+                                }
+                        }
+                } catch(Exception $e) {
+                        $this->errorLogger->error( "\nassetExists() error. Message:\n" . print_r($e->getMessage(),true));
+                        exit;
+                }
+                return false;
         }
+
 
 }

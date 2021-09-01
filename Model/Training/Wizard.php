@@ -209,13 +209,12 @@ class Wizard
     }
     
     public function createEventTracker() {
-        try {
-            $this->eventTracker->createEventTracker();
-            $this->setStepError('create_event_tracker','');
-        } catch (\Exception $e) {
-	    $this->errorLogger->error("\nCreate EventTracker error: \n" . $e->getMessage());
-            $this->setStepError('create_event_tracker',$e->getMessage());
-        }
+            if($tracker = $this->eventTracker->createEventTracker() === true) {
+		    $this->setStepError('create_event_tracker','');
+	    } else {
+	    	$this->errorLogger->error("\nCreate EventTracker error: \n" . $tracker->getMessage());
+            	$this->setStepError('create_event_tracker',$tracker->getMessage());
+	    }
     }
 
     public function checkStatus($step_name) {
