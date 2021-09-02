@@ -4,7 +4,7 @@ namespace CustomerParadigm\AmazonPersonalize\Model\Training;
 
 use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 use \Magento\Framework\App\Config\Storage\WriterInterface;
-use \Magento\Framework\App\Config\ScopeConfigInterface;
+//use \Magento\Framework\App\Config\ScopeConfigInterface;
 use \Magento\Store\Model\StoreManagerInterface;
 use Aws\PersonalizeRuntime\PersonalizeRuntimeClient;
 use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
@@ -12,6 +12,7 @@ use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
 use \Magento\Framework\App\Filesystem\DirectoryList;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 use CustomerParadigm\AmazonPersonalize\Model\InteractionCheck;
+use CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient;
 
 class NameConfig extends PersonalizeConfig
 {
@@ -23,6 +24,7 @@ class NameConfig extends PersonalizeConfig
     protected $pRuntimeClient;
     protected $errorLogger;
     protected $infoLogger;
+    protected $sdkClient;
     protected $storeManager;
     protected $store;
     protected $directoryList;
@@ -30,21 +32,21 @@ class NameConfig extends PersonalizeConfig
 
     public function __construct(
         WriterInterface $configWriter,
-        ScopeConfigInterface $scopeConfig,
         InfoLogger $infoLogger,
         ErrorLogger $errorLogger,
         StoreManagerInterface $storeManager,
         DirectoryList $directoryList,
 	Data $helper,
-	InteractionCheck $interactionCheck
+	InteractionCheck $interactionCheck,
+	AwsSdkClient $sdkClient
     ) {
         $this->configWriter = $configWriter;
-        $this->scopeConfig = $scopeConfig;
+        $this->scopeConfig = $this->getScopeConfig();
         $this->storeManager = $storeManager;
         $this->directoryList = $directoryList;
         $this->helper = $helper;
         $this->store = $this->storeManager->getStore();
-        parent::__construct($configWriter, $scopeConfig, $infoLogger, $errorLogger, $storeManager, $directoryList, $helper,$interactionCheck);
+        parent::__construct($configWriter, $infoLogger, $errorLogger, $storeManager, $directoryList, $helper,$interactionCheck,$sdkClient);
     }
 
     public function buildName($type) {

@@ -1,10 +1,5 @@
 <?php
 namespace CustomerParadigm\AmazonPersonalize\Controller\Personalize;
-
-Use Aws\Personalize\PersonalizeClient;
-Use Aws\Iam\IamClient;
-use Aws\S3\S3Client;
-
 class Test extends \Magento\Framework\App\Action\Action {
 
     protected $pRuntimeClient;
@@ -18,6 +13,7 @@ class Test extends \Magento\Framework\App\Action\Action {
     protected $errorModel;
     protected $assetModel;
     protected $wizardTracking;
+    protected $sdkClient;
 
     public function __construct(
 	\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
@@ -38,7 +34,8 @@ class Test extends \Magento\Framework\App\Action\Action {
 	\CustomerParadigm\AmazonPersonalize\Model\Training\StepsReset $stepsReset,
 	\CustomerParadigm\AmazonPersonalize\Model\Error $errorModel,
 	\CustomerParadigm\AmazonPersonalize\Model\Asset $assetModel,
-	\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking
+	\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
+	\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->productFactory = $productFactory;
@@ -59,25 +56,14 @@ class Test extends \Magento\Framework\App\Action\Action {
         $this->errorModel = $errorModel;
         $this->assetModel = $assetModel;
         $this->wizardTracking = $wizardTracking;
+        $this->sdkClient = $sdkClient;
         putenv("HOME=$this->homedir");
 
 	parent::__construct($context);
         $this->region = $this->nameConfig->getAwsRegion();
-	$this->personalizeClient = new PersonalizeClient(
-		[ 'profile' => 'default',
-		'version' => 'latest',
-		'region' => "$this->region" ]
-	);
-        $this->iamClient = new IamClient(
-                [ 'profile' => 'default',
-                'version' => 'latest',
-                'region' => "$this->region" ]
-        );
-        $this->s3Client =   new S3Client(
-            [ 'profile' => 'default',
-            'version' => 'latest',
-            'region' => "$this->region" ]
-        );
+	$this->personalizeClient = $this->sdkClient->getClient('Personalize');
+	$this->iamClient = $this->sdkClient->getClient('Iam');
+	$this->s3Client = $this->sdkClient->getClient('S3');
     }
 
     public function execute()
@@ -89,23 +75,26 @@ class Test extends \Magento\Framework\App\Action\Action {
            $resultRedirect->setPath('');
 	    return $resultRedirect;
  */
-	$this->testAssetModel();
+//	$this->testAssetModel();
 	//$this->testEmail();
 //	$this->errorModel->getAllErrors();
 //	$this->stepsReset->execute();
+	//$this->testIam();
+	//$this->listS3();
+	//$this->getS3Status();
+	//$this->listBucketContents('cprdgm-mage240-test-personalize-s3bucket');
 	/*
-	$this->testIam();
-	$this->listS3();
-	$this->listBucketContents('cprdgm-mage240-test-personalize-s3bucket');
 var_dump($this->getBucketAcl('cprdgm-mage240-test-personalize-s3bucket'));
-	$this->listPers('Schemas');
-	$this->listPers('DatasetGroups');
+$this->listPers('Schemas');
+	 $this->listPers('DatasetGroups');
 	$this->listPers('Datasets');
 	$this->listPers('DatasetImportJobs');
 	$this->listPers('Solutions');
 	$this->listPers('SolutionVersions');
+	 */
 	$this->listPers('Campaigns');
-//	$this->listPers('EventTrackers');
+	    /*
+	$this->listPers('EventTrackers');
 */
 	echo('done');
     }
@@ -157,9 +146,16 @@ var_dump($this->getBucketAcl('cprdgm-mage240-test-personalize-s3bucket'));
 	    echo('</pre>');
     }
 
+    public function getS3Status() {
+	    echo('<pre>');
+	    var_dump($this->s3->getUploadStatus());
+	    echo('</pre>');
+    }
+
     public function listS3() {
 	    echo('<pre>');
-	    var_dump($this->s3Client->listBuckets([]));
+	    //var_dump($this->s3Client->listBuckets([]));
+	    var_dump($this->s3->listS3Buckets([]));
 	    echo('</pre>');
 	}
     

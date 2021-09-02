@@ -12,6 +12,7 @@ class TestCampaign extends \Magento\Framework\App\Action\Action {
     protected $campaign;
     protected $errorModel;
     protected $wizardTracking;
+    protected $sdkClient;
 
     public function __construct(
 	\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
@@ -28,7 +29,9 @@ class TestCampaign extends \Magento\Framework\App\Action\Action {
 	\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
         \CustomerParadigm\AmazonPersonalize\Model\Training\Campaign $campaign,
 	\CustomerParadigm\AmazonPersonalize\Model\Error $errorModel,
-        \CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking
+	\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
+	\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
+
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->productFactory = $productFactory;
@@ -44,16 +47,13 @@ class TestCampaign extends \Magento\Framework\App\Action\Action {
         $this->homedir = $this->pConfig->getUserHomeDir();
         $this->campaign = $campaign;
         $this->errorModel = $errorModel;
-        $this->wizardTracking = $wizardTracking;
+	$this->wizardTracking = $wizardTracking;
+	$this->sdkClient = $sdkClient;
         putenv("HOME=$this->homedir");
 
 	parent::__construct($context);
-        $this->region = $this->nameConfig->getAwsRegion();
-	$this->personalizeClient = new PersonalizeClient(
-		[ 'profile' => 'default',
-		'version' => 'latest',
-		'region' => "$this->region" ]
-	);
+	$this->region = $this->nameConfig->getAwsRegion();
+	$this->personalizeClient = $this->sdkClient->getClient('Personalize');
     }
 
     public function execute()

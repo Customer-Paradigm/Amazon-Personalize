@@ -10,10 +10,11 @@ class Campaign extends PersonalizeBase
 
 	public function __construct(
 		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
-                \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper
+		\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
+		\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
 	)
     {
-        parent::__construct($nameConfig);
+        parent::__construct($nameConfig,$sdkClient);
         $this->campaignName = $this->nameConfig->buildName('campaign');
         $this->campaignArn = $this->nameConfig->buildArn('campaign', $this->campaignName);
 	$this->campaignVersionName = $this->nameConfig->buildName('campaign-version');

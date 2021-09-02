@@ -1,8 +1,10 @@
 <?php
 namespace CustomerParadigm\AmazonPersonalize\Model\Training;
 
+/*
 use Aws\Iam\IamClient; 
 Use Aws\Sts\StsClient;
+ */
 use Aws\Exception\AwsException;
 
 class Iam extends PersonalizeBase
@@ -10,27 +12,21 @@ class Iam extends PersonalizeBase
 	protected $nameConfig;
 	protected $region;
 	protected $varDir;
+	protected $sdkClient;
 	protected $IamClient;
 	protected $stsClient;
 
 	public function __construct(
-		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig
+		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
+		\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
 	)
 	{
-		parent::__construct($nameConfig);
+		parent::__construct($nameConfig, $sdkClient);
 		$this->region = $this->nameConfig->getAwsRegion();
 		$this->varDir = $this->nameConfig->getVarDir();
-		$this->IamClient =   new IamClient(
-			[ 'profile' => 'default',
-			'version' => 'latest',
-			'region' => "$this->region" ]
-		);
-		$this->stsClient = new StsClient(
-			[ 'profile' => 'default',
-			'version' => 'latest',
-			'region' => "$this->region" ]
-		);
-
+		$this->sdkClient = $sdkClient;
+		$this->IamClient = $this->sdkClient->getClient('Iam');
+		$this->stsClient = $this->sdkClient->getClient('Sts');
 	}
 
 	public function createPersonalizeS3Role() {
@@ -53,7 +49,6 @@ class Iam extends PersonalizeBase
 				]
 			)->wait();
 			$this->infoLogger->info( $result);
-			$this->errorLogger->error( $result);
 			$this->nameConfig->saveArn('personalizeS3RoleArn', $result[0]['Arn']);
 		} catch (AwsException $e) {
 			$this->errorLogger->error( $e->getMessage());
@@ -72,6 +67,21 @@ class Iam extends PersonalizeBase
         } else {
             return 'complete';
 	}
+    }
+
+    public function listRoles() {
+        $result = $this->IamClient->ListRoles();
+	return $result;
+    }
+
+    public function assumeRole() {
+	$ARN = "arn:aws:iam::138144570375:role/service-role/AmazonPersonalize-ExecutionRole-1571349773158";
+	$sessionName = "iam-access-role";
+	$result = $this->stsClient->AssumeRole([
+  	    'RoleArn' => $ARN,
+      	    'RoleSessionName' => $sessionName,
+    	]);
+	return $result;
     }
 
 }

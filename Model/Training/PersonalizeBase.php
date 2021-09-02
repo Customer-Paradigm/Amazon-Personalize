@@ -10,13 +10,15 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
 	protected $region;
 	protected $varDir;
 	protected $baseName;
+	protected $sdkClient;
 	protected $apiCreate;
 	protected $apiDescribe;
 	protected $infoLogger;
 	protected $errorLogger;
 
 	public function __construct(
-		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig
+		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
+		\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
 	)
     	{
 		$this->baseName = (new \ReflectionClass($this))->getShortName();
@@ -26,12 +28,8 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
 		$this->region = $this->nameConfig->getAwsRegion();
 		$this->infoLogger = $nameConfig->getLogger('info');
 		$this->errorLogger = $nameConfig->getLogger('error');
-		
-		$this->personalizeClient = new PersonalizeClient(
-			[ 'profile' => 'default',
-			'version' => 'latest',
-			'region' => "$this->region" ]
-		);
+		$this->sdkClient = $sdkClient;
+		$this->personalizeClient = $this->sdkClient->getClient('Personalize');
 	}
 
         public function checkAssetCreatedAndSync($type_name,$step_name,$name_value,$arn_value) {
@@ -80,6 +78,29 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
                         exit;
                 }
                 return false;
+	}
+
+        public function getAssetArn($type, $name) {
+                try {   
+                        $type = ucfirst($type);
+                        $func_name = "list" . $type;
+                        
+                        $assets = $this->personalizeClient->$func_name(array('maxResults'=>100));
+                        if(empty($assets)) {
+                                return false;
+                        }
+			$type_key = array_key_first($assets->toArray());
+                        foreach($assets[$type_key] as $idx=>$item) {
+                                if($item['name'] === $name) {
+                                        return $item['eventTrackerArn'];
+                                }
+                        }
+                } catch(Exception $e) {
+                        $this->errorLogger->error( "\nassetExists() error. Message:\n" . print_r($e->getMessage(),true));
+                        exit;
+                }
+                return false;
         }
+
 
 }

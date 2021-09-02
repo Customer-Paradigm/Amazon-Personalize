@@ -1,8 +1,6 @@
 <?php
 namespace CustomerParadigm\AmazonPersonalize\Controller\Personalize;
 
-Use Aws\Personalize\PersonalizeClient;
-
 class TestImportJob extends \Magento\Framework\App\Action\Action {
 
     protected $pRuntimeClient;
@@ -12,6 +10,7 @@ class TestImportJob extends \Magento\Framework\App\Action\Action {
     protected $importjob;
     protected $errorModel;
     protected $wizardTracking;
+    protected $sdkClient;
 
     public function __construct(
 	\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
@@ -28,7 +27,8 @@ class TestImportJob extends \Magento\Framework\App\Action\Action {
 	\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
         \CustomerParadigm\AmazonPersonalize\Model\Training\ImportJob $importjob,
 	\CustomerParadigm\AmazonPersonalize\Model\Error $errorModel,
-        \CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking
+	\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
+        \CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->productFactory = $productFactory;
@@ -45,15 +45,12 @@ class TestImportJob extends \Magento\Framework\App\Action\Action {
         $this->importjob = $importjob;
         $this->errorModel = $errorModel;
         $this->wizardTracking = $wizardTracking;
+        $this->sdkClient = $sdkClient;
         putenv("HOME=$this->homedir");
 
 	parent::__construct($context);
-        $this->region = $this->nameConfig->getAwsRegion();
-	$this->personalizeClient = new PersonalizeClient(
-		[ 'profile' => 'default',
-		'version' => 'latest',
-		'region' => "$this->region" ]
-	);
+	$this->personalizeClient = $this->sdkClient->getClient('Personalize');
+	$this->region = $this->nameConfig->getAwsRegion();
     }
 
     public function execute()

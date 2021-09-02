@@ -6,26 +6,43 @@ Use Aws\Personalize\PersonalizeClient;
 class EventTracker extends PersonalizeBase
 {
 	protected $eventTrackerName;
+	protected $eventTrackerArn;
 	protected $pHelper;
 
 	public function __construct(
 		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
-		\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper
+		\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
+		\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
 	)
 	{
-		parent::__construct($nameConfig);
+		parent::__construct($nameConfig, $sdkClient);
 		$this->eventTrackerName = $this->nameConfig->buildName('eventTracker');
+		$this->eventTrackerArn = $this->nameConfig->buildArn('event-tracker','');
 		$this->eventTrackerVersionName = $this->nameConfig->buildName('eventTracker-version');
 		$this->pHelper = $pHelper;
 	}
 
 	public function createEventTracker() {
 		$datasetGroupArn = $this->nameConfig->getArn('datasetGroupArn');
-		$result = $this->personalizeClient->{$this->apiCreate}([
-			'name' => $this->eventTrackerName,
-			'datasetGroupArn' => $datasetGroupArn,
-		]
-	)->wait();
+		try {
+			$result = $this->personalizeClient->{$this->apiCreate}([
+				'name' => $this->eventTrackerName,
+				'datasetGroupArn' => $datasetGroupArn,
+				]
+			)->wait();
+		} catch(\Exception $e) {
+			$mssg = $e->getMessage();
+			$exists = strpos($mssg,'ResourceAlreadyExistsException');
+			if( $exists === false ) {
+				return false;
+			} else {
+				if($aarn = $this->getAssetArn('eventTrackers',$this->eventTrackerName)){
+					$this->nameConfig->saveName('eventTrackerName', $this->eventTrackerName);
+					$this->nameConfig->saveArn('eventTrackerArn', $aarn);
+				}
+				return true;
+			}
+		}
 		$this->nameConfig->saveName('eventTrackerName', $this->eventTrackerName);
 		$this->nameConfig->saveArn('eventTrackerArn', $result['eventTrackerArn']);
 
@@ -33,8 +50,11 @@ class EventTracker extends PersonalizeBase
 	}
 
 	public function getStatus() {
+		if($this->assetExists('eventTrackers',$this->eventTrackerName)){
+			return 'complete';
+		}
+
 		try {
-			$arn = $this->nameConfig->getArn('eventTrackerArn');
 			$rslt = $this->personalizeClient->{$this->apiDescribe}([
 				'eventTrackerArn' => $arn,
 			]);

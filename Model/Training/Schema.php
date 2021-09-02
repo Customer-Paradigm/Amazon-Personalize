@@ -18,10 +18,11 @@ class Schema extends PersonalizeBase
 
 	public function __construct(
 		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
-		\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking
+		\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
+		\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
 	)
 	{
-		parent::__construct($nameConfig);
+		parent::__construct($nameConfig,$sdkClient);
 		$this->wizardTracking = $wizardTracking;
 		$this->infoLogger = $nameConfig->getLogger('info');
 		$this->errorLogger = $nameConfig->getLogger('error');

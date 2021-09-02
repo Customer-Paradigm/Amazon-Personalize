@@ -2,6 +2,7 @@
 namespace CustomerParadigm\AmazonPersonalize\Api\Personalize;
 
 use Aws\PersonalizeRuntime\PersonalizeRuntimeClient;
+use Aws\PersonalizeEvents\PersonalizeEventsClient;
 use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 
@@ -26,7 +27,7 @@ class RuntimeClient implements RuntimeClientInterface {
         $this->pHelper = $pHelper;
         $this->pRuntimeClient = new PersonalizeRuntimeClient (
             [ 
-            'profile' => 'default',
+           // 'profile' => 'default',
             'version' => 'latest',
             'region' => "$region" ]
         );

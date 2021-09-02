@@ -12,10 +12,11 @@ class Solution extends PersonalizeBase
 
 	public function __construct(
 		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
-                \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper
+		\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
+		\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
 	)
 	{
-		parent::__construct($nameConfig);
+		parent::__construct($nameConfig,$sdkClient);
 		$this->solutionName = $this->nameConfig->buildName('solution');
 		$this->solutionArn = $this->nameConfig->buildArn('solution',$this->solutionName);
 

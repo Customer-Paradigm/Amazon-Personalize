@@ -13,10 +13,11 @@ class DatasetGroup extends PersonalizeBase
 	public function __construct(
 		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
 		\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
-		\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper
+		\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
+		\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
 	)
     {
-    parent::__construct($nameConfig);
+    parent::__construct($nameConfig,$sdkClient);
         $this->datasetGroupName = $this->nameConfig->buildName('dataset-group');
         $this->datasetGroupArn = $this->nameConfig->buildArn('dataset-group',$this->datasetGroupName);
 	$this->wizardTracking = $wizardTracking;

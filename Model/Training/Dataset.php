@@ -16,14 +16,13 @@ class Dataset extends PersonalizeBase
 	protected $usersSchemaArn;
 	protected $itemsSchemaArn;
 	protected $interactionsSchemaArn;
-//	protected $infoLogger;
-//	protected $errorLogger;
 
 	public function __construct(
-		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig
+		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
+		\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
 	)
 	{
-		parent::__construct($nameConfig);
+		parent::__construct($nameConfig,$sdkClient);
 		$this->datasetGroupName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/datasetGroupName');
 		$this->datasetGroupArn = $this->nameConfig->buildArn('dataset-group',$this->datasetGroupName);
 
