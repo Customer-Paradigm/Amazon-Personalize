@@ -86,12 +86,18 @@ class Asset extends \Magento\Framework\Model\AbstractModel
     protected function getSettingDisplayData($collection) {
 	    $rtn = array();
 	    foreach($collection as $item) {
-                $data = $item->getData();
-                $rtn[] = array( 
+		$data = $item->getData();
+		$updated_at = '';
+		// for Magento 2.3.x backward compatibility
+		if(array_key_exists('upated_at',$data)) {
+			$updated_at = $data['updated_at'];
+		}
+		
+		$rtn[] = array( 
 				'name' => $this->mapSettingDisplayName($data['path']),
 				'path' => $data['path'],
 				'value' => $data['value'],
-				'updated_at' => $data['updated_at']
+				'updated_at' => $updated_at
 			);
             }
 	return $rtn;

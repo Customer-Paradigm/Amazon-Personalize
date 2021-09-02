@@ -60,7 +60,14 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
                         if(empty($assets)) {
                                 return false;
                         }
-                        $type_key = array_key_first($assets->toArray());
+                        $type_key = null;
+			foreach($assets as $key => $unused) {
+		    		$type_key = $key;
+				break;
+			}
+			if( empty($type_key)) { 
+				return false; 
+			}
                         foreach($assets[$type_key] as $idx=>$item) {
                                 if($item['name'] === $name) {
                                         return true;

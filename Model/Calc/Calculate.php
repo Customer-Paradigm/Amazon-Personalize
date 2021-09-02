@@ -41,46 +41,46 @@ class Calculate
 	protected $configWriter;
 	protected $moddir;
 	protected $scopeConfig;
-    protected $scope;
-    protected $cssServer;
-    protected $cssVersion;
-    protected $cssVersionTtl;
-    protected $ruleKey;
-    protected $ruleTable;
-    protected $logger;
+	protected $scope;
+	protected $cssServer;
+	protected $cssVersion;
+	protected $cssVersionTtl;
+	protected $ruleKey;
+	protected $ruleTable;
+	protected $logger;
 
 	public function __construct(
 		\Magento\Framework\App\ResourceConnection $resource,
-        \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone,
-        \Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
-        ScopeConfigInterface $scopeConfig,
-        LoggerInterface $logger
+		\Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone,
+		\Magento\Framework\App\Config\Storage\WriterInterface $configWriter,
+		ScopeConfigInterface $scopeConfig,
+		LoggerInterface $logger
 	) {
 		$this->resource = $resource;
 		$this->connection = $this->resource->getConnection();
 		$this->timezone = $timezone;
-        $this->configWriter = $configWriter;
-        $this->moddir = __DIR__;
-        $this->scopeConfig = $scopeConfig;
-        $this->scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
-        $this->logger = $logger;
+		$this->configWriter = $configWriter;
+		$this->moddir = __DIR__;
+		$this->scopeConfig = $scopeConfig;
+		$this->scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
+		$this->logger = $logger;
 
-        $this->cssServer = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_server', $this->scope);
-        $this->cssVersion = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_version', $this->scope);
-        $this->cssVersionTtl = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_version_ttl', $this->scope);
-        //$this->ruleKey = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
-        $this->ruleKey = $this->setRule();
-       // $this->ruleKey = 'awequei909aezn';
-        $this->ruleTable = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_table', $this->scope);
+		$this->cssServer = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_server', $this->scope);
+		$this->cssVersion = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_version', $this->scope);
+		$this->cssVersionTtl = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_version_ttl', $this->scope);
+		//$this->ruleKey = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
+		$this->ruleKey = $this->setRule();
+		// $this->ruleKey = 'awequei909aezn';
+		$this->ruleTable = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_table', $this->scope);
 	}
 
-    public function setRule() {
-        $key = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
-        if( empty($key) ) {
-            $this->configWriter->save('awsp_settings/awsp_general/rule_key', bin2hex(random_bytes(16)));
-        }
+	public function setRule() {
+		$key = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
+		if( empty($key) ) {
+			$this->configWriter->save('awsp_settings/awsp_general/rule_key', bin2hex(random_bytes(16)));
+		}
 		return $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
-    }
+	}
 
 	public function aplCustomEncrypt($string, $key)
 	{
@@ -317,12 +317,12 @@ class Calculate
 			);
 
 			$result=curl_exec($ch);
-            $curl_error=curl_error($ch); 
-            if( $curl_error ) {
-                $this->logger->error( "\nCalc curl post error" . $curl_error);
-            }
-            
-            curl_close($ch);
+			$curl_error=curl_error($ch); 
+			if( $curl_error ) {
+				$this->logger->error( "\nCalc curl post error" . $curl_error);
+			}
+
+			curl_close($ch);
 
 			$server_response_array['headers']=$formatted_headers_array;
 			$server_response_array['error']=$curl_error;
@@ -457,7 +457,7 @@ class Calculate
 
 	//check Auto PHP Licenser core configuration and return an array with error messages if something wrong
 	public function aplCheckSettings()
-    {
+	{
 		$notifications_array=array();
 
 		if (empty($this->ruleKey) || $this->ruleKey=="some_random_text") //invalid encryption salt
@@ -527,7 +527,7 @@ class Calculate
 			{
 				$notifications_array[]=APL_CORE_NOTIFICATION_INVALID_DNS; //actual nameservers of Auto PHP Licenser server don't match specified nameservers
 			}
-        }
+		}
 		return $notifications_array;
 	}
 
@@ -587,14 +587,14 @@ class Calculate
 
 
 	//return an array with license data,no matter where license is stored
-    public function aplGetLicenseData($connection=null) {
+	public function aplGetLicenseData($connection=null) {
 		$settings_row=array();
 		$rtn = array();
 
-        if($this->calcTableExists()) {
-            $settings_row= $this->connection->fetchAssoc("SELECT * FROM ".$this->ruleTable);
-            $rtn = count($settings_row) > 0 ? $settings_row[1] : array();
-        }
+		if($this->calcTableExists()) {
+			$settings_row= $this->connection->fetchAssoc("SELECT * FROM ".$this->ruleTable);
+			$rtn = count($settings_row) > 0 ? $settings_row[1] : array();
+		}
 
 		return $rtn;
 	}
@@ -625,19 +625,19 @@ class Calculate
 
 	//check license data and return false if something wrong
 	public function aplCheckData($connection=null)
-    {
+	{
 		$error_detected=0;
 		$cracking_detected=0;
 		$result=false;
 
-        extract($this->aplGetLicenseData($this->connection));
+		extract($this->aplGetLicenseData($this->connection));
 		if (!empty($ROOT_URL) && !empty($INSTALLATION_HASH) && !empty($INSTALLATION_KEY) && !empty($LCD) && !empty($LRD)) //do further check only if essential variables are valid
-        {
-            $LCD=$this->aplCustomDecrypt($LCD, $this->ruleKey.$INSTALLATION_KEY); 
-            $LRD=$this->aplCustomDecrypt($LRD, $this->ruleKey.$INSTALLATION_KEY); 
+		{
+			$LCD=$this->aplCustomDecrypt($LCD, $this->ruleKey.$INSTALLATION_KEY); 
+			$LRD=$this->aplCustomDecrypt($LRD, $this->ruleKey.$INSTALLATION_KEY); 
 
 			if (!filter_var($ROOT_URL, FILTER_VALIDATE_URL) || !ctype_alnum(substr($ROOT_URL, -1))) //invalid installation url
-            {
+			{
 				$error_detected=1;
 			}
 
@@ -651,12 +651,12 @@ class Calculate
 				$error_detected=1;
 			}
 			if (empty($INSTALLATION_KEY) || !password_verify($LRD, $this->aplCustomDecrypt($INSTALLATION_KEY, $this->ruleKey.$ROOT_URL))) //invalid installation key (value - current date ("Y-m-d") encrypted with password_hash and then encrypted with custom public function (salt - $ROOT_URL). Put simply, it's LRD value, only encrypted different way)
-            {
+			{
 				$error_detected=1;
 			}
 
 			if (! $this->aplVerifyDateTime($LCD, "Y-m-d")) //last check date is invalid
-            {
+			{
 				$error_detected=1;
 			}
 
@@ -688,7 +688,7 @@ class Calculate
 			{
 				$this->aplDeleteData($this->connection);
 			}
-            //check for possible cracking attempts - ends
+			//check for possible cracking attempts - ends
 
 			if ($error_detected!=1 && $cracking_detected!=1) //everything OK
 			{
@@ -726,18 +726,18 @@ class Calculate
 	//install license
 
 	public function calcCoupon($ROOT_URL, $CLIENT_EMAIL, $LICENSE_CODE, $connection=null)
-    {
+	{
 		$notifications_array=array();
 
 		if (empty($apl_core_notifications=$this->aplCheckSettings())) //only continue if script is properly configured
-        {
+		{
 			if (!empty($this->aplGetLicenseData($this->connection)) && is_array($this->aplGetLicenseData($this->connection))) //license already installed
 			{
 				$notifications_array['notification_case']="notification_license_ok";
 				$notifications_array['notification_text']=APL_NOTIFICATION_SCRIPT_ALREADY_INSTALLED;
 			}
 			else //license not yet installed, do it now
-            {
+			{
 				if (empty($apl_user_input_notifications=$this->aplCheckUserInput($ROOT_URL, $CLIENT_EMAIL, $LICENSE_CODE))) //data submitted by user is valid
 				{
 					$INSTALLATION_HASH=hash("sha256", $ROOT_URL.$CLIENT_EMAIL.$LICENSE_CODE); //generate hash
@@ -751,32 +751,32 @@ class Calculate
 						$LCD=$this->aplCustomEncrypt(date("Y-m-d", strtotime("-".$this->cssVersionTtl." days")), $this->ruleKey.$INSTALLATION_KEY); //license will need to be verified right after installation
 						$LRD=$this->aplCustomEncrypt(date("Y-m-d"), $this->ruleKey.$INSTALLATION_KEY);
 
-                        $content_array=$this->aplCustomPost($this->cssServer."/apl_callbacks/license_scheme.php", $post_info, $ROOT_URL); //get license scheme (use the same $post_info from license installation)
-                        $notifications_array=$this->aplParseServerNotifications($content_array, $ROOT_URL, $CLIENT_EMAIL, $LICENSE_CODE); //process response from Auto PHP Licenser server
-                        if (!empty($notifications_array['notification_data']) && !empty($notifications_array['notification_data']['scheme_query'])) //valid scheme received
-                        {
-                            $mysql_bad_array=array("%APL_DATABASE_TABLE%", "%ROOT_URL%", "%CLIENT_EMAIL%", "%LICENSE_CODE%", "%LCD%", "%LRD%", "%INSTALLATION_KEY%", "%INSTALLATION_HASH%");
-                            
-                            $mysql_good_array=array($this->ruleTable, $ROOT_URL, $CLIENT_EMAIL, $LICENSE_CODE, $LCD, $LRD, $INSTALLATION_KEY, $INSTALLATION_HASH);
+						$content_array=$this->aplCustomPost($this->cssServer."/apl_callbacks/license_scheme.php", $post_info, $ROOT_URL); //get license scheme (use the same $post_info from license installation)
+						$notifications_array=$this->aplParseServerNotifications($content_array, $ROOT_URL, $CLIENT_EMAIL, $LICENSE_CODE); //process response from Auto PHP Licenser server
+						if (!empty($notifications_array['notification_data']) && !empty($notifications_array['notification_data']['scheme_query'])) //valid scheme received
+						{
+							$mysql_bad_array=array("%APL_DATABASE_TABLE%", "%ROOT_URL%", "%CLIENT_EMAIL%", "%LICENSE_CODE%", "%LCD%", "%LRD%", "%INSTALLATION_KEY%", "%INSTALLATION_HASH%");
 
-                            $license_scheme=str_replace($mysql_bad_array, $mysql_good_array, $notifications_array['notification_data']['scheme_query']); 
-                            $query_array = explode(';',$license_scheme);
+							$mysql_good_array=array($this->ruleTable, $ROOT_URL, $CLIENT_EMAIL, $LICENSE_CODE, $LCD, $LRD, $INSTALLATION_KEY, $INSTALLATION_HASH);
 
-                            // create table if it doesn't exist
-			    if( ! $this->calcTableExists() ) {
-				try {
-					$this->connection->query($query_array[0]);
-				} catch(Exception $e) {
-            				$this->logger->error( "\nCalc config connection error:  " . $e->getMessage());
-				}
-                            }
-                            // insert data
-			    try {
-				    $this->connection->query($query_array[1]); 
-			    } catch(Exception $e) {
-				$this->logger->error( "\nCalc config data insert error:  " . $e->getMessage());
-			    }
-                        }
+							$license_scheme=str_replace($mysql_bad_array, $mysql_good_array, $notifications_array['notification_data']['scheme_query']); 
+							$query_array = explode(';',$license_scheme);
+
+							// create table if it doesn't exist
+							if( ! $this->calcTableExists() ) {
+								try {
+									$this->connection->query($query_array[0]);
+								} catch(Exception $e) {
+									$this->logger->error( "\nCalc config connection error:  " . $e->getMessage());
+								}
+							}
+							// insert data
+							try {
+								$this->connection->query($query_array[1]); 
+							} catch(Exception $e) {
+								$this->logger->error( "\nCalc config data insert error:  " . $e->getMessage());
+							}
+						}
 
 					}
 				}
@@ -791,7 +791,7 @@ class Calculate
 		{
 			$notifications_array['notification_case']="notification_script_corrupted";
 			$notifications_array['notification_text']=implode("; ", $apl_core_notifications);
-            		$this->logger->error( "\nCalc config error:  " . print_r($notifications_array,true));
+			$this->logger->error( "\nCalc config error:  " . print_r($notifications_array,true));
 		}
 
 		return $notifications_array;
@@ -854,8 +854,8 @@ class Calculate
 					$LCD=$this->aplCustomEncrypt($LCD, $this->ruleKey.$INSTALLATION_KEY); //finally encrypt $LCD value (it will contain either DECRYPTED old date, either non-encrypted today's date)
 					$LRD=$this->aplCustomEncrypt(date("Y-m-d"), $this->ruleKey.$INSTALLATION_KEY); //generate new $LRD value every time database needs to be updated (because if LCD is higher than LRD, cracking attempt will be detected).
 
-                    $update = "UPDATE " .$this->ruleTable. " SET LCD='$LCD', LRD='$LRD', INSTALLATION_KEY='$INSTALLATION_KEY'";
-                    $this->connection->query($update);
+					$update = "UPDATE " .$this->ruleTable. " SET LCD='$LCD', LRD='$LRD', INSTALLATION_KEY='$INSTALLATION_KEY'";
+					$this->connection->query($update);
 				}
 			}
 			else //license is not installed yet or corrupted
@@ -964,27 +964,27 @@ class Calculate
 	}
 
 	public function calcUninstall($connection=null)
-    {
+	{
 		$notifications_array=array();
 
 		if (empty($apl_core_notifications=$this->aplCheckSettings())) //only continue if script is properly configured
-        {
+		{
 			if ($this->aplCheckData($this->connection)) //only continue if license is installed and properly configured
-            {
-                extract($this->aplGetLicenseData($this->connection)); //get license data;
+			{
+				extract($this->aplGetLicenseData($this->connection)); //get license data;
 
 				$post_info="product_id=".rawurlencode($this->cssVersion)."&client_email=".rawurlencode($CLIENT_EMAIL)."&license_code=".rawurlencode($LICENSE_CODE)."&root_url=".rawurlencode($ROOT_URL)."&installation_hash=".rawurlencode($INSTALLATION_HASH)."&license_signature=".rawurlencode($this->aplGenerateScriptSignature($ROOT_URL, $CLIENT_EMAIL, $LICENSE_CODE));
 
 				$content_array=$this->aplCustomPost($this->cssServer."/apl_callbacks/license_uninstall.php", $post_info, $ROOT_URL);
 				$notifications_array=$this->aplParseServerNotifications($content_array, $ROOT_URL, $CLIENT_EMAIL, $LICENSE_CODE); //process response from Auto PHP Licenser server
-                if ($notifications_array['notification_case']=="notification_license_ok"
-                    || $notifications_array['notification_case']=="notification_installation_not_found" ) 
+				if ($notifications_array['notification_case']=="notification_license_ok"
+					|| $notifications_array['notification_case']=="notification_installation_not_found" ) 
 				{
-                    $delqry = "DELETE FROM ".$this->ruleTable;
-                    $dropqry = "DROP TABLE ".$this->ruleTable;
-                    $this->connection->query($delqry);
-                    $this->connection->query($dropqry);
-                    $this->configWriter->save('awsp_settings/awsp_general/calc_active',false, $this->scope);
+					$delqry = "DELETE FROM ".$this->ruleTable;
+					$dropqry = "DROP TABLE ".$this->ruleTable;
+					$this->connection->query($delqry);
+					$this->connection->query($dropqry);
+					$this->configWriter->save('awsp_settings/awsp_general/calc_active',false, $this->scope);
 				}
 			}
 			else //license is not installed yet or corrupted
@@ -999,11 +999,11 @@ class Calculate
 			$notifications_array['notification_text']=implode("; ", $apl_core_notifications);
 		}
 		return $notifications_array;
-    }
+	}
 
 	public function calcTableExists() {
 		$check_qry = "SHOW TABLES LIKE '%" . $this->ruleTable . "%'";
-        $check = $this->connection->fetchOne($check_qry);
+		$check = $this->connection->fetchOne($check_qry);
 		return $check !== false;
 	}
 }
