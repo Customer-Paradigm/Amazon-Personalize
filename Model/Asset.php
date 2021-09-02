@@ -88,7 +88,7 @@ class Asset extends \Magento\Framework\Model\AbstractModel
 	    foreach($collection as $item) {
 		$data = $item->getData();
 		$updated_at = '';
-		// for Magento 3.x backward compatibility
+		// for Magento 2.3.x backward compatibility
 		if(array_key_exists('upated_at',$data)) {
 			$updated_at = $data['updated_at'];
 		}
