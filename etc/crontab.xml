@@ -7,10 +7,7 @@
  */
 -->
 <config>
-    <group id="aws_setup">
-        <job name="aws_set_cli" instance="CustomerParadigm\AmazonPersonalize\Cron\AwscliInstall" method="execute">
-			<config_path>awsp_settings/crontab/aws_set_cli</config_path>
-        </job>
+	<group id="aws_setup">
         <job name="aws_data_setup" instance="CustomerParadigm\AmazonPersonalize\Controller\Adminhtml\Config\Train" method="execute">
 			<config_path>awsp_settings/crontab/aws_data_setup</config_path>
         </job>
