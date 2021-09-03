@@ -217,20 +217,13 @@ class PersonalizeConfig
 
             if($status === 'fulfilled' || $status === 'pending') {
 		$response = $cred_class->wait(true);
-                $client_key = $response->getAccessKeyId();
+		
+		$client_key = $response->getAccessKeyId();
 		$client_secret = $response->getSecretKey();
-		/*
-		if(!empty($client_key)){
-			putEnv("AWS_ACCESS_KEY_ID=$client_key");
-			var_dump(getEnv("AWS_ACCESS_KEY_ID"));
-			die("----------------");
-		}
-		if(!empty($client_secret)){
-			putEnv("AWS_SECRET_ACCESS_KEY=$client_secret");
-		}
-		 */
+
                 $saved_key = $this->getAccessKey();
-                $saved_secret = $this->getSecretKey();
+		$saved_secret = $this->getSecretKey();
+
                 if( !empty($client_key) &&
                     ($client_key != $saved_key) &&
                     !empty($client_secret) &&
