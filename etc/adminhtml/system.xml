@@ -15,7 +15,7 @@
 			</group>
 			<group id="awsp_general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
 				<label>Setup</label>
-				<field id="calc_coupon" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+				<field id="calc_coupon" translate="label" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>License Key</label>
 				</field>
 				<field id="calc_active" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
@@ -40,20 +40,20 @@
 					<field id="awsp_settings/awsp_general/ec2_install">0</field>
 				    </depends>
 				</field>
-				<field id="aws_acct" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+				<field id="aws_acct" translate="label" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Aws Account Number</label>
 				    <depends>
 					<field id="awsp_settings/awsp_general/ec2_install">0</field>
 				    </depends>
 				</field>
-				<field id="access_key" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+				<field id="access_key" translate="label" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Access Key</label>
 					<comment>Amazon account access key</comment>
 				    <depends>
 					<field id="awsp_settings/awsp_general/ec2_install">0</field>
 				    </depends>
 				</field>
-				<field id="secret_key" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+				<field id="secret_key" translate="label" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Secret Key</label>
 					<comment>Amazon account secret key</comment>
 				    <depends>
