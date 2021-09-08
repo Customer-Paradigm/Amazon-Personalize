@@ -170,8 +170,8 @@ class Events
     }
 
     protected function _findCustomerId() {
-        $sess_id = $this->customerSession->getSessionId();
-        $cust_id = $sess_id;
+        //$sess_id = $this->customerSession->getSessionId();
+        $cust_id = 9000000000; // 9G should be past range of actual customers
 
         if( $this->customerSession->isLoggedIn() )  {
             $cust_id = $this->customerSession->getCustomer()->getId();
