@@ -4,7 +4,7 @@ namespace CustomerParadigm\AmazonPersonalize\Plugin\Config;
 
 use Psr\Log\LoggerInterface;
 use \Magento\Framework\Shell;
-use \Magento\Framework\Module\Dir;
+use \Magento\Framework\App\Filesystem\DirectoryList;
 use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 use CustomerParadigm\AmazonPersonalize\Model\AbTracking;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
@@ -61,7 +61,7 @@ class AfterSaveConfig
 	public function __construct(
 		LoggerInterface $logger,
 		Shell $shell,
-		Dir $moduleDir,
+		DirectoryList $moduleDir,
 		PersonalizeConfig $pConfig,
 		AbTracking $abTracking,
 		WizardTracking $wizardTracking,
@@ -98,7 +98,7 @@ class AfterSaveConfig
 			try {
 				//$home_dir = $this->pConfig->getUserHomeDir();
 				//$home_dir = getenv("HOME");
-				$cred_dir = $this->moduleDir->getDir('CustomerParadigm_AmazonPersonalize', Dir::MODULE_SETUP_DIR);
+				$cred_dir = $this->moduleDir->getPath('media');
 				$region = $this->pConfig->getAwsRegion();
 				$access_key = $this->pConfig->getAccessKey();
 				$secret_key = $this->pConfig->getSecretKey();
@@ -106,15 +106,13 @@ class AfterSaveConfig
 				$client_secret_key = $this->pConfig->getClientSecretKey();
 
 
-				if(!empty($access_key)
-					&& $access_key !== "saved") {
+				if(!empty($access_key)) {
 					$save_key = $access_key;
 				} else {
 					$save_key = $client_access_key;
 				}
 
-				if(!empty($secret_key)
-					&& $secret_key !== "saved") {
+				if(!empty($secret_key)) {
 					$save_secret = $secret_key;
 				} else {
 					$save_secret = $client_secret_key;
@@ -148,7 +146,7 @@ class AfterSaveConfig
 				$cmd = 'echo "'. $config_entry . '" >' . $config_file;
 				$output = $this->shell->execute($cmd);
 
-				$this->pConfig->saveKeys('saved','saved');
+				$this->pConfig->saveKeys($save_key,$save_secret);
 				$this->calc->setRule();
 
 				$procStatus =  $this->wizardTracking->getProcessStatus()['status'];

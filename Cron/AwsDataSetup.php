@@ -15,7 +15,7 @@ use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 
 
 /**
- * Class AwscliInstall
+ * Class AwsDataSetup
  * @package CustomerParadigm\AmazonPersonalize\Cron
  */
 class AwsDataSetup

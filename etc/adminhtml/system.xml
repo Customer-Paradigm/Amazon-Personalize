@@ -40,7 +40,7 @@
 					<field id="awsp_settings/awsp_general/ec2_install">0</field>
 				    </depends>
 				</field>
-				<field id="aws_acct" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+				<field id="aws_acct" translate="label" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Aws Account Number</label>
 				    <depends>
 					<field id="awsp_settings/awsp_general/ec2_install">0</field>
