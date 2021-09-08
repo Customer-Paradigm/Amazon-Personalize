@@ -15,7 +15,7 @@
 			</group>
 			<group id="awsp_general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
 				<label>Setup</label>
-				<field id="calc_coupon" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+				<field id="calc_coupon" translate="label" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>License Key</label>
 				</field>
 				<field id="calc_active" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
@@ -36,17 +36,29 @@
 				<field id="aws_region" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Aws Region</label>
 					<comment>Aws region in which your data will be located</comment>
+				    <depends>
+					<field id="awsp_settings/awsp_general/ec2_install">0</field>
+				    </depends>
 				</field>
 				<field id="aws_acct" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Aws Account Number</label>
+				    <depends>
+					<field id="awsp_settings/awsp_general/ec2_install">0</field>
+				    </depends>
 				</field>
-				<field id="access_key" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+				<field id="access_key" translate="label" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Access Key</label>
 					<comment>Amazon account access key</comment>
+				    <depends>
+					<field id="awsp_settings/awsp_general/ec2_install">0</field>
+				    </depends>
 				</field>
-				<field id="secret_key" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+				<field id="secret_key" translate="label" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Secret Key</label>
 					<comment>Amazon account secret key</comment>
+				    <depends>
+					<field id="awsp_settings/awsp_general/ec2_install">0</field>
+				    </depends>
 				</field>
 				<field id="data_range" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Data Range</label>
@@ -56,6 +68,7 @@
 					<frontend_model>CustomerParadigm\AmazonPersonalize\Block\Adminhtml\Config\Train</frontend_model>
 					<label>Export data and train campaign</label>
 				</field>
+				<field id="ec2_install" translate="label" type="hidden" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0"/>
 			</group>
 			<group id="awsp_assets" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
 				<label>Assets Created</label>

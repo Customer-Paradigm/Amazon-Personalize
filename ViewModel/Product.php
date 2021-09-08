@@ -79,6 +79,7 @@ class Product extends DataObject implements ArgumentInterface
     }
    
     public function getViewableProducts($idList, $count = 2000) {
+	$count = intval($count);
         $used_parent_ids = array();
         $idArray = array();
 
