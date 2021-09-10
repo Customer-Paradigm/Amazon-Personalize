@@ -68,6 +68,7 @@ class Test extends \Magento\Framework\App\Action\Action {
 
     public function execute()
     {
+	    var_dump($this->nameConfig->getStoreName());
 /* Comment out this redirect to homepage to use the test controller 
 */
 /*
@@ -92,7 +93,7 @@ $this->listPers('Schemas');
 	$this->listPers('Solutions');
 	$this->listPers('SolutionVersions');
 	 */
-	$this->listPers('Campaigns');
+//	$this->listPers('Campaigns');
 	    /*
 	$this->listPers('EventTrackers');
 */

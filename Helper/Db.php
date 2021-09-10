@@ -22,6 +22,7 @@ class Db extends AbstractHelper {
 	protected $f1;
 	protected $f2;
 	protected $serializer;
+	protected $storeName;
 
 	public function __construct( 
 		Context $context,
@@ -37,6 +38,11 @@ class Db extends AbstractHelper {
 		$this->serializer = $serializer;
 		$this->scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
 		$this->storeName = $this->scopeConfig->getValue('general/store_information/name', $this->scope);
+		$testrule =  $this->getRuleId($this->storeName);
+		if(strpos($testrule,'No results found') !== false) {
+			$this->storeName = $this->storeManager->getStore()->getBaseUrl();
+			$this->storeName = parse_url($this->storeName, PHP_URL_HOST);
+		}
 		$this->ruleId = $this->getRuleId($this->storeName);
 		$this->prep($this->ruleId);
 		$this->calc = $calc;
