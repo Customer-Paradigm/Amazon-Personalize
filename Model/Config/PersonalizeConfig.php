@@ -135,13 +135,30 @@ class PersonalizeConfig
 
     public function getStoreName() {
 
-        $name = $this->scopeConfig->getValue('general/store_information/name',
+        $configname = $this->scopeConfig->getValue('general/store_information/name',
 		\Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
-	if( empty($name) ) {
+	$configname = $this->awsCleanName($configname);
+        $s3name = $this->scopeConfig->getValue('awsp_wizard/data_type_name/s3BucketName',
+		\Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
+	if(!empty($s3name && strpos($s3name, $configname) !== false)) { // storename from config is already in use, continue with that
+	    $name = $configname;
+	} else {
 	    $url = $this->storeManager->getStore()->getBaseUrl();
 	    $name = parse_url($url, PHP_URL_HOST);
+	    $name = $this->awsCleanName($name) . '-' . $this->storeId;
 	}
 	return $name;
+    }
+
+    public function awsCleanName($storeName) {
+	$storeName = trim($storeName); // clean leading/trailing spaces
+	$storeName = preg_replace('/[^A-Za-z0-9\-\.\s]/', '', $storeName); // Removes special chars
+	$storeName = explode(' ', $storeName);
+        $storeName = array_slice($storeName, 0, 3);
+        $storeName = implode('-', $storeName);
+        $storeName = strtolower($storeName);
+
+	return $storeName;
     }
 
     public function isEnabled() {
