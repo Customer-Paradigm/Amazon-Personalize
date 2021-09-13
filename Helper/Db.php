@@ -108,7 +108,7 @@ class Db extends AbstractHelper {
 	}
 
 	public function setInstalled() {
-		$this->configWriter->save('awsp_settings/awsp_general/calc_active',true, $this->scope);
+		$this->configWriter->save('awsp_settings/awsp_general/calc_active',1, $this->scope);
 		$this->setError(null);
 		$this->configWriter->save('awsp_settings/awsp_general/rule_ft1', filemtime($this->f1), $this->scope);
 		$this->configWriter->save('awsp_settings/awsp_general/rule_ft2', filemtime($this->f2), $this->scope);
