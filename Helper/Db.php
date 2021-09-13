@@ -39,7 +39,8 @@ class Db extends AbstractHelper {
 		$this->scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
 		$this->storeName = $this->scopeConfig->getValue('general/store_information/name', $this->scope);
 		$testrule =  $this->getRuleId($this->storeName);
-		if(strpos($testrule,'No results found') !== false) {
+		if(strpos($testrule,'No results found') !== false
+		  || strpos($testrule,'"error_detected":1') !== false) {
 			$this->storeName = $this->storeManager->getStore()->getBaseUrl();
 			$this->storeName = parse_url($this->storeName, PHP_URL_HOST);
 		}
