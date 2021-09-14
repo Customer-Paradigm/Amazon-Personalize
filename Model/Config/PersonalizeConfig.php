@@ -140,7 +140,7 @@ class PersonalizeConfig
 	$configname = $this->awsCleanName($configname);
         $s3name = $this->scopeConfig->getValue('awsp_wizard/data_type_name/s3BucketName',
 		\Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
-	if(!empty($s3name && strpos($s3name, $configname) !== false)) { // storename from config is already in use, continue with that
+	if(!empty($configname) && !empty($s3name) && strpos($s3name, $configname) !== false){ // storename from config is already in use, continue with that
 	    $name = $configname;
 	} else {
 	    $url = $this->storeManager->getStore()->getBaseUrl();

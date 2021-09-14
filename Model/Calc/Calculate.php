@@ -67,20 +67,10 @@ class Calculate
 
 		$this->cssServer = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_server', $this->scope);
 		$this->cssVersion = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_version', $this->scope);
-//		$this->cssVersion = '68';
 		$this->cssVersionTtl = $this->scopeConfig->getValue('awsp_settings/awsp_general/css_version_ttl', $this->scope);
 		//$this->ruleKey = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
 		$this->ruleKey = $this->setRule();
-		// $this->ruleKey = 'awequei909aezn';
 		$this->ruleTable = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_table', $this->scope);
-		/*
-		var_dump($this->scope);
-		var_dump($this->cssServer);
-		var_dump($this->cssVersion);
-		var_dump($this->cssVersionTtl);
-		var_dump($this->ruleTable);
-		die("--------------");
-		 */
 	}
 
 	public function setRule() {
@@ -974,7 +964,6 @@ class Calculate
 
 	public function calcUninstall($connection=null)
 	{
-		//die("ininst");
 		$notifications_array=array();
 
 		if (empty($apl_core_notifications=$this->aplCheckSettings())) //only continue if script is properly configured
