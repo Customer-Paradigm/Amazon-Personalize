@@ -133,6 +133,13 @@ class PersonalizeConfig
         return $key;
     }
 
+    public function ec2Flag() {
+	$val = $this->scopeConfig->getValue('awsp_settings/awsp_general/ec2_install',
+		\Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
+	$val = $val == NULL? 0 : $val;
+	return $val;
+    }
+
     public function getStoreName() {
 
         $configname = $this->scopeConfig->getValue('general/store_information/name',
@@ -244,7 +251,8 @@ class PersonalizeConfig
                 if( !empty($client_key) &&
                     ($client_key != $saved_key) &&
                     !empty($client_secret) &&
-                    ($client_secret != $saved_secret)
+		    ($client_secret != $saved_secret) &&
+		    ! $this->ec2Flag()
                 ) {
                     $config_valid = array('client_key'=>$client_key, 'client_secret'=>$client_secret);
                 } else {

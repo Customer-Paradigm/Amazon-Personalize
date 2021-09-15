@@ -110,7 +110,7 @@ class Data extends AbstractHelper {
 	public function canDisplayAdmin() {
 		return 
 			$this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/enable', $this->scope )
-			&& $this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/aws_acct', $this->scope )
+			&& $this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/access_key', $this->scope )
 			&& $this->db->enabled();
 	}
 

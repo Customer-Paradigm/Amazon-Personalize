@@ -51,7 +51,9 @@ class NameConfig extends PersonalizeConfig
 
     public function buildName($type) {
 	$storeName = $this->getStoreName();
-	$storeName = preg_replace('/\./', '_',$storeName);
+	if($type !== 'personalize-s3bucket') { // replace period with underscore for all but S3 bucket name
+		$storeName = preg_replace('/\./', '_',$storeName);
+	}
 	return 'cprdgm-' . $storeName . '-' . $type;
     }
     

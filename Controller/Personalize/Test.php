@@ -81,7 +81,7 @@ class Test extends \Magento\Framework\App\Action\Action {
 //	$this->errorModel->getAllErrors();
 //	$this->stepsReset->execute();
 	//$this->testIam();
-	//$this->listS3();
+	$this->listS3();
 	//$this->getS3Status();
 	//$this->listBucketContents('cprdgm-mage240-test-personalize-s3bucket');
 	/*
@@ -155,8 +155,8 @@ $this->listPers('Schemas');
 
     public function listS3() {
 	    echo('<pre>');
-	    //var_dump($this->s3Client->listBuckets([]));
-	    var_dump($this->s3->listS3Buckets([]));
+	    var_dump($this->s3Client->listBuckets([]));
+	//    var_dump($this->s3->listS3Buckets([]));
 	    echo('</pre>');
 	}
     
