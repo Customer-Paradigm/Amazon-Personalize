@@ -100,6 +100,9 @@ class Data extends AbstractHelper {
 		return $rtn;
 	}
 
+	public function ec2Flag() {
+		return $this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/ec2_install', $this->scope );
+	}
 	public function canDisplay() {
 		return 
 			$this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/enable', $this->scope )
@@ -108,10 +111,22 @@ class Data extends AbstractHelper {
 	}
 	
 	public function canDisplayAdmin() {
-		return 
-			$this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/enable', $this->scope )
-			&& $this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/access_key', $this->scope )
-			&& $this->db->enabled();
+		$rtn = false;
+		$mod_enabled = $this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/enable', $this->scope );
+		$creds_saved = $this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/access_key', $this->scope );
+		$is_ec2 = $this->ec2Flag();
+		$db_enabled = $this->db->enabled;
+		if($is_ec2) {
+			if( $mod_enabled && $db_enabled ) {
+				$rtn = true;
+			}
+		} else {
+			if( $mod_enabled && $db_enabled && $creds_saved ) {
+				$rtn = true;
+			}
+		}
+
+		return $rtn; 
 	}
 
 	public function getProductOptionsPriceRange($product) {

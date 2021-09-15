@@ -96,8 +96,10 @@ class AfterSaveConfig
 
 			// Set credentials for aws php sdk
 			try {
-				//$home_dir = $this->pConfig->getUserHomeDir();
-				//$home_dir = getenv("HOME");
+				if($this->pConfig->ec2Flag()) { // Bypass creds save if module is installed on an EC2 instance
+					return $result;
+				}
+
 				$cred_dir = $this->moduleDir->getPath('media');
 				$region = $this->pConfig->getAwsRegion();
 				$access_key = $this->pConfig->getAccessKey();
@@ -156,9 +158,7 @@ class AfterSaveConfig
 					$this->pConfig->setCron('aws_data_setup','off');
 				} else {
 					$this->logger->info('Aws plugin data create Cron on -------------');
-					/* TODO debug */
 					$this->pConfig->setCron('aws_data_setup','on');
-					//$this->pConfig->setCron('aws_data_setup','off');
 				}
 			} catch (\Exception $e) {
 				$this->logger->critical('Aws Creds Save Error:', ['exception' => $e]);
