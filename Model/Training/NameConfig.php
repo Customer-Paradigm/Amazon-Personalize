@@ -11,6 +11,7 @@ use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
 use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
 use \Magento\Framework\App\Filesystem\DirectoryList;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
+use CustomerParadigm\AmazonPersonalize\Helper\Aws;
 use CustomerParadigm\AmazonPersonalize\Model\InteractionCheck;
 use CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient;
 
@@ -37,6 +38,7 @@ class NameConfig extends PersonalizeConfig
         StoreManagerInterface $storeManager,
         DirectoryList $directoryList,
 	Data $helper,
+	Aws $awsHelper,
 	InteractionCheck $interactionCheck,
 	AwsSdkClient $sdkClient
     ) {
@@ -45,8 +47,9 @@ class NameConfig extends PersonalizeConfig
         $this->storeManager = $storeManager;
         $this->directoryList = $directoryList;
         $this->helper = $helper;
+        $this->awsHelper = $awsHelper;
         $this->store = $this->storeManager->getStore();
-        parent::__construct($configWriter, $infoLogger, $errorLogger, $storeManager, $directoryList, $helper,$interactionCheck,$sdkClient);
+        parent::__construct($configWriter, $infoLogger, $errorLogger, $storeManager, $directoryList, $helper, $awsHelper, $interactionCheck, $sdkClient);
     }
 
     public function buildName($type) {

@@ -10,6 +10,7 @@ use Magento\Framework\App\Cache\Frontend\Pool;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
 use CustomerParadigm\AmazonPersonalize\Helper\Db;
+use CustomerParadigm\AmazonPersonalize\Helper\Aws;
 use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
 use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
 use \Magento\Framework\App\ResourceConnection;
@@ -24,6 +25,7 @@ class Data extends AbstractHelper {
 	protected $cacheFrontendPool;
 	protected $resource;
 	protected $db;
+	protected $awsHelper;
 	protected $infoLogger;
 	protected $errorLogger;
 	protected $scope;
@@ -40,6 +42,7 @@ class Data extends AbstractHelper {
 		Pool $cacheFrontendPool,
 		ResourceConnection $resource,
 		Db $db,
+		Aws $awsHelper,
 		InfoLogger $infoLogger,
 		ErrorLogger $errorLogger,
 		WriterInterface $configWriter,
@@ -54,6 +57,7 @@ class Data extends AbstractHelper {
 		$this->resource = $resource;
 		$this->connection = $this->resource->getConnection();
 		$this->db = $db;
+		$this->awsHelper = $awsHelper;
 		$this->infoLogger = $infoLogger;
 		$this->errorLogger = $errorLogger;
 		$this->configWriter = $configWriter;
@@ -100,9 +104,6 @@ class Data extends AbstractHelper {
 		return $rtn;
 	}
 
-	public function ec2Flag() {
-		return $this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/ec2_install', $this->scope );
-	}
 	public function canDisplay() {
 		return 
 			$this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/enable', $this->scope )
@@ -114,8 +115,8 @@ class Data extends AbstractHelper {
 		$rtn = false;
 		$mod_enabled = $this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/enable', $this->scope );
 		$creds_saved = $this->scopeConfig->isSetFlag( 'awsp_settings/awsp_general/access_key', $this->scope );
-		$is_ec2 = $this->ec2Flag();
-		$db_enabled = $this->db->enabled;
+		$is_ec2 = $this->awsHelper->isEc2Install();
+		$db_enabled = $this->db->enabled();
 		if($is_ec2) {
 			if( $mod_enabled && $db_enabled ) {
 				$rtn = true;

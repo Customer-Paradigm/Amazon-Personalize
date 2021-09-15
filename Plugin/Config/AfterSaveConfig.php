@@ -11,6 +11,8 @@ use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 use CustomerParadigm\AmazonPersonalize\Helper\Db;
 use CustomerParadigm\AmazonPersonalize\Model\Calc\Calculate;
+use CustomerParadigm\AmazonPersonalize\Helper\Aws;
+use CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient;
 
 class AfterSaveConfig
 {
@@ -53,7 +55,12 @@ class AfterSaveConfig
 	 * @var CustomerParadigm\AmazonPersonalize\Model\Calc\Calculate
 	 */
 	protected $calc;
-
+	
+	protected $awsHelper;
+	
+	protected $sdkClient;
+	
+	protected $stsClient;
 
 	/**
 	 * AfterSaveConfig constructor.
@@ -66,7 +73,9 @@ class AfterSaveConfig
 		AbTracking $abTracking,
 		WizardTracking $wizardTracking,
 		Db $dbHelper,
-		Calculate $calc
+		Aws $awsHelper,
+		Calculate $calc,
+		AwsSdkClient $sdkClient
 	) {
 		$this->logger = $logger;
 		$this->shell = $shell;
@@ -75,7 +84,10 @@ class AfterSaveConfig
 		$this->abTracking = $abTracking;
 		$this->wizardTracking = $wizardTracking;
 		$this->dbHelper = $dbHelper;
+		$this->awsHelper = $awsHelper;
 		$this->calc = $calc;
+		$this->sdkClient = $sdkClient;
+		$this->stsClient = $this->sdkClient->getClient('sts');
 	}
 
 	public function afterSave( \Magento\Config\Model\Config $subject, $result) {
@@ -96,7 +108,9 @@ class AfterSaveConfig
 
 			// Set credentials for aws php sdk
 			try {
-				if($this->pConfig->ec2Flag()) { // Bypass creds save if module is installed on an EC2 instance
+				if($this->awsHelper->isEc2Install()) { // Save account numeber but not other creds if module is installed on an EC2 instance
+					$value = $this->stsClient->GetCallerIdentity()['Account'];
+					$this->pConfig->saveConfigSetting('awsp_settings/awsp_general/aws_acct',$value);
 					return $result;
 				}
 
@@ -165,6 +179,7 @@ class AfterSaveConfig
 			}
 
 		} 
+		$this->helper->flushCacheType('config');
 		return $result;
 	}
 

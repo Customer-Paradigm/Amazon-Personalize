@@ -9,6 +9,7 @@ use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
 use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
 use \Magento\Framework\App\Filesystem\DirectoryList;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
+use CustomerParadigm\AmazonPersonalize\Helper\Aws;
 use CustomerParadigm\AmazonPersonalize\Model\InteractionCheck;
 use CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient;
 
@@ -33,7 +34,9 @@ class PersonalizeConfig
     protected $directoryList;
     protected $webdir;
     protected $helper;
+    protected $awsHelper;
     protected $interactionCheck;
+    protected $stsClient;
 
     /**
      * AfterSaveConfig constructor.
@@ -46,6 +49,7 @@ class PersonalizeConfig
         StoreManagerInterface $storeManager,
         DirectoryList $directoryList,
 	Data $helper,
+	Aws $awsHelper,
 	InteractionCheck $interactionCheck,
 	AwsSdkClient $sdkClient
     ) {
@@ -55,6 +59,7 @@ class PersonalizeConfig
         $this->storeManager = $storeManager;
         $this->directoryList = $directoryList;
         $this->helper = $helper;
+        $this->awsHelper = $awsHelper;
         $this->interactionCheck = $interactionCheck;
         $this->sdkClient = $sdkClient;
         $this->webdir = $this->directoryList->getRoot();
@@ -71,6 +76,7 @@ class PersonalizeConfig
 
 	$this->region = $this->sdkClient->getAwsRegion('PersonalizeRuntime');
 	$this->pRuntimeClient = $this->sdkClient->getClient('PersonalizeRuntime');
+	$this->stsClient = $this->sdkClient->getClient('sts');
     }
     
     public function saveConfigSetting($path,$value) {
@@ -131,13 +137,6 @@ class PersonalizeConfig
             $key = empty($val) ? false : $val['client_secret'];
         }
         return $key;
-    }
-
-    public function ec2Flag() {
-	$val = $this->scopeConfig->getValue('awsp_settings/awsp_general/ec2_install',
-		\Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeId);
-	$val = $val == NULL? 0 : $val;
-	return $val;
     }
 
     public function getStoreName() {
@@ -252,7 +251,7 @@ class PersonalizeConfig
                     ($client_key != $saved_key) &&
                     !empty($client_secret) &&
 		    ($client_secret != $saved_secret) &&
-		    ! $this->ec2Flag()
+		    ! $this->awsHelper->isEc2Install()
                 ) {
                     $config_valid = array('client_key'=>$client_key, 'client_secret'=>$client_secret);
                 } else {

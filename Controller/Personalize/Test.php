@@ -64,6 +64,7 @@ class Test extends \Magento\Framework\App\Action\Action {
 	$this->personalizeClient = $this->sdkClient->getClient('Personalize');
 	$this->iamClient = $this->sdkClient->getClient('Iam');
 	$this->s3Client = $this->sdkClient->getClient('S3');
+	$this->stsClient = $this->sdkClient->getClient('sts');
     }
 
     public function execute()
@@ -81,7 +82,8 @@ class Test extends \Magento\Framework\App\Action\Action {
 //	$this->errorModel->getAllErrors();
 //	$this->stepsReset->execute();
 	//$this->testIam();
-	$this->listS3();
+	$this->testGetAccount();
+	//$this->listS3();
 	//$this->getS3Status();
 	//$this->listBucketContents('cprdgm-mage240-test-personalize-s3bucket');
 	/*
@@ -100,9 +102,15 @@ $this->listPers('Schemas');
 	echo('done');
     }
 
+    public function testGetAccount() {
+	    echo('<pre>');
+	    var_dump($this->stsClient->GetCallerIdentity()['Account']);
+	    echo('</pre>');
+    }
+
     public function testIam() {
 	    echo('<pre>');
-	    var_dump($this->iam->getStatus());
+	    var_dump($this->iamClient->getUser(array('personalize')));
 	    echo('</pre>');
     }
 

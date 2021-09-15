@@ -10,6 +10,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     protected $connection;
     protected $steps;
     protected $pHelper;
+    protected $awsHelper;
     protected $infoLogger;
     protected $errorLogger;
     protected $nameConfig;
@@ -23,6 +24,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
 	\CustomerParadigm\AmazonPersonalize\Logger\InfoLogger $infoLogger,
 	\CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger $errorLogger,
         \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
+        \CustomerParadigm\AmazonPersonalize\Helper\Aws $awsHelper,
         \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Framework\Registry $registry,
@@ -34,6 +36,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
             $this->connection = $this->getResource()->getConnection();
             $this->pHelper = $pHelper;
+            $this->awsHelper = $awsHelper;
 	    $this->infoLogger = $infoLogger;
 	    $this->errorLogger = $errorLogger;
             $this->pConfig = $pConfig;
@@ -286,7 +289,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
 
     public function displayProgress() {
 	if( ! $this->pHelper->canDisplayAdmin() ) {
-		if($this->pHelper->ec2Flag()) {
+		if($this->awsHelper->isEc2Install()) {
 			return array('steps'=>array(), 'license'=>false, 'stat'=>'error','mssg'=>'Please enter and save your license key to enable Campaign Setup Wizard');
 		} else {
 			return array('steps'=>array(), 'license'=>false, 'stat'=>'error','mssg'=>'Please enter and save your license key and AWS credentials to enable Campaign Setup Wizard');
