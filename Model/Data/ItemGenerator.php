@@ -60,7 +60,10 @@ class ItemGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
         foreach ($categories as $category) {
             $categoryData .= $category->getName() . '|';
         }
-        $categoryData = rtrim($categoryData,'|');
+	$categoryData = rtrim($categoryData,'|');
+	if(empty($categoryData)) {
+		$categoryData = 'none';
+	}
 
         return $categoryData;
     }
