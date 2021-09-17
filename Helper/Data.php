@@ -172,7 +172,7 @@ class Data extends AbstractHelper {
 		}
 
 		if( empty($required) ) {
-			$rtn['min'] = min($simple);
+			$rtn['min'] = empty($simple) ? 0 : min($simple);
 		} else {
 			$rtn['min'] = array_sum($required);
 		}

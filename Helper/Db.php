@@ -73,6 +73,7 @@ class Db extends AbstractHelper {
 					$this->setError($canCalc['notification_text']);
                                 } else {
                                         $this->logger->error("License Error this->db() returns false");
+					$this->setError('License file write date changed');
                                 }
                                 return false;
                         }
