@@ -49,7 +49,7 @@ class Solution extends PersonalizeBase
 
 		} catch(\Exception $e) {
 			$this->errorLogger->error( "\ncreate solution error : \n" . $e->getMessage());
-			$this->wizardTracking->setStepError('create_solution',$e->getMessage());
+			$this->pHelper->setStepError('create_solution',$e->getMessage());
 		}
 		return $result;
 	}
