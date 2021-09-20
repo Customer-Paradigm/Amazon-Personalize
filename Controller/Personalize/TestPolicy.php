@@ -54,10 +54,10 @@ class TestPolicy extends \Magento\Framework\App\Action\Action {
     public function execute()
     {
 /* Comment out this redirect to homepage to use the test controller 
+*/
             $resultRedirect = $this->resultRedirectFactory->create();
            $resultRedirect->setPath('');
 	    return $resultRedirect;
-*/
 try {
 //    foreach($buckets['Buckets'] as $bucket) {
     $policy = $this->s3Client->getBucketPolicy([

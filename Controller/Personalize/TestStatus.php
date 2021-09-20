@@ -75,11 +75,10 @@ class TestStatus extends \Magento\Framework\App\Action\Action {
     {
 /* Comment out this redirect to homepage to use the test controller 
 */
-/*
             $resultRedirect = $this->resultRedirectFactory->create();
            $resultRedirect->setPath('');
-            return $resultRedirect;
- */
+	    return $resultRedirect;
+
         $this->s3Status();
         $this->uploadStatus();
         $this->schemaStatus();

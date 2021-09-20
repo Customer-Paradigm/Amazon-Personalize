@@ -57,11 +57,10 @@ class TestImportJob extends \Magento\Framework\App\Action\Action {
     {
 /* Comment out this redirect to homepage to use the test controller 
 */
-/*
             $resultRedirect = $this->resultRedirectFactory->create();
            $resultRedirect->setPath('');
 	    return $resultRedirect;
- */
+
 	var_dump($this->importjob->getStatus());
 	echo('import job test end');
     }

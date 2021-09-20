@@ -72,11 +72,9 @@ class Test extends \Magento\Framework\App\Action\Action {
 	    var_dump($this->nameConfig->getStoreName());
 /* Comment out this redirect to homepage to use the test controller 
 */
-/*
             $resultRedirect = $this->resultRedirectFactory->create();
            $resultRedirect->setPath('');
 	    return $resultRedirect;
- */
 //	$this->testAssetModel();
 	//$this->testEmail();
 //	$this->errorModel->getAllErrors();
