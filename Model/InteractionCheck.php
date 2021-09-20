@@ -34,19 +34,26 @@ class InteractionCheck extends \Magento\Framework\Model\AbstractModel
 		return $values;
 	}
 
-	public function saveEvent($event){
-		$user_id = $event["userId"];
-		$props = json_decode($event["eventList"][0]["properties"]);
-		$item_id = $props->itemId;
-		$event_type = $event["eventList"][0]["eventType"];
-		$timestamp = $event["eventList"][0]["sentAt"];
-		$this->setUserId($user_id);
-		$this->setItemId($item_id);
-		$this->setEventType($event_type);
-		$this->setTimestamp($timestamp);
-		$rslt = $this->save();
-		return $rslt;
-	}	
+        public function saveEvent($event){
+                $user_id = $event["userId"];
+                $props = $event["eventList"][0]["properties"];
+                $test = json_decode($props);
+                if(!empty($test)) {
+                        $item_id = $props->itemId;
+                } else { // json_decode choked on a malformed string, try another way
+                        $arr = explode(',',$props);
+                        $arr2 = explode(':',$arr[1]);
+                        $item_id = $arr2[1];
+                }
+                $event_type = $event["eventList"][0]["eventType"];
+                $timestamp = $event["eventList"][0]["sentAt"];
+                $this->setUserId($user_id);
+                $this->setItemId($item_id);
+                $this->setEventType($event_type);
+                $this->setTimestamp($timestamp);
+                $rslt = $this->save();
+                return $rslt;
+        } 
 
 	public function clearData() {
 		$connection = $this->getResource()->getConnection();
