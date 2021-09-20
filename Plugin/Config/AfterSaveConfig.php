@@ -179,7 +179,6 @@ class AfterSaveConfig
 			}
 
 		} 
-		$this->helper->flushCacheType('config');
 		return $result;
 	}
 
