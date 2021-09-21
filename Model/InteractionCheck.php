@@ -36,11 +36,11 @@ class InteractionCheck extends \Magento\Framework\Model\AbstractModel
 
         public function saveEvent($event){
                 $user_id = $event["userId"];
-                $props = $event["eventList"][0]["properties"];
-                $test = json_decode($props);
-                if(!empty($test)) {
-                        $item_id = $props->itemId;
-                } else { // json_decode choked on a malformed string, try another way
+		$props = $event["eventList"][0]["properties"];
+		$decode = json_decode($props);
+                if(!empty($decode)) {
+                        $item_id = $decode->itemId;
+                } else { // json_decode choked on a string format, try another way
                         $arr = explode(',',$props);
                         $arr2 = explode(':',$arr[1]);
                         $item_id = $arr2[1];
