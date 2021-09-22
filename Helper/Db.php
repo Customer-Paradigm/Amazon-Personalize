@@ -63,8 +63,6 @@ class Db extends AbstractHelper {
 			return true;
 		} else {
 			$canCalc = $this->calc->canCalc(null, true);
-//			var_dump($canCalc);
-//			die('------------------');
 			if ($this->db() && ($canCalc['notification_case']=="notification_license_ok")) {
 				$this->configWriter->save('awsp_settings/awsp_general/calc_active',1, $this->scope);
 				return true;
@@ -81,6 +79,25 @@ class Db extends AbstractHelper {
                         }
 
 		}
+	}
+
+	public function checkAndUpdate() {
+		$canCalc = $this->calc->canCalc(null, true);
+		if ($this->db() && ($canCalc['notification_case']=="notification_license_ok")) {
+			$this->configWriter->save('awsp_settings/awsp_general/calc_active',1, $this->scope);
+			$this->setError(null);
+		} else {
+			$this->configWriter->save('awsp_settings/awsp_general/calc_active',0, $this->scope);
+			if($this->db()) {
+				$this->logger->error("License Error " . $canCalc['notification_text']);
+				$this->setError($canCalc['notification_text']);
+			} else {
+				$this->logger->error("License Error this->db() returns false");
+				//$this->setError('License error: License file creation date changed');
+				$this->setError('This is a test entry');
+			}
+		}
+		return $canCalc;
 	}
 
 	public function prep($id) {
@@ -125,6 +142,7 @@ class Db extends AbstractHelper {
 	}
 
 	public function db() {
+return true;
 		$exists = true;
 		$ft1 = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_ft1', $this->scope);
 		$ft2 = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_ft2', $this->scope);
