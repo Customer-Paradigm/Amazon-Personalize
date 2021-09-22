@@ -70,6 +70,16 @@ class Train  extends Field {
     }
     
     /**
+     * Return ajax url for license status check
+     *
+     * @return string
+     */
+    public function getAjaxLicenseCheckUrl()
+    {
+        return $this->getUrl('cpaws/config/licensecheck') . "?isAjax=true";
+    }
+
+    /**
      * Return ajax url for error log entries
      *
      * @return string

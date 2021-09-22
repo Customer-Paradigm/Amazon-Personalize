@@ -1,12 +1,12 @@
 <?php
 namespace CustomerParadigm\AmazonPersonalize\Model\Calc;
 
-define("APL_NOTIFICATION_NO_CONNECTION", "Can't connect to licensing server.");
+define("APL_NOTIFICATION_NO_CONNECTION", "Connection error: Can't connect to licensing server.");
 define("APL_NOTIFICATION_INVALID_RESPONSE", "Invalid server response.");
 define("APL_NOTIFICATION_DATABASE_WRITE_ERROR", "Can't write to database.");
 define("APL_NOTIFICATION_LICENSE_FILE_WRITE_ERROR", "Can't write to license file.");
 define("APL_NOTIFICATION_SCRIPT_ALREADY_INSTALLED", "Script is already installed (or database not empty).");
-define("APL_NOTIFICATION_LICENSE_CORRUPTED", "License is not installed yet or corrupted.");
+define("APL_NOTIFICATION_LICENSE_CORRUPTED", "License error: License is not installed yet or is corrupted.");
 define("APL_NOTIFICATION_BYPASS_VERIFICATION", "No need to verify");
 define("APL_INCLUDE_KEY_CONFIG", "some_random_text");
 define("APL_ROOT_IP", "");

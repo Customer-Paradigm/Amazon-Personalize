@@ -67,11 +67,19 @@ define([
 	//		}
 		},
 
+		displayLicenseStatus: function() {
+			var field = jQuery("#row_awsp_settings_awsp_general_calc_error > td.value");
+			var url = self.ajaxLicenseCheckUrl;
+			jQuery.getJSON(url, function(data) { 
+				field.html('');
+				field.append(data.notification_text);
+			});
+		},
+
 		displayAssets: function() {
 			var field = jQuery("#row_awsp_settings_awsp_assets_asset_display > td.value > p");
 			var url = self.ajaxAssetDisplayUrl;
 			var link = '<a id="asset_download_link" href="' + self.ajaxErrorlogDownloadUrl + '"><span>Download</span> </a>'
-			field.html(link);
 			jQuery.getJSON(url, function(data) { 
 				var html = '<table id="asset_display_table">';
 				// Header
@@ -91,6 +99,7 @@ define([
 				   html += '</tr>';
 				});
 				html += '</table>';
+				field.html(link);
 				field.append(html);
 			});
 		},
@@ -99,15 +108,19 @@ define([
 			var field = jQuery("#row_awsp_settings_awsp_logs_log_display > td.value > p");
 			var url = self.ajaxErrorlogUrl;
 			var link = '<a id="errorlog_download_link" href="' + self.ajaxErrorlogDownloadUrl + '"><span>Download</span> </a>'
-			field.html(link);
 			jQuery.getJSON(url, function(data) { 
+				var hasItems = false;
 				var html = '<table id="error_log_table">';
 				data.each(function( item ) {
 				   html += '<tr>';
 					html += "<td>" + JSON.stringify(item).replace(/^"|"$/g, ''); + '</td>';
 				   html += '</tr>';
+				   hasItems = true;
 				});
 				html += '</table>';
+				if( hasItems) {
+				field.html(link);
+				}
 				field.append(html);
 			});
 		},
@@ -167,6 +180,7 @@ define([
 
 		showProgress: function(startProcess){
 			self = this;
+			self.displayLicenseStatus();
 			var url = self.ajaxDisplayUrl;
 			var imgUrl = self.successUrl;
 			var infoUrl = self.infoUrl;

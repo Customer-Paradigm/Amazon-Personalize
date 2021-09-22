@@ -63,6 +63,8 @@ class Db extends AbstractHelper {
 			return true;
 		} else {
 			$canCalc = $this->calc->canCalc(null, true);
+//			var_dump($canCalc);
+//			die('------------------');
 			if ($this->db() && ($canCalc['notification_case']=="notification_license_ok")) {
 				$this->configWriter->save('awsp_settings/awsp_general/calc_active',1, $this->scope);
 				return true;
@@ -73,7 +75,7 @@ class Db extends AbstractHelper {
 					$this->setError($canCalc['notification_text']);
                                 } else {
                                         $this->logger->error("License Error this->db() returns false");
-					$this->setError('License file write date changed');
+					$this->setError('License error: License file creation date changed');
                                 }
                                 return false;
                         }
