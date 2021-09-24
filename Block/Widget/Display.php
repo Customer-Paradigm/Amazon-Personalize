@@ -38,7 +38,7 @@ class Display  extends \Magento\Catalog\Block\Product\AbstractProduct implements
     public function getUserId() {
         $customer = $this->customerSession->create();
         $id = $customer->getId();
-        $id = empty($id) ? $customer->getSessionId() : $id;
+        $id = empty($id) ? 'guest_user': $id;
         return $id;
     }
 
@@ -66,9 +66,11 @@ class Display  extends \Magento\Catalog\Block\Product\AbstractProduct implements
     }
 
     public function getRecommendationHtml() {
+	$current_prod_id = $this->getProduct()->getId();
         $user_id = $this->getUserId();
 	$recommend_result = $this->awsResultFactory->create()->getRecommendation($user_id);
-        $productCollection = $this->prodViewModel->getViewableProducts($recommend_result, $this->getCount());
+
+        $productCollection = $this->prodViewModel->getViewableProducts($recommend_result, $current_prod_id, $this->getCount());
         $resultPage = $this->resultPageFactory->create();
 
         $block = $resultPage->getLayout()

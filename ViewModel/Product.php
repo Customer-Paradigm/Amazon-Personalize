@@ -64,7 +64,7 @@ class Product extends DataObject implements ArgumentInterface
     public function getProductCollection($idArray) {
         $collection = $this->productCollectionFactory->create();
         $collection->addAttributeToSelect('*');
-        $collection->addFieldToFilter('entity_id', ['in' => $idArray]);
+	$collection->addFieldToFilter('entity_id', ['in' => $idArray]);
         return $collection;
     } 
     
@@ -78,39 +78,59 @@ class Product extends DataObject implements ArgumentInterface
         return $collection;
     }
    
-    public function getViewableProducts($idList, $count = 2000) {
-	$count = intval($count);
-        $used_parent_ids = array();
-        $idArray = array();
+    public function getViewableProducts($idList, $current, $count = 2000) {
+	return $this->decideViewable($idList, $current, $count);
+    }
+    
+    protected function decideViewable($idList, $current, $count) {
+	    $count = intval($count);
+	    $current = intval($current);
+	    $used_parent_ids = array();
+	    $idArray = array();
 
-        // Get all products, simple or configurable, from aws recommendation
-        $collection = $this->getAllProductsFromRecommendations($idList);
+	    // Create array of ids. Use id for simple product if it is viewable on the frontend,
+	    // use the id for the parent configurable if not.
+	    foreach( $idList as $item ) {
+		    $prodId = intval($item['itemId']);
+		    if($prodId == $current) {
+			    $used_parent_ids[] = $current;
+			    continue; // Don't include current product in suggestions.
+		    }
 
-        // Create array of ids. Use id for simple product if it is viewable on the frontend,
-        // use the id for the parent configurable if not.
-        foreach( $collection as $prod ) {
-            if(!$prod->isInStock()) { continue; }
-            $visible_text = $prod->getAttributeText('visibility');
-            $visible = $visible_text == 'Not Visible Individually'? false : true;
-            // get parent if this product is not set to Visible
-            if( ! $visible ) {
-                $parentConfigIds = $this->configurable->getParentIdsByChild($prod->getId());
-				if($parentConfigIds) {
-					$conf_id = $parentConfigIds[0];
-					// disallow duplicates
-					if( ! in_array($conf_id, $used_parent_ids) ) {
-                        $parent = $this->productRepository->getById($conf_id);
-                        // Only include in stock items
-                        if(!$parent->isInStock()) { continue; }
+		    $prod = $this->productRepository->getById($prodId);
+		    if(!$prod->isInStock()) { continue; }
 
-						$idArray[] = $parent->getId();
-						$used_parent_ids[] = $conf_id;
-					}
-				}
-            } else { 
-				$idArray[] = $prod->getId();
-	    	}
-        }
-        return $this->getProductCollectionRand($idArray, $count);
+		    $visible_text = $prod->getAttributeText('visibility');
+		    $visible = $visible_text == 'Not Visible Individually'? false : true;
+
+		    // get parent if this product is not set to Visible
+		    if( ! $visible ) {
+			    $parentConfigIds = $this->configurable->getParentIdsByChild($prodId);
+			    if($parentConfigIds) {
+				    $conf_id = $parentConfigIds[0];
+				    if($current == $conf_id) {
+					    $used_parent_ids[] = $current;
+					    continue; // Don't include current product's parent in suggestions.
+				    }
+				    // disallow duplicates
+				    if( ! in_array($conf_id, $used_parent_ids) ) {
+					    $parent = $this->productRepository->getById($conf_id);
+					    // Only include in stock items
+					    if(!$parent->isInStock()) { continue; }
+
+					    $idArray[] = $parent->getId();
+					    $used_parent_ids[] = $conf_id;
+				    }
+			    }
+		    } else { 
+			    $idArray[] = $prod->getId();
+		    }
+		    // Stop looking if you've got enough
+		    if(count($idArray) >= $count) {
+			    break;
+		    }
+	    }
+
+	    return $this->getProductCollection($idArray, $count);
     }
 }
