@@ -66,7 +66,7 @@ class Display  extends \Magento\Catalog\Block\Product\AbstractProduct implements
     }
 
     public function getRecommendationHtml() {
-	$current_prod_id = $this->getProduct()->getId();
+	$current_prod_id = empty($this->getProduct()) ? 0 : $this->getProduct()->getId();
         $user_id = $this->getUserId();
 	$recommend_result = $this->awsResultFactory->create()->getRecommendation($user_id);
 
