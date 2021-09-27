@@ -79,7 +79,7 @@
 			<group id="awsp_logs" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
 				<label>Campaign Creation Logs</label>
 				<field id="log_display" translate="label" type="hidden" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
-					<comment>Error logs will display here when loaded.</comment>
+					<comment>Any errors in data export and campaign training will display here.</comment>
 				</field>
 			</group>
 			<group id="awsp_abtesting" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">

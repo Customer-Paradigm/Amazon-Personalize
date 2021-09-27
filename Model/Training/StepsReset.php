@@ -9,18 +9,22 @@ class StepsReset extends PersonalizeBase
 	protected $s3Client;
 	protected $infoLogger;
 	protected $errorLogger;
+	protected $errorTable;
 
 	public function __construct(
 		\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
 		\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
 		\CustomerParadigm\AmazonPersonalize\Model\Training\s3 $s3Client,
-		\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
+		\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient,
+		\CustomerParadigm\AmazonPersonalize\Model\Error $errorTable
+
 	) {
 		parent::__construct($nameConfig,$sdkClient);
 		$this->infoLogger = $nameConfig->getLogger('info');
 		$this->errorLogger = $nameConfig->getLogger('error');
 
 		$this->wizardTracking = $wizardTracking;
+		$this->errorTable = $errorTable;
 		$this->s3Client = $s3Client;
 	}
 
@@ -103,6 +107,7 @@ class StepsReset extends PersonalizeBase
 		$this->nameConfig->saveConfigSetting('awsp_settings/awsp_general/campaign_exists',0);
 		$this->nameConfig->deleteConfigSetting('awsp_settings/awsp_general/file-interactions-count');
 		$this->wizardTracking->clearData();
+		$this->errorTable->clearData();
 	}
 
 	public function assetExists($name,$arn) {

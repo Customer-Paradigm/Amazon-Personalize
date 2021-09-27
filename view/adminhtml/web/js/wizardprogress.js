@@ -147,8 +147,12 @@ define([
 		},
 
 		resetProcess: function() {
-			this.setRstBttnMssg("Resetting");
-			this.callReset();
+			if (confirm('Are you sure? This will remove your running campaign and all associated data. There will be charges if you wish to retrain.')) {
+				this.setRstBttnMssg("Resetting");
+				this.callReset();
+			}else {
+				// nada
+			}
 		},
 
 		setRstBttnMssg: function(txt) {
@@ -254,6 +258,7 @@ define([
 						self.setBttnMssg("In Progress");
 						imgUrl = self.successUrl;
 					} else if(self.processStatus == "finished") {
+						self.disableTrainBttn(true);
 						self.setBttnMssg("Finished");
 						imgUrl = self.successUrl;
 						self.displayRstBttn('block');
