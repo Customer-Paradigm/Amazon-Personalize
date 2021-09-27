@@ -122,6 +122,8 @@ class Product extends DataObject implements ArgumentInterface
 					    $used_parent_ids[] = $parent->getId();
 				    }
 			    }
+		    } else if(in_array($prod->getId(),$used_parent_ids)) {
+		   	    continue; 
 		    } else { 
 			    $idArray[] = $prod->getId();
 		    }
@@ -130,6 +132,8 @@ class Product extends DataObject implements ArgumentInterface
 			    break;
 		    }
 	    }
+	    var_dump($idArray);
+	    var_dump($used_parent_ids);
 	    return $this->getProductCollection($idArray, $count);
     }
 }
