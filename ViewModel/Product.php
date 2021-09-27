@@ -132,8 +132,6 @@ class Product extends DataObject implements ArgumentInterface
 			    break;
 		    }
 	    }
-	    var_dump($idArray);
-	    var_dump($used_parent_ids);
 	    return $this->getProductCollection($idArray, $count);
     }
 }
