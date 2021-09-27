@@ -7,12 +7,13 @@ use Aws\PersonalizeRuntime\PersonalizeRuntimeClient;
 class Result extends \Magento\Framework\Model\AbstractModel 
 {
     const CACHE_TAG = 'customerparadigm_amazonpersonalize_result';
-    //	protected $awsException;
+
     protected $rtClient;
     protected $_cacheTag = 'customerparadigm_amazonpersonalize_result';
     protected $_eventPrefix = 'customerparadigm_amazonpersonalize_result';
     protected $campaignArn;
     protected $nameConfig;
+    protected $dateTime;
 
     public function __construct(
         \CustomerParadigm\AmazonPersonalize\Api\Personalize\RuntimeClient $rtClient,
@@ -21,12 +22,14 @@ class Result extends \Magento\Framework\Model\AbstractModel
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
 	\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
 	\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
+	\Magento\Framework\Stdlib\DateTime\DateTime $dateTime,
         array $data = []
     )
     {
         $this->rtClient = $rtClient;
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
 	$this->nameConfig = $nameConfig;
+	$this->dateTime = $dateTime;
 	$this->campaignArn = $this->nameConfig->getArn('campaignArn');
     }
 
@@ -54,7 +57,7 @@ class Result extends \Magento\Framework\Model\AbstractModel
 
     public function getRecommendation($user_id) {
         $data = [];
-        $saved = $this->getSaved('recommendation', $user_id);
+	$saved = $this->getSaved('recommendation', $user_id);
         if(!empty($saved->getData()) ) {
             $data = $this->updateData($saved);
         } else {
@@ -78,15 +81,27 @@ class Result extends \Magento\Framework\Model\AbstractModel
     }
     
     public function updateData($saved) {
-        $user_id = $saved->getUserId();
-        $rslt = $this->rtClient->getRecommendations($this->campaignArn,$user_id);
-        if( empty($rslt) ) {
-            return array();
-        }
-        $rslt = $rslt->toArray();
-        $item_list = json_encode($rslt["itemList"]);
-        $saved->setItemList($item_list);
-        $saved->save();
+	$user_id = $saved->getUserId();
+
+	$last_updated = date_create($saved->getUpdatedAt());
+	$target_time = $last_updated->modify('+5 minutes');
+	$current_time = $this->dateTime->gmtDate('Y-m-d H:i:s');
+	$current = date_create($current_time);
+	
+	if($current < $target_time) {
+        	return json_decode($saved->getItemList(),true);
+	}
+	
+	$rslt = $this->rtClient->getRecommendations($this->campaignArn,$user_id);
+	if( empty($rslt) ) {
+        	return json_decode($saved->getItemList(),true);
+	}
+       
+	$rslt = $rslt->toArray();
+	$item_list = json_encode($rslt['itemList']);
+	$predicted = $this->load($saved->getRecommendationId());
+        $predicted->setItemList($item_list);
+        $predicted->save();
         return $rslt['itemList'];
     }
 }

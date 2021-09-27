@@ -53,7 +53,7 @@ class InteractionCheck extends \Magento\Framework\Model\AbstractModel
                 $this->setTimestamp($timestamp);
                 $rslt = $this->save();
                 return $rslt;
-        } 
+        }
 
 	public function clearData() {
 		$connection = $this->getResource()->getConnection();

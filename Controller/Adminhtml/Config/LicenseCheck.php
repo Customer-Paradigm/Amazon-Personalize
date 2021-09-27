@@ -7,7 +7,7 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Psr\Log\LoggerInterface;
 use CustomerParadigm\AmazonPersonalize\Model\Error;
-use CustomerParadigm\AmazonPersonalize\Model\Calc\Calculate;
+use CustomerParadigm\AmazonPersonalize\Helper\Db;
 
  
 class LicenseCheck extends Action
@@ -27,7 +27,7 @@ class LicenseCheck extends Action
         Context $context,
         JsonFactory $resultJsonFactory,
 	LoggerInterface $loggerInterface,
-	Calculate $calc,
+	Db $calc,
 	Error $errorLog
     )
     {
@@ -44,7 +44,7 @@ class LicenseCheck extends Action
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
-	$data = $this->calc->canCalc();
+	$data = $this->calc->checkAndUpdate();
 	$result->setData($data);
         return $result;
     }
