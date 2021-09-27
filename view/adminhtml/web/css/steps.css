@@ -36,6 +36,10 @@
     width: 280px;
 }
 
+#row_awsp_settings_awsp_general_ec2_install > td.label > label > span{
+   display:none;
+}
+
 #row_awsp_settings_awsp_general_calc_error > td.label > label > span {
    display:none;
 }
