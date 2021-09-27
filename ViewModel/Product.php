@@ -97,7 +97,12 @@ class Product extends DataObject implements ArgumentInterface
 			    continue; // Don't include current product in suggestions.
 		    }
 
-		    $prod = $this->productRepository->getById($prodId);
+		    // skip if product id from aws suggestion is not available on magento 
+		    try { $prod = $this->productRepository->getById($prodId);
+		    } catch(\Exception $e) {
+			    continue;
+		    }
+
 		    if(!$prod->isInStock()) { continue; }
 
 		    $visible_text = $prod->getAttributeText('visibility');
