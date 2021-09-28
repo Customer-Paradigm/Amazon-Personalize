@@ -84,7 +84,7 @@ class Result extends \Magento\Framework\Model\AbstractModel
 	$user_id = $saved->getUserId();
 
 	$last_updated = date_create($saved->getUpdatedAt());
-	$target_time = $last_updated->modify('+5 minutes');
+	$target_time = $last_updated->modify('+15 minutes');
 	$current_time = $this->dateTime->gmtDate('Y-m-d H:i:s');
 	$current = date_create($current_time);
 	
