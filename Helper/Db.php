@@ -89,12 +89,18 @@ class Db extends AbstractHelper {
 		} else {
 			$this->configWriter->save('awsp_settings/awsp_general/calc_active',0, $this->scope);
 			if($this->db()) {
-				$this->logger->error("License Error " . $canCalc['notification_text']);
-				$this->setError($canCalc['notification_text']);
+				// see if key has been entered yet. If not, don't display any errors
+				$key = $this->scopeConfig->getValue('awsp_settings/awsp_general/calc_coupon', $this->scope);
+				if($key === null) {
+					$canCalc['notification_case'] = "notification_key_not_checked";
+					$canCalc['notification_text'] = "Enter License Key and save";
+				} else {
+					$this->logger->error("License Error " . $canCalc['notification_text']);
+					$this->setError($canCalc['notification_text']);
+				}
 			} else {
 				$this->logger->error("License Error this->db() returns false");
-				//$this->setError('License error: License file creation date changed');
-				$this->setError('This is a test entry');
+				$this->setError('License error: License file creation date changed');
 			}
 		}
 		return $canCalc;
