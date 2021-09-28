@@ -68,9 +68,15 @@ class Db extends AbstractHelper {
 				return true;
                         } else {
 				$this->configWriter->save('awsp_settings/awsp_general/calc_active',0, $this->scope);
-                                if($this->db()) {
-                                        $this->logger->error("License Error " . $canCalc['notification_text']);
-					$this->setError($canCalc['notification_text']);
+				if($this->db()) {
+					$key = $this->scopeConfig->getValue('awsp_settings/awsp_general/calc_coupon', $this->scope);
+					if($key === null) {
+						$canCalc['notification_case'] = "notification_key_not_checked";
+						$canCalc['notification_text'] = "Enter License Key and save";
+                                	} else {
+						$this->logger->error("License Error " . $canCalc['notification_text']);
+						$this->setError($canCalc['notification_text']);
+					}
                                 } else {
                                         $this->logger->error("License Error this->db() returns false");
 					$this->setError('License error: License file creation date changed');
@@ -123,8 +129,11 @@ class Db extends AbstractHelper {
 			$this->logger->info("Amazon personalize " . $installed['notification_case']);
 			$this->setInstalled();
 		} else {
-			$this->setError($installed['notification_text']);
-			$this->logger->error("Amazon personalize " . $installed['notification_case']);
+			$key = $this->scopeConfig->getValue('awsp_settings/awsp_general/calc_coupon', $this->scope);
+			if($key !== null) {
+				$this->setError($installed['notification_text']);
+				$this->logger->error("Amazon personalize " . $installed['notification_case']);
+			}
 			if( $installed['notification_text'] != 'Script is already installed (or database not empty).' ) {
 				$this->configWriter->save('awsp_settings/awsp_general/calc_active',0, $this->scope);
 				$this->logger->error("Amazon personalize Installation failed: " . $installed['notification_text']);
