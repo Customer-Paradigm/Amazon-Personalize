@@ -276,7 +276,24 @@ class CoreConfigExtend extends \Magento\Config\Model\Config
         \Magento\Framework\DB\Transaction $saveTransaction,
         \Magento\Framework\DB\Transaction $deleteTransaction
     ) {
-        $groupPath = $sectionPath . '/' . $groupId;
+	    var_dump($sectionPath);
+	    if(! ($sectionPath == "awsp_settings" || $sectionPath == "awsp_wizard")) {
+	        return parent::_processGroup(
+			$groupId,
+			$groupData,
+			$groups,
+			$sectionPath,
+			$extraOldGroups,
+			$oldConfig,
+			$saveTransaction,
+			$deleteTransaction
+	        );
+	    }
+
+	    $groupPath = $sectionPath . '/' . $groupId;
+	    //var_dump($groupId);
+	    //var_dump($groupPath);
+	    //die("------------------");
 
         if (isset($groupData['fields'])) {
             /** @var \Magento\Config\Model\Config\Structure\Element\Group $group */
@@ -307,18 +324,14 @@ class CoreConfigExtend extends \Magento\Config\Model\Config
                     : $this->_configValueFactory->create();
 
                 $existingConfigVal = $this->getConfigDataValue($groupPath . "/" . $fieldId);
-		if ($fieldData['value'] == "saved"
-		    || $fieldData['value'] == "testing"
+		if (array_key_exists('value',$fieldData) && ($fieldData['value'] == "saved"
+		    || $fieldData['value'] == "testing")
 		) {
                     $fieldData['value'] = $existingConfigVal;
                 }
 
                 if (!isset($fieldData['value'])) {
-                    if(empty($existingConfigVal)) {
-                    	$fieldData['value'] = null;
-		    } else {
-                    	$fieldData['value'] = $existingConfigVal;
-		    }
+                    $fieldData['value'] = null;
                 }
                 
                 if ($field->getType() == 'multiline' && is_array($fieldData['value'])) {
