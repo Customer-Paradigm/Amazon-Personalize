@@ -276,7 +276,6 @@ class CoreConfigExtend extends \Magento\Config\Model\Config
         \Magento\Framework\DB\Transaction $saveTransaction,
         \Magento\Framework\DB\Transaction $deleteTransaction
     ) {
-	    var_dump($sectionPath);
 	    if(! ($sectionPath == "awsp_settings" || $sectionPath == "awsp_wizard")) {
 	        return parent::_processGroup(
 			$groupId,
@@ -291,9 +290,6 @@ class CoreConfigExtend extends \Magento\Config\Model\Config
 	    }
 
 	    $groupPath = $sectionPath . '/' . $groupId;
-	    //var_dump($groupId);
-	    //var_dump($groupPath);
-	    //die("------------------");
 
         if (isset($groupData['fields'])) {
             /** @var \Magento\Config\Model\Config\Structure\Element\Group $group */
