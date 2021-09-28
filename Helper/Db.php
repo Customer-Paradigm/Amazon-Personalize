@@ -157,7 +157,6 @@ class Db extends AbstractHelper {
 	}
 
 	public function db() {
-return true;
 		$exists = true;
 		$ft1 = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_ft1', $this->scope);
 		$ft2 = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_ft2', $this->scope);
