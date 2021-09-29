@@ -21,6 +21,7 @@ define([
 			this.errlog = ko.observable('testing error log');
 			this.buttonStatus = ko.observable('');
 			this.resetStatus = ko.observable('');
+			this.resetCampStatus = ko.observable('');
 			this.buttonError = ko.observable('');
 		},
 
@@ -33,8 +34,8 @@ define([
 			this.showProgress(true);
 		},
 
-		setBttnMssg: function(txt) {
-			var bttn = jQuery('#train_button');
+		setBttnMssg: function(txt, el = '#train_button') {
+			var bttn = jQuery(el);
 			bttn.find('span').html(txt);
 		},
 
@@ -148,7 +149,16 @@ define([
 
 		resetProcess: function() {
 			if (confirm('Are you sure? This will remove your running campaign and all associated data. There will be charges if you wish to retrain.')) {
-				this.setRstBttnMssg("Resetting");
+				this.setBttnMssg("Resetting", '#reset_button');
+				this.callReset();
+			}else {
+				// nada
+			}
+		},
+		
+		resetCampaign: function() {
+			if (confirm('Are you sure? This will remove your current campaign and solution version. There will be charges if you wish to retrain.')) {
+				this.setBttnMssg("Removing Campaign", '#reset_campaign_button');
 				this.callReset();
 			}else {
 				// nada
@@ -189,6 +199,7 @@ define([
 		},
 
 		showProgress: function(startProcess){
+			jQuery("#loader").show();
 			self = this;
 			self.displayLicenseStatus();
 			var url = self.ajaxDisplayUrl;
@@ -209,7 +220,9 @@ define([
 			self.displayAssets();
 			self.displayErrorLog();
 
-			jQuery.getJSON(url, function(data) { 
+			jQuery.getJSON(url).done( function(data) { 
+		//	jQuery.ajax({url: url, type:'POST',dataType: 'json',showLoader: 'true'}).done(function(data) {
+
 				var imgUrl = '';
 				var infoUrl = '';
 				self.steps([]);
@@ -278,6 +291,10 @@ define([
 				//location.reload();
 				//return false;
 				return true
+			})
+			.always(function () { 
+		//		console.log('hits unloader');
+				jQuery("#loader").hide(); 
 			});
 		},
 

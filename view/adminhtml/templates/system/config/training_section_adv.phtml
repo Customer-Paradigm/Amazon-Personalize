@@ -1,0 +1,18 @@
+<script type="text/x-magento-init">
+        {
+            "*": {
+                "Magento_Ui/js/core/app": {
+                    "components": {
+                        "wizardadvanced": {
+                            "component": "CustomerParadigm_AmazonPersonalize/js/wizardprogress",
+							"template" : "CustomerParadigm_AmazonPersonalize/wizardtemplateadv",
+							"ajaxResetUrl": "<?php echo($block->getAjaxResetUrl()) ?>"
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<div data-bind="scope: 'wizardadvanced'">
+    <!-- ko template: getTemplate() --><!-- /ko -->
+</div>
