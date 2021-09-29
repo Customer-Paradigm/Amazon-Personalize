@@ -159,7 +159,7 @@ define([
 		resetCampaign: function() {
 			if (confirm('Are you sure? This will remove your current campaign and solution version. There will be charges if you wish to retrain.')) {
 				this.setBttnMssg("Removing Campaign", '#reset_campaign_button');
-				this.callReset();
+				this.callCampReset();
 			}else {
 				// nada
 			}
@@ -272,7 +272,7 @@ define([
 						imgUrl = self.successUrl;
 					} else if(self.processStatus == "finished") {
 						self.disableTrainBttn(true);
-						self.setBttnMssg("Finished");
+						self.setBttnMssg("Campaign Created");
 						imgUrl = self.successUrl;
 						self.displayRstBttn('block');
 						self.steps([]);
@@ -308,8 +308,19 @@ define([
 				var imgUrl = '';
 				var infoUrl = '';
 			});
-			//location.reload();
-			//return false;
+			return true;
+		},
+		
+		callCampReset: function(){
+			self = this;
+			var url = self.ajaxResetCampUrl;
+			var imgUrl = self.successUrl;
+			var infoUrl = self.infoUrl;
+
+			jQuery.getJSON(url, function(data) { 
+				var imgUrl = '';
+				var infoUrl = '';
+			});
 			return true;
 		}
 	});

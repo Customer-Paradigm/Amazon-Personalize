@@ -50,16 +50,6 @@ class Train  extends Field {
     }
 
     /**
-     * Return ajax url for reset training button
-     *
-     * @return string
-     */
-    public function getAjaxResetUrl()
-    {
-        return $this->getUrl('cpaws/config/reset');
-    }
-
-    /**
      * Return ajax url for start training button
      *
      * @return string
