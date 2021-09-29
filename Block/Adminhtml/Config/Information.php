@@ -35,8 +35,8 @@ class Information extends \Magento\Config\Block\System\Config\Form\Fieldset
                 <div class='personalize-message-line'> More details / get license key: </div>
 		<div class='personalize-message-link'>$this->licenseLink</div>
 		<div>&nbsp;</div>
-                <div class='personalize-message-line note'>Note: If you reinstall or update Amazon Personalize extension and then encounter license errors</div>
-                <div class='personalize-message-line note'>please click on the license key link above and re-submit your key request</div>
+                <div class='personalize-message-line note'>Note: If you reinstall or update the Amazon Personalize extension and then encounter license errors</div>
+                <div class='personalize-message-line note'>please click on the license key link above and re-submit your key request.</div>
 		</span>";
         $html = $this->_getHeaderHtml($element);
         $this->setContent(__("$this->content"));
