@@ -56,11 +56,6 @@ class ImportJob extends PersonalizeBase
 			}
 			if(count($checklist) == 0) {
 				$result = 'not started';
-/*
-				$result = 'error';
-                        	$this->pHelper->setStepError('create_import_jobs',"No import jobs have been started");
-				$this->nameConfig->getLogger()->error( "\ncheck datasetImportJobs status error: no jobs found for names " . print_r($checkArray,true));
-*/
 			} else if(count($checklist) < 3) {
 				$result = 'in progress';
 			} else {
@@ -75,6 +70,11 @@ class ImportJob extends PersonalizeBase
 						break;
 					case 'CREATE FAILED':
 						$result = 'error';
+						// If Import job already exists ( wasn't removed on previous reset )
+						if(strstr('ResourceAlreadyExistsException',$item['failureReason']) !== false) {
+							$result = 'complete';
+							break;
+						}
                         			$this->pHelper->setStepError('create_import_jobs',$item['failureReason']);
 						//return $item['failureReason'];
 						break;
