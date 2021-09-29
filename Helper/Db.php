@@ -97,7 +97,7 @@ class Db extends AbstractHelper {
 			if($this->db()) {
 				// see if key has been entered yet. If not, don't display any errors
 				$key = $this->scopeConfig->getValue('awsp_settings/awsp_general/calc_coupon', $this->scope);
-				if($key === null) {
+				if($key == null) {
 					$canCalc['notification_case'] = "notification_key_not_checked";
 					$canCalc['notification_text'] = "Enter License Key and save";
 				} else {
