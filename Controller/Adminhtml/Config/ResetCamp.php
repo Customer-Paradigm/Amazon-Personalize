@@ -64,10 +64,22 @@ class ResetCamp extends Action
             $err_mssg = "AWS reset disable cron error: " . $e->getMessage();
             $rtn = array('mssg'=>$err_mssg,'steps'=>array(), 'state'=>'error');
 	}
-	$arn = $this->helper->getConfigValue('awsp_wizard/data_type_name/campaignArn');
-	if(!empty($arn)) {
-		$test = $this->stepsReset->deleteAsset('campaign',$arn);
+	$events_arn = $this->helper->getConfigValue('awsp_wizard/data_type_arn/eventTrackerArn');
+	if(!empty($events_arn)) {
+		$test = $this->stepsReset->deleteAsset('eventTracker',$events_arn);
+		$this->nameConfig->deleteConfigSetting('awsp_wizard/data_type_arn/eventTrackerArn');
+		$this->nameConfig->deleteConfigSetting('awsp_wizard/data_type_name/eventTrackerName');
+		$this->wizardTracking->setStepReady('create_event_tracker');
 	}
+	$campaign_arn = $this->helper->getConfigValue('awsp_wizard/data_type_arn/campaignArn');
+	if(!empty($campaign_arn)) {
+		$test = $this->stepsReset->deleteAsset('campaign',$campaign_arn);
+		$this->nameConfig->deleteConfigSetting('awsp_wizard/data_type_arn/campaignArn');
+		$this->nameConfig->deleteConfigSetting('awsp_wizard/data_type_name/campaignName');
+		$this->nameConfig->saveConfigSetting('awsp_settings/awsp_general/campaign_exists',0);
+		$this->wizardTracking->setStepReady('create_campaign');
+	}
+
         $rtn = array();
         $mssg = null;
         try {

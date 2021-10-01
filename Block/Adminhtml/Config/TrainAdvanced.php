@@ -8,13 +8,11 @@ use Magento\Backend\Block\Template\Context;
 use Magento\Framework\Module\Dir\Reader;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
 
-class TrainAdvanced  extends Field {
+class TrainAdvanced  extends Train {
     /**
      * @var string
      */
     protected $_template = 'CustomerParadigm_AmazonPersonalize::system/config/training_section_adv.phtml';
-    protected $dirReader;
-    protected $tracking;
 
     public function __construct(
         Context $context,
@@ -22,9 +20,7 @@ class TrainAdvanced  extends Field {
         WizardTracking $tracking,
         array $data = []
     ) {
-        $this->dirReader = $dirReader;
-        $this->tracking = $tracking;
-        parent::__construct($context, $data);
+        parent::__construct($context, $dirReader, $tracking, $data);
     }
     /**
      * Remove scope label

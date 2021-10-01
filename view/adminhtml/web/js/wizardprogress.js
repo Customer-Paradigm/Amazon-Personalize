@@ -9,7 +9,9 @@ define([
 		defaults: {
 			template: 'CustomerParadigm_AmazonPersonalize/system/config/training_section',
 			buttonMssg: "Start Process",
-			initMssg: 'Click \'Start Process\' button to kick off data creation process'
+			initMssg: 'Click \'Start Process\' button to kick off data creation process',
+			resetAllMssg: "Removes all imported data, data group, trained campaign, and event tracker for this website from AWS.<br>Charges will apply if you wish to recreate a campaign.<a href='https://aws.amazon.com/personalize/pricing' target='_blank'> View pricing info</a>",
+			resetCampMssg: "Removes only trained campaign and event tracker for this website from AWS.<br>Charges will apply if you wish to recreate a campaign. <a href='https://aws.amazon.com/personalize/pricing' target='_blank'> View pricing info</a>"
 		},
 
 		initialize: function () {
@@ -18,6 +20,8 @@ define([
 			this.imgUrl = ko.observable('');
 			this.infoUrl = ko.observable(this.infoUrl);
 			this.mssg = ko.observable(this.initMssg);
+			this.rstAllMssg = ko.observable(this.resetAllMssg);
+			this.rstCampMssg = ko.observable(this.resetCampMssg);
 			this.errlog = ko.observable('testing error log');
 			this.buttonStatus = ko.observable('');
 			this.resetStatus = ko.observable('');
@@ -58,6 +62,16 @@ define([
 			var mssg = jQuery('#train_message_wrapper');
 			mssg.css('display', 'block');
 		},
+		
+		displayRstAllMssg: function() {
+			var mssg = jQuery('#reset_all_message_wrapper');
+			mssg.css('display', 'block');
+		},
+		
+		displayRstCampMssg: function() {
+			var mssg = jQuery('#reset_camp_message_wrapper');
+			mssg.css('display', 'block');
+		},
 
 		closeErrorMssg: function() {
 			var mssg = jQuery('#train_message_wrapper');
@@ -66,6 +80,16 @@ define([
 			   location.reload();
 			   return false;
 	//		}
+		},
+		
+		closeRstAllMssg: function() {
+			var mssg = jQuery('#reset_all_message_wrapper');
+			mssg.css('display', 'none');
+		},
+		
+		closeRstCampMssg: function() {
+			var mssg = jQuery('#reset_camp_message_wrapper');
+			mssg.css('display', 'none');
 		},
 
 		displayLicenseStatus: function() {
@@ -148,8 +172,11 @@ define([
 		},
 
 		resetProcess: function() {
-			if (confirm('Are you sure? This will remove your running campaign and all associated data. There will be charges if you wish to retrain.')) {
-				this.setBttnMssg("Resetting", '#reset_button');
+			self = this;
+			var imgUrl = self.successUrl;
+			var infoUrl = self.infoUrl;
+			if (confirm('Are you sure? This will remove your running campaign and ALL associated data for this website from AWS Personalize.')) {
+				this.setBttnMssg("Removing all", '#reset_button');
 				this.callReset();
 			}else {
 				// nada
@@ -157,8 +184,8 @@ define([
 		},
 		
 		resetCampaign: function() {
-			if (confirm('Are you sure? This will remove your current campaign and solution version. There will be charges if you wish to retrain.')) {
-				this.setBttnMssg("Removing Campaign", '#reset_campaign_button');
+			if (confirm('Are you sure? This will remove only the current campaign and event tracker, but there will be charges if you wish to retrain a campaign.')) {
+				this.setBttnMssg("Removing campaign", '#reset_campaign_button');
 				this.callCampReset();
 			}else {
 				// nada
@@ -206,10 +233,6 @@ define([
 			var imgUrl = self.successUrl;
 			var infoUrl = self.infoUrl;
 
-			/* TODO -- debug */
-//			self.displayRstBttn('none');
-		//	self.displayRstBttn('block');
-
 			if(typeof startProcess !== "undefined") { 
 				url = self.ajaxRunUrl; 
 				// clear steps
@@ -221,12 +244,9 @@ define([
 			self.displayErrorLog();
 
 			jQuery.getJSON(url).done( function(data) { 
-		//	jQuery.ajax({url: url, type:'POST',dataType: 'json',showLoader: 'true'}).done(function(data) {
-
 				var imgUrl = '';
 				var infoUrl = '';
 				self.steps([]);
-		//		self.hideGauge();
 				if( data.steps['license'] == false ) {
 					self.hideTrainBttn();
 					self.displayErrorBttn('none');
@@ -274,8 +294,6 @@ define([
 						self.disableTrainBttn(true);
 						self.setBttnMssg("Campaign Created");
 						imgUrl = self.successUrl;
-						self.displayRstBttn('block');
-						self.steps([]);
 						return false;
 					} else {
 						imgUrl = self.successUrl;
@@ -288,12 +306,9 @@ define([
 				
 
 				self.buttonStatus(self.processStatus);
-				//location.reload();
-				//return false;
 				return true
 			})
 			.always(function () { 
-		//		console.log('hits unloader');
 				jQuery("#loader").hide(); 
 			});
 		},
