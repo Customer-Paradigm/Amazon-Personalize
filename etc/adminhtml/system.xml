@@ -64,11 +64,20 @@
 					<label>Data Range</label>
 					<comment>How many previous months to include when creating training data</comment>
 				</field>
+				<field id="ec2_install" translate="label" type="hidden" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0"/>
+			</group>
+			<group id="awsp_training" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+				<label>Personalize Campaign</label>
 				<field id="data_process_info" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
 					<frontend_model>CustomerParadigm\AmazonPersonalize\Block\Adminhtml\Config\Train</frontend_model>
 					<label>Export data and train campaign</label>
 				</field>
-				<field id="ec2_install" translate="label" type="hidden" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0"/>
+				<group id="awsp_training_advanced" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
+					<label>Advanced</label>
+					<field id="training_advanced_display" translate="label" type="hidden" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+						<frontend_model>CustomerParadigm\AmazonPersonalize\Block\Adminhtml\Config\TrainAdvanced</frontend_model>
+					</field>
+				</group>
 			</group>
 			<group id="awsp_assets" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
 				<label>Assets Created</label>

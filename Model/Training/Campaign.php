@@ -48,7 +48,7 @@ class Campaign extends PersonalizeBase
 	}
 
         try {
-		$arn = $this->nameConfig->buildArn('campaign', $this->campaignName);
+		$arn = $this->campaignArn;
 		$rslt = $this->personalizeClient->{$this->apiDescribe}([
 			'campaignArn' => $arn,
                 ]);

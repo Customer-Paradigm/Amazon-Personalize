@@ -1,0 +1,27 @@
+<div>
+	
+<button id="reset_campaign_button" title="Reset Process" type="button" class="action-default scalable aws-advanced" data-bind=", click: resetCampaign, css: resetCampStatus"> 
+        <span>Remove campaign and event tracker only</span>
+</button>
+<img title="Display remove campaign message" class="message-button" width="16px" height="16px" data-bind="attr:{src: infoUrl}, click: displayRstCampMssg"/>
+</div>
+<div>
+<button id="reset_button" title="Reset Process" type="button" class="action-default scalable aws-advanced" data-bind=", click: resetProcess, css: resetStatus"> 
+        <span>Remove campaign and all data</span>
+</button>
+<img title="Display remove campaign message" class="message-button" width="16px" height="16px" data-bind="attr:{src: infoUrl}, click: displayRstAllMssg"/>
+</div>
+        <div id="reset_all_message_wrapper">
+                <div class="popup" id="train_message_div">
+                        <div class="close" data-bind=", click: closeRstAllMssg">&times;</div>
+                        <div html="rstAllMssg()"></div>
+                </div>
+        </div>
+        <div id="reset_camp_message_wrapper">
+                <div class="popup" id="train_message_div">
+                        <div class="close" data-bind=", click: closeRstCampMssg">&times;</div>
+                        <div html="rstCampMssg()"></div>
+                </div>
+        </div>
+
+
