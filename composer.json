@@ -1,5 +1,5 @@
 {
-    "name": "customerparadigm/amazon-personalize-extension-enterprise",
+    "name": "customerparadigm/amazon-personalize-extension",
     "description": "Amazon Personalize Customer Suggestions by Customer Paradigm",
     "require": {
 	"php": "~7.1.0||~7.2.0||~7.3.0||~7.4.0",
