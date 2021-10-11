@@ -5,7 +5,8 @@ namespace CustomerParadigm\AmazonPersonalize\Block\Widget;
 use Magento\Framework\View\Element\Template;
 use Magento\Widget\Block\BlockInterface;
 
-class Display  extends \Magento\Catalog\Block\Product\AbstractProduct implements BlockInterface{
+class Display extends \Magento\Catalog\Block\Product\AbstractProduct implements BlockInterface
+{
 
     protected $_template = "widget/recommendations.phtml";
     protected $customerSession;
@@ -35,40 +36,46 @@ class Display  extends \Magento\Catalog\Block\Product\AbstractProduct implements
         $this->pConfig = $pConfig;
     }
 
-    public function getUserId() {
+    public function getUserId()
+    {
         $customer = $this->customerSession->create();
         $id = $customer->getId();
         $id = empty($id) ? 'guest_user': $id;
         return $id;
     }
 
-    public function isControlUser() {
-	$user_type = $this->awsEvents->personalizeAbType();
+    public function isControlUser()
+    {
+        $user_type = $this->awsEvents->personalizeAbType();
         return $user_type === 'control';
     }
 
-    public function getUserType() {
+    public function getUserType()
+    {
         return $this->awsEvents->personalizeAbType();
     }
 
-    public function isEnabled() {
+    public function isEnabled()
+    {
         return $this->pHelper->canDisplay();
     }
     
-    public function canDisplay() {
+    public function canDisplay()
+    {
         $display = true;
-        if( ! $this->isEnabled() ) { 
-            $display = false; 
-        } elseif($this->pConfig->getGaAbEnabled() && $this->isControlUser() ) { 
-            $display = false; 
+        if (! $this->isEnabled()) {
+            $display = false;
+        } elseif ($this->pConfig->getGaAbEnabled() && $this->isControlUser()) {
+            $display = false;
         }
         return $display;
     }
 
-    public function getRecommendationHtml() {
-	$current_prod_id = empty($this->getProduct()) ? 0 : $this->getProduct()->getId();
+    public function getRecommendationHtml()
+    {
+        $current_prod_id = empty($this->getProduct()) ? 0 : $this->getProduct()->getId();
         $user_id = $this->getUserId();
-	$recommend_result = $this->awsResultFactory->create()->getRecommendation($user_id);
+        $recommend_result = $this->awsResultFactory->create()->getRecommendation($user_id);
 
         $productCollection = $this->prodViewModel->getViewableProducts($recommend_result, $current_prod_id, $this->getCount());
         $resultPage = $this->resultPageFactory->create();
@@ -78,6 +85,6 @@ class Display  extends \Magento\Catalog\Block\Product\AbstractProduct implements
             ->setTemplate("CustomerParadigm_AmazonPersonalize::catalog/product/list.phtml");
         $block->setProductCollection($productCollection);
 
-        return $block->toHtml();     
+        return $block->toHtml();
     }
 }

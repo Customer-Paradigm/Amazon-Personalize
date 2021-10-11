@@ -9,9 +9,9 @@ class LoginPostPlugin
     protected $recommendResult;
 
     public function __construct(
-	\Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
-	\CustomerParadigm\AmazonPersonalize\Model\Result $recommendResult
+        \CustomerParadigm\AmazonPersonalize\Model\Result $recommendResult
     ) {
         $this->storeManager = $storeManager;
         $this->customerRepository = $customerRepository;
@@ -26,22 +26,21 @@ class LoginPostPlugin
      */
     public function afterExecute(
         \Magento\Customer\Controller\Account\LoginPost $subject,
-        $result)
-    {
-	  if ($subject->getRequest()->isPost()) {
-		$login = $subject->getRequest()->getPost('login');
-	    	$email = $login['username'];
-		$websiteId = $this->storeManager->getStore()->getWebsiteId();
-		try {
-			$customer = $this->customerRepository->get($email,$websiteId);
-		} catch(\Exception $e) {
-        		return $result;
-		}
-		$cid = $customer->getId();
-		$this->recommendResult->getRecommendation($cid);
-	  }
+        $result
+    ) {
+        if ($subject->getRequest()->isPost()) {
+            $login = $subject->getRequest()->getPost('login');
+            $email = $login['username'];
+            $websiteId = $this->storeManager->getStore()->getWebsiteId();
+            try {
+                $customer = $this->customerRepository->get($email, $websiteId);
+            } catch (\Exception $e) {
+                return $result;
+            }
+            $cid = $customer->getId();
+            $this->recommendResult->getRecommendation($cid);
+        }
 
         return $result;
     }
-
 }

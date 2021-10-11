@@ -30,10 +30,9 @@ class Errorlog extends Action
         JsonFactory $resultJsonFactory,
         LoggerInterface $loggerInterface,
         Data $helper,
-	WizardTracking $wizardTracking,
-	Error $errorLog
-    )
-    {
+        WizardTracking $wizardTracking,
+        Error $errorLog
+    ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->loggerInterface = $loggerInterface;
         $this->helper = $helper;
@@ -47,13 +46,13 @@ class Errorlog extends Action
      */
     public function execute()
     {
-	$data = array();
+        $data = [];
         $result = $this->resultJsonFactory->create();
-	$log = $this->errorLog->getAllErrors();
-	foreach($log as $item) {
-		$data[] = str_replace("\n","<br>",trim($item['error_message'],'"'));
-	}
-	$result->setData($data);
+        $log = $this->errorLog->getAllErrors();
+        foreach ($log as $item) {
+            $data[] = str_replace("\n", "<br>", trim($item['error_message'], '"'));
+        }
+        $result->setData($data);
         return $result;
     }
  

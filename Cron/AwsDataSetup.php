@@ -13,7 +13,6 @@ use \Magento\Framework\Filesystem\DirectoryList;
 use \Magento\Framework\App\Config\ScopeConfigInterface;
 use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 
-
 /**
  * Class AwsDataSetup
  * @package CustomerParadigm\AmazonPersonalize\Cron
@@ -37,8 +36,7 @@ class AwsDataSetup
         DirectoryList $directoryList,
         ScopeConfigInterface $scopeConfig,
         PersonalizeConfig $pConfig
-    )
-    {
+    ) {
         $this->logger = $logger;
         $this->directoryList = $directoryList;
         $this->scopeConfig = $scopeConfig;

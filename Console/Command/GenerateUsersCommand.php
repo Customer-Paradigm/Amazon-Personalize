@@ -6,6 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use CustomerParadigm\AmazonPersonalize\Model\Data\UserGenerator;
+
 //use Symfony\Component\Console\Input\InputArgument;
 //use Symfony\Component\Console\Input\InputOption;
 
@@ -16,7 +17,7 @@ class GenerateUsersCommand extends Command
 
     public function __construct(
         UserGenerator $userGenerator
-    ){
+    ) {
         $this->userGenerator = $userGenerator;
         parent::__construct();
     }

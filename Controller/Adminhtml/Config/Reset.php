@@ -39,8 +39,7 @@ class Reset extends Action
         NameConfig $nameConfig,
         PersonalizeConfig $pConfig,
         WizardTracking $wizardTracking
-    )
-    {
+    ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->loggerInterface = $loggerInterface;
         $this->helper = $helper;
@@ -58,25 +57,25 @@ class Reset extends Action
     {
         try {
             $this->loggerInterface->info('Aws data reset Cron off -------------');
-            $this->pConfig->setCron('aws_data_setup','off');
+            $this->pConfig->setCron('aws_data_setup', 'off');
         } catch (\Exception $e) {
             $this->loggerInterface->critical($e);
             $err_mssg = "AWS reset disable cron error: " . $e->getMessage();
-            $rtn = array('mssg'=>$err_mssg,'steps'=>array(), 'state'=>'error');
+            $rtn = ['mssg'=>$err_mssg,'steps'=>[], 'state'=>'error'];
         }
-		$test = $this->stepsReset->execute();
-        $rtn = array();
+        $test = $this->stepsReset->execute();
+        $rtn = [];
         $mssg = null;
         try {
-			$rtn['steps'] = $this->wizardTracking->displayProgress();
-			$rtn['mssg'] = '';
-			$rtn['state'] = 'success';
+            $rtn['steps'] = $this->wizardTracking->displayProgress();
+            $rtn['mssg'] = '';
+            $rtn['state'] = 'success';
 
         } catch (\Exception $e) {
             $this->loggerInterface->critical($e);
-			$rtn['steps'] = $this->wizardTracking->displayProgress();
-			$rtn['mssg'] = $e->getMessage();
-			$rtn['state'] = 'error';
+            $rtn['steps'] = $this->wizardTracking->displayProgress();
+            $rtn['mssg'] = $e->getMessage();
+            $rtn['state'] = 'error';
         }
         /** @var \Magento\Framework\Controller\Result\Json $result */
         $result = $this->resultJsonFactory->create();

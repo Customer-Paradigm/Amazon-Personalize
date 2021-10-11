@@ -10,7 +10,7 @@ interface RuntimeClientInterface
      * @param string $itemId
      * @return string (JSON)
      */
-    public function getRecommendations($campaignArn,$userId = null,$itemId = null);
+    public function getRecommendations($campaignArn, $userId = null, $itemId = null);
     
     /**
      * @api

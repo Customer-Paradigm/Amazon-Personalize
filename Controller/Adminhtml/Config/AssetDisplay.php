@@ -30,10 +30,9 @@ class AssetDisplay extends Action
         JsonFactory $resultJsonFactory,
         LoggerInterface $loggerInterface,
         Data $helper,
-	WizardTracking $wizardTracking,
-	Asset $asset
-    )
-    {
+        WizardTracking $wizardTracking,
+        Asset $asset
+    ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->loggerInterface = $loggerInterface;
         $this->helper = $helper;
@@ -47,18 +46,18 @@ class AssetDisplay extends Action
      */
     public function execute()
     {
-	$data = array();
+        $data = [];
         $result = $this->resultJsonFactory->create();
-	$dispData = $this->asset->getAwsDisplayData();
-	$settings = $dispData['settings'];
-	$assets = $dispData['assets'];
-	foreach($settings as $item) {
-		$data[] = $item;
-	}
-	foreach($assets as $item) {
-		$data[] = $item;
-	}
-	$result->setData($data);
+        $dispData = $this->asset->getAwsDisplayData();
+        $settings = $dispData['settings'];
+        $assets = $dispData['assets'];
+        foreach ($settings as $item) {
+            $data[] = $item;
+        }
+        foreach ($assets as $item) {
+            $data[] = $item;
+        }
+        $result->setData($data);
         return $result;
     }
  

@@ -10,7 +10,6 @@ use Magento\Framework\Filesystem\File\WriteFactory;
 use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
 use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
 
-
 class UserGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\AbstractGenerator
 {
     /*
@@ -44,7 +43,7 @@ class UserGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
         InfoLogger $infoLogger,
         ErrorLogger $errorLogger,
         File $file
-    ){
+    ) {
         $this->customerCollectionFactory = $customerCollectionFactory;
         $this->groupRepository = $groupRepository;
         parent::__construct($writeFactory, $directoryList, $file);
@@ -116,7 +115,8 @@ class UserGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
         return $data;
     }
     
-    private function getPaddedUserDataFromCustomer($num,$customer) {
+    private function getPaddedUserDataFromCustomer($num, $customer)
+    {
         $data = [];
         $data[] = $this->parseNullData("cpgen$num-" . $customer->getId());
         $data[] = $this->parseNullData($this->getCustomerGroupCode($customer));
@@ -129,38 +129,38 @@ class UserGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
 
     private function writeCustomersToCsv($customers)
     {
-	$count = count($customers);
+        $count = count($customers);
         foreach ($customers as $customer) {
             $this->writer->writeCsv($this->getUserDataFromCustomer($customer));
-	}
-	// pad customer csv file if fewer than 25 customers
-	while($count < 25) {
-	
-		foreach ($customers as $customer) {
-			$this->writer->writeCsv($this->getPaddedUserDataFromCustomer($count,$customer));
-			$count++;
-		}
-	}
+        }
+    // pad customer csv file if fewer than 25 customers
+        while ($count < 25) {
+    
+            foreach ($customers as $customer) {
+                $this->writer->writeCsv($this->getPaddedUserDataFromCustomer($count, $customer));
+                $count++;
+            }
+        }
 
         return $this;
     }
 
     public function generateCsv()
     {
-		try {
-			/** @var \Magento\Customer\Model\ResourceModel\Customer\Collection $customers */
-			//$customers = $this->customerCollectionFactory->create()->addFieldToFilter('created_at', array('gt' =>  '2017-09-15'));
-			$customers = $this->customerCollectionFactory->create();
-			$count = count($customers);
+        try {
+            /** @var \Magento\Customer\Model\ResourceModel\Customer\Collection $customers */
+            //$customers = $this->customerCollectionFactory->create()->addFieldToFilter('created_at', array('gt' =>  '2017-09-15'));
+            $customers = $this->customerCollectionFactory->create();
+            $count = count($customers);
 
-			$this->createWriter()
-				->writeHeadersToCsv()
-				->writeCustomersToCsv($customers)
-				->closeWriter();
-		} catch(Exception $e) {
+            $this->createWriter()
+                ->writeHeadersToCsv()
+                ->writeCustomersToCsv($customers)
+                ->closeWriter();
+        } catch (Exception $e) {
             $mssg = $e->getMessage();
             $this->errorLogger->error("UserGenerator Processing error: $mssg");
-		}
+        }
 
         return $this;
     }

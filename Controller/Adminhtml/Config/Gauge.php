@@ -29,8 +29,7 @@ class Gauge extends Action
         LoggerInterface $loggerInterface,
         Data $helper,
         wizardTracking $wizardTracking
-    )
-    {
+    ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->loggerInterface = $loggerInterface;
         $this->helper = $helper;
@@ -44,16 +43,16 @@ class Gauge extends Action
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
-	$count = $this->wizardTracking->pConfig->getInteractionsCount();
-	$result->setData(['value'=>$count,'paused'=>true]);
-	if(! $this->helper->canDisplayAdmin() ) {
-		$result->setData(['value'=>0,'paused'=>false]);
-	} else if($count >= 1000) {
-		$this->wizardTracking->resetStep('create_csv_files');
-		$result->setData(['value'=>$count,'paused'=>false]);
-	} else {
-		$this->wizardTracking->setStepInprogress('create_csv_files');
-	}
+        $count = $this->wizardTracking->pConfig->getInteractionsCount();
+        $result->setData(['value'=>$count,'paused'=>true]);
+        if (! $this->helper->canDisplayAdmin()) {
+            $result->setData(['value'=>0,'paused'=>false]);
+        } elseif ($count >= 1000) {
+            $this->wizardTracking->resetStep('create_csv_files');
+            $result->setData(['value'=>$count,'paused'=>false]);
+        } else {
+            $this->wizardTracking->setStepInprogress('create_csv_files');
+        }
         return $result;
     }
  

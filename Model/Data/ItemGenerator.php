@@ -34,7 +34,7 @@ class ItemGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
         InfoLogger $infoLogger,
         ErrorLogger $errorLogger,
         File $file
-    ){
+    ) {
         $this->productCollectionFactory = $productCollectionFactory;
         parent::__construct($writeFactory, $directoryList, $file);
         $this->infoLogger = $infoLogger;
@@ -60,10 +60,10 @@ class ItemGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
         foreach ($categories as $category) {
             $categoryData .= $category->getName() . '|';
         }
-	$categoryData = rtrim($categoryData,'|');
-	if(empty($categoryData)) {
-		$categoryData = 'none';
-	}
+        $categoryData = rtrim($categoryData, '|');
+        if (empty($categoryData)) {
+            $categoryData = 'none';
+        }
 
         return $categoryData;
     }
@@ -88,7 +88,7 @@ class ItemGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
                 ->writeHeadersToCsv()
                 ->writeProductsToCsv($products)
                 ->closeWriter();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $mssg = $e->getMessage();
             $this->errorLogger->error("Items Generator Processing error: $mssg");
 

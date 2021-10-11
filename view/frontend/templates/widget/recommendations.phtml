@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 //Use to verify user id and a/b testing type page source
 $userType = $block->getUserType();
 $userid = $block->getUserId();
@@ -8,9 +8,9 @@ echo("<!-- Personalize User: $userid Type: $userType -->");
 $display = $block->canDisplay();
 ?>
 
-<?php if( $display ) { ?>
+<?php if ($display) { ?>
 <div id='aws-display'>
 <h3><?= $block->escapeHtml($block->getHeading()) ?></h3>
-<?= $block->getRecommendationHtml(); ?>
+    <?= $block->getRecommendationHtml(); ?>
 </div>
 <?php } ?>

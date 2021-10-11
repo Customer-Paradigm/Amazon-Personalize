@@ -30,10 +30,9 @@ class ErrorlogDownload extends Action
         JsonFactory $resultJsonFactory,
         LoggerInterface $loggerInterface,
         Data $helper,
-	WizardTracking $wizardTracking,
-	Error $errorLog
-    )
-    {
+        WizardTracking $wizardTracking,
+        Error $errorLog
+    ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->loggerInterface = $loggerInterface;
         $this->helper = $helper;
@@ -47,34 +46,34 @@ class ErrorlogDownload extends Action
      */
     public function execute()
     {
-	$data = array();
+        $data = [];
         $result = $this->resultJsonFactory->create();
-	$log = $this->errorLog->getAllErrors();
-	$this->array_csv_download($log);
+        $log = $this->errorLog->getAllErrors();
+        $this->array_csv_download($log);
     }
 
-public function array_csv_download( $array, $filename = "aws_campaign_logs.csv", $delimiter=";" )
-{
-    header( 'Content-Type: application/csv' );
-    header( 'Content-Disposition: attachment; filename="' . $filename . '";' );
+    public function array_csv_download($array, $filename = "aws_campaign_logs.csv", $delimiter = ";")
+    {
+        header('Content-Type: application/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '";');
 
-    // clean output buffer
-    ob_end_clean();
+        // clean output buffer
+        ob_end_clean();
     
-    $handle = fopen( 'php://output', 'w' );
+        $handle = fopen('php://output', 'w');
 
-    // use keys as column titles
-    fputcsv( $handle, array_keys( $array['0'] ) , $delimiter );
+        // use keys as column titles
+        fputcsv($handle, array_keys($array['0']), $delimiter);
 
-    foreach ( $array as $value ) {
-        fputcsv( $handle, $value , $delimiter );
+        foreach ($array as $value) {
+            fputcsv($handle, $value, $delimiter);
+        }
+
+        fclose($handle);
+
+        // use exit to get rid of unexpected output afterward
+        return null;
     }
-
-    fclose( $handle );
-
-    // use exit to get rid of unexpected output afterward
-    exit();
-}
  
  
     protected function _isAllowed()

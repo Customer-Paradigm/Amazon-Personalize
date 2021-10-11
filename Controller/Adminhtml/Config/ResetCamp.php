@@ -39,8 +39,7 @@ class ResetCamp extends Action
         NameConfig $nameConfig,
         PersonalizeConfig $pConfig,
         WizardTracking $wizardTracking
-    )
-    {
+    ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->loggerInterface = $loggerInterface;
         $this->helper = $helper;
@@ -58,40 +57,40 @@ class ResetCamp extends Action
     {
         try {
             $this->loggerInterface->info('Aws data reset Cron off -------------');
-            $this->pConfig->setCron('aws_data_setup','off');
+            $this->pConfig->setCron('aws_data_setup', 'off');
         } catch (\Exception $e) {
             $this->loggerInterface->critical($e);
             $err_mssg = "AWS reset disable cron error: " . $e->getMessage();
-            $rtn = array('mssg'=>$err_mssg,'steps'=>array(), 'state'=>'error');
-	}
-	$events_arn = $this->helper->getConfigValue('awsp_wizard/data_type_arn/eventTrackerArn');
-	if(!empty($events_arn)) {
-		$test = $this->stepsReset->deleteAsset('eventTracker',$events_arn);
-		$this->nameConfig->deleteConfigSetting('awsp_wizard/data_type_arn/eventTrackerArn');
-		$this->nameConfig->deleteConfigSetting('awsp_wizard/data_type_name/eventTrackerName');
-		$this->wizardTracking->setStepReady('create_event_tracker');
-	}
-	$campaign_arn = $this->helper->getConfigValue('awsp_wizard/data_type_arn/campaignArn');
-	if(!empty($campaign_arn)) {
-		$test = $this->stepsReset->deleteAsset('campaign',$campaign_arn);
-		$this->nameConfig->deleteConfigSetting('awsp_wizard/data_type_arn/campaignArn');
-		$this->nameConfig->deleteConfigSetting('awsp_wizard/data_type_name/campaignName');
-		$this->nameConfig->saveConfigSetting('awsp_settings/awsp_general/campaign_exists',0);
-		$this->wizardTracking->setStepReady('create_campaign');
-	}
+            $rtn = ['mssg'=>$err_mssg,'steps'=>[], 'state'=>'error'];
+        }
+        $events_arn = $this->helper->getConfigValue('awsp_wizard/data_type_arn/eventTrackerArn');
+        if (!empty($events_arn)) {
+            $test = $this->stepsReset->deleteAsset('eventTracker', $events_arn);
+            $this->nameConfig->deleteConfigSetting('awsp_wizard/data_type_arn/eventTrackerArn');
+            $this->nameConfig->deleteConfigSetting('awsp_wizard/data_type_name/eventTrackerName');
+            $this->wizardTracking->setStepReady('create_event_tracker');
+        }
+        $campaign_arn = $this->helper->getConfigValue('awsp_wizard/data_type_arn/campaignArn');
+        if (!empty($campaign_arn)) {
+            $test = $this->stepsReset->deleteAsset('campaign', $campaign_arn);
+            $this->nameConfig->deleteConfigSetting('awsp_wizard/data_type_arn/campaignArn');
+            $this->nameConfig->deleteConfigSetting('awsp_wizard/data_type_name/campaignName');
+            $this->nameConfig->saveConfigSetting('awsp_settings/awsp_general/campaign_exists', 0);
+            $this->wizardTracking->setStepReady('create_campaign');
+        }
 
-        $rtn = array();
+        $rtn = [];
         $mssg = null;
         try {
-			$rtn['steps'] = $this->wizardTracking->displayProgress();
-			$rtn['mssg'] = '';
-			$rtn['state'] = 'success';
+            $rtn['steps'] = $this->wizardTracking->displayProgress();
+            $rtn['mssg'] = '';
+            $rtn['state'] = 'success';
 
         } catch (\Exception $e) {
             $this->loggerInterface->critical($e);
-			$rtn['steps'] = $this->wizardTracking->displayProgress();
-			$rtn['mssg'] = $e->getMessage();
-			$rtn['state'] = 'error';
+            $rtn['steps'] = $this->wizardTracking->displayProgress();
+            $rtn['mssg'] = $e->getMessage();
+            $rtn['state'] = 'error';
         }
         /** @var \Magento\Framework\Controller\Result\Json $result */
         $result = $this->resultJsonFactory->create();

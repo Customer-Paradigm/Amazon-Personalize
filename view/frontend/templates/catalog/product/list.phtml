@@ -16,7 +16,7 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
         $imageDisplayArea = 'category_page_list';
         $showDescription = true;
         $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::FULL_VIEW;
-		}
+        }
   */
 
     /**
@@ -27,7 +27,7 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
     <div class="products wrapper <?= /* @escapeNotVerified */ $viewMode ?> products-<?= /* @escapeNotVerified */ $viewMode ?>">
         <ol class="products list items product-items">
             <?php /** @var $_product \Magento\Catalog\Model\Product */ ?>
-	    <?php foreach ($_productCollection as $_product): ?>
+        <?php foreach ($_productCollection as $_product): ?>
             <li class="item product product-item">
                 <div class="product-item-info" data-container="product-<?= /* @escapeNotVerified */ $viewMode ?>">
                     <?php
@@ -51,8 +51,8 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
                                 <?= /* @escapeNotVerified */ $_helper->productAttribute($_product, $_product->getName(), 'name') ?>
                             </a>
                         </strong>
-			<?= $block->getReviewsSummaryHtml($_product, $templateType) ?>
-			<?= /* @escapeNotVerified */ $block->getProductPrice($_product) ?>
+            <?= $block->getReviewsSummaryHtml($_product, $templateType) ?>
+            <?= /* @escapeNotVerified */ $block->getProductPrice($_product) ?>
                         <?= $block->getProductDetailsHtml($_product) ?>
 
                         <div class="product-item-inner">
@@ -99,7 +99,7 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
             <?php endforeach; ?>
         </ol>
     </div>
-    <?php if (!$block->isRedirectToCartEnabled()) : ?>
+    <?php if (!$block->isRedirectToCartEnabled()): ?>
         <script type="text/x-magento-init">
         {
             "[data-role=tocart-form], .form.map.checkout": {

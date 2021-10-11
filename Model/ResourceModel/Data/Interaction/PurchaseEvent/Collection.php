@@ -8,14 +8,17 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 
     protected function _construct()
     {
-        $this->_init('CustomerParadigm\AmazonPersonalize\Model\Data\Interaction\PurchaseEvent',
-            'CustomerParadigm\AmazonPersonalize\Model\ResourceModel\Data\Interaction\PurchaseEvent');
+        $this->_init(
+            'CustomerParadigm\AmazonPersonalize\Model\Data\Interaction\PurchaseEvent',
+            'CustomerParadigm\AmazonPersonalize\Model\ResourceModel\Data\Interaction\PurchaseEvent'
+        );
     }
 
     protected function _initSelect()
     {
         $this->getSelect()
-            ->from(['main_table' => $this->getMainTable()],
+            ->from(
+                ['main_table' => $this->getMainTable()],
                 [
                     'order_id' => 'sales_order.entity_id',
                     'user_id' => 'sales_order.customer_id',
@@ -24,8 +27,12 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
                     'timestamp' => 'UNIX_TIMESTAMP(main_table.updated_at)',
                 ]
             )
-            ->join('sales_order',
-                'main_table.order_id = sales_order.entity_id', []);;
+            ->join(
+                'sales_order',
+                'main_table.order_id = sales_order.entity_id',
+                []
+            );
+        ;
         return $this;
     }
 }

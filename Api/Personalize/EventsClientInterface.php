@@ -8,5 +8,4 @@ interface EventsClientInterface
      * @param string (JSON) $args
      */
     public function putEvents($args);
-    
 }

@@ -30,8 +30,7 @@ class Display extends Action
         LoggerInterface $loggerInterface,
         Data $helper,
         wizardTracking $wizardTracking
-    )
-    {
+    ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->loggerInterface = $loggerInterface;
         $this->helper = $helper;
@@ -44,25 +43,25 @@ class Display extends Action
      */
     public function execute()
     {
-        $rtn = array();
+        $rtn = [];
         $mssg = null;
-	try {
-		if(array_key_exists('license',$rtn) && $rtn['license'] === false ) {
-			$rtn['steps'] = array();
-			$rtn['mssg'] = 'License or AWS credentials are incorrect';
-			$rtn['state'] = 'error';
-		} else {
+        try {
+            if (array_key_exists('license', $rtn) && $rtn['license'] === false) {
+                $rtn['steps'] = [];
+                $rtn['mssg'] = 'License or AWS credentials are incorrect';
+                $rtn['state'] = 'error';
+            } else {
 
-			$rtn['steps'] = $this->wizardTracking->displayProgress();
-			$rtn['mssg'] = '';
-			$rtn['state'] = 'success';
-		}
+                $rtn['steps'] = $this->wizardTracking->displayProgress();
+                $rtn['mssg'] = '';
+                $rtn['state'] = 'success';
+            }
 
         } catch (\Exception $e) {
             $this->loggerInterface->critical($e);
-			$rtn['steps'] = $this->wizardTracking->displayProgress();
-			$rtn['mssg'] = $e->getMessage();
-			$rtn['state'] = 'error';
+            $rtn['steps'] = $this->wizardTracking->displayProgress();
+            $rtn['mssg'] = $e->getMessage();
+            $rtn['state'] = 'error';
         }
         /** @var \Magento\Framework\Controller\Result\Json $result */
         $result = $this->resultJsonFactory->create();
