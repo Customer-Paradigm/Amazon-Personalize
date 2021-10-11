@@ -1,9 +1,10 @@
 <?php
 namespace CustomerParadigm\AmazonPersonalize\Controller\Personalize;
 
-Use Aws\Personalize\PersonalizeClient;
+use Aws\Personalize\PersonalizeClient;
 
-class TestEvents extends \Magento\Framework\App\Action\Action {
+class TestEvents extends \Magento\Framework\App\Action\Action
+{
 
     protected $pRuntimeClient;
     protected $nameConfig;
@@ -16,7 +17,7 @@ class TestEvents extends \Magento\Framework\App\Action\Action {
 
 
     public function __construct(
-	\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
+        \CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
@@ -25,12 +26,12 @@ class TestEvents extends \Magento\Framework\App\Action\Action {
         \CustomerParadigm\AmazonPersonalize\ViewModel\Product $prodViewModel,
         \CustomerParadigm\AmazonPersonalize\Api\Personalize\RuntimeClient $rtClient,
         \CustomerParadigm\AmazonPersonalize\Model\ResultFactory $awsResultFactory,
-	\CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
-	\CustomerParadigm\AmazonPersonalize\Block\Widget\Display $prodDisplay,
-	\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
+        \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
+        \CustomerParadigm\AmazonPersonalize\Block\Widget\Display $prodDisplay,
+        \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
         \CustomerParadigm\AmazonPersonalize\Model\Training\EventTracker $eventTracker,
-	\CustomerParadigm\AmazonPersonalize\Model\Error $errorModel,
-	\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
+        \CustomerParadigm\AmazonPersonalize\Model\Error $errorModel,
+        \CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
         \CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
@@ -51,22 +52,20 @@ class TestEvents extends \Magento\Framework\App\Action\Action {
         $this->sdkClient = $sdkClient;
         putenv("HOME=$this->homedir");
 
-	parent::__construct($context);
-	$this->region = $this->nameConfig->getAwsRegion();
+        parent::__construct($context);
+        $this->region = $this->nameConfig->getAwsRegion();
         $this->personalizeClient = $this->sdkClient->getClient('Personalize');
     }
 
     public function execute()
     {
-/* Comment out this redirect to homepage to use the test controller 
+/* Comment out this redirect to homepage to use the test controller
 */
             $resultRedirect = $this->resultRedirectFactory->create();
            $resultRedirect->setPath('');
-	    return $resultRedirect;
+        return $resultRedirect;
 
-	var_dump($this->eventTracker->createEventTracker());
-	echo('eventTracker done');
+        var_dump($this->eventTracker->createEventTracker());
+        echo('eventTracker done');
     }
 }
-
-

@@ -12,14 +12,13 @@ class ProductQuoteAddObserver implements ObserverInterface
     public function __construct(
         \CustomerParadigm\AmazonPersonalize\Model\Events $awsEvents,
         \Magento\Framework\App\Request\Http $request
-    )
-    {
+    ) {
         $this->awsEvents = $awsEvents;
         $this->request = $request;
     }
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        $this->awsEvents->putObsAddtocart($observer,$this->request);
+        $this->awsEvents->putObsAddtocart($observer, $this->request);
     }
 }

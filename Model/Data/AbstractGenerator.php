@@ -9,9 +9,9 @@ use Magento\Framework\Filesystem\File\WriteFactory;
 
 abstract class AbstractGenerator
 {
-    CONST DEFAULT_EXPORT_SUB_DIR = "export/amazonpersonalize";
+    const DEFAULT_EXPORT_SUB_DIR = "export/amazonpersonalize";
 
-    CONST DEFAULT_NULL_DATA_VALUE = "none";
+    const DEFAULT_NULL_DATA_VALUE = "none";
 
     protected $filename;
 
@@ -35,7 +35,7 @@ abstract class AbstractGenerator
         WriteFactory $writeFactory,
         DirectoryList $directoryList,
         File $file
-    ){
+    ) {
         $this->writeFactory = $writeFactory;
         $this->directoryList = $directoryList;
         $this->file = $file;

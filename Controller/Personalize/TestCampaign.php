@@ -1,9 +1,10 @@
 <?php
 namespace CustomerParadigm\AmazonPersonalize\Controller\Personalize;
 
-Use Aws\Personalize\PersonalizeClient;
+use Aws\Personalize\PersonalizeClient;
 
-class TestCampaign extends \Magento\Framework\App\Action\Action {
+class TestCampaign extends \Magento\Framework\App\Action\Action
+{
 
     protected $pRuntimeClient;
     protected $nameConfig;
@@ -15,7 +16,7 @@ class TestCampaign extends \Magento\Framework\App\Action\Action {
     protected $sdkClient;
 
     public function __construct(
-	\CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
+        \CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
         \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
@@ -24,14 +25,13 @@ class TestCampaign extends \Magento\Framework\App\Action\Action {
         \CustomerParadigm\AmazonPersonalize\ViewModel\Product $prodViewModel,
         \CustomerParadigm\AmazonPersonalize\Api\Personalize\RuntimeClient $rtClient,
         \CustomerParadigm\AmazonPersonalize\Model\ResultFactory $awsResultFactory,
-	\CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
-	\CustomerParadigm\AmazonPersonalize\Block\Widget\Display $prodDisplay,
-	\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
+        \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
+        \CustomerParadigm\AmazonPersonalize\Block\Widget\Display $prodDisplay,
+        \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
         \CustomerParadigm\AmazonPersonalize\Model\Training\Campaign $campaign,
-	\CustomerParadigm\AmazonPersonalize\Model\Error $errorModel,
-	\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
-	\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
-
+        \CustomerParadigm\AmazonPersonalize\Model\Error $errorModel,
+        \CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
+        \CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->productFactory = $productFactory;
@@ -47,26 +47,24 @@ class TestCampaign extends \Magento\Framework\App\Action\Action {
         $this->homedir = $this->pConfig->getUserHomeDir();
         $this->campaign = $campaign;
         $this->errorModel = $errorModel;
-	$this->wizardTracking = $wizardTracking;
-	$this->sdkClient = $sdkClient;
+        $this->wizardTracking = $wizardTracking;
+        $this->sdkClient = $sdkClient;
         putenv("HOME=$this->homedir");
 
-	parent::__construct($context);
-	$this->region = $this->nameConfig->getAwsRegion();
-	$this->personalizeClient = $this->sdkClient->getClient('Personalize');
+        parent::__construct($context);
+        $this->region = $this->nameConfig->getAwsRegion();
+        $this->personalizeClient = $this->sdkClient->getClient('Personalize');
     }
 
     public function execute()
     {
-/* Comment out this redirect to homepage to use the test controller 
+/* Comment out this redirect to homepage to use the test controller
 */
             $resultRedirect = $this->resultRedirectFactory->create();
            $resultRedirect->setPath('');
-	    return $resultRedirect;
+        return $resultRedirect;
 
-	var_dump($this->campaign->getStatus());
-	echo('campaign done');
+        var_dump($this->campaign->getStatus());
+        echo('campaign done');
     }
 }
-
-

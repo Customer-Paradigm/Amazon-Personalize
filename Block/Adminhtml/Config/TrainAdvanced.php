@@ -8,7 +8,8 @@ use Magento\Backend\Block\Template\Context;
 use Magento\Framework\Module\Dir\Reader;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
 
-class TrainAdvanced  extends Train {
+class TrainAdvanced extends Train
+{
     /**
      * @var string
      */

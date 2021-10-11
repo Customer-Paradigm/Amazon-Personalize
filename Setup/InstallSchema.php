@@ -42,8 +42,7 @@ class InstallSchema implements InstallSchemaInterface
         $installer = $setup;
         $installer->startSetup();
 
-        $table = $installer->getConnection()->newTable($installer->getTable('aws_predicted_items')
-        )->addColumn(
+        $table = $installer->getConnection()->newTable($installer->getTable('aws_predicted_items'))->addColumn(
             'recommendation_id',
             Table::TYPE_INTEGER,
             null,
@@ -59,7 +58,7 @@ class InstallSchema implements InstallSchemaInterface
             'item_type',
             Table::TYPE_TEXT,
             255,
-            ['nullable' => false], 
+            ['nullable' => false],
             'Item Type'
         )->addColumn(
             'item_list',
@@ -78,6 +77,5 @@ class InstallSchema implements InstallSchemaInterface
         $installer->endSetup();
 
         $this->db->install();
-
     }
 }

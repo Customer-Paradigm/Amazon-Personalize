@@ -9,8 +9,7 @@ class PurchaseObserver implements ObserverInterface
 
     public function __construct(
         \CustomerParadigm\AmazonPersonalize\Model\Events $awsEvents
-    )
-    {
+    ) {
         $this->awsEvents = $awsEvents;
     }
 

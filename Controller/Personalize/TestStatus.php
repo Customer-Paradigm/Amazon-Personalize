@@ -1,9 +1,10 @@
 <?php
 namespace CustomerParadigm\AmazonPersonalize\Controller\Personalize;
 
-Use Aws\Personalize\PersonalizeClient;
+use Aws\Personalize\PersonalizeClient;
 
-class TestStatus extends \Magento\Framework\App\Action\Action {
+class TestStatus extends \Magento\Framework\App\Action\Action
+{
 
     protected $pRuntimeClient;
     protected $nameConfig;
@@ -39,9 +40,8 @@ class TestStatus extends \Magento\Framework\App\Action\Action {
         \CustomerParadigm\AmazonPersonalize\Model\Training\Solution $solution,
         \CustomerParadigm\AmazonPersonalize\Model\Training\SolutionVersion $solutionVersion,
         \CustomerParadigm\AmazonPersonalize\Model\Error $errorModel,
-	\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
-	\CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
-
+        \CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
+        \CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->productFactory = $productFactory;
@@ -67,17 +67,17 @@ class TestStatus extends \Magento\Framework\App\Action\Action {
         putenv("HOME=$this->homedir");
 
         parent::__construct($context);
-	$this->region = $this->nameConfig->getAwsRegion();
-	$this->personalizeClient = $this->sdkClient->getClient('Personalize');
+        $this->region = $this->nameConfig->getAwsRegion();
+        $this->personalizeClient = $this->sdkClient->getClient('Personalize');
     }
 
     public function execute()
     {
-/* Comment out this redirect to homepage to use the test controller 
+/* Comment out this redirect to homepage to use the test controller
 */
             $resultRedirect = $this->resultRedirectFactory->create();
            $resultRedirect->setPath('');
-	    return $resultRedirect;
+        return $resultRedirect;
 
         $this->s3Status();
         $this->uploadStatus();
@@ -89,43 +89,50 @@ class TestStatus extends \Magento\Framework\App\Action\Action {
         echo("\n--------end tests---------");
     }
 
-    public function s3Status() {
+    public function s3Status()
+    {
         echo("<pre><div>s3Status</div>");
         var_dump($this->s3->checkBucketExists());
         echo("</pre>");
     }
 
-    public function uploadStatus() {
+    public function uploadStatus()
+    {
         echo("<pre><div>uploadStatus</div>");
         var_dump($this->s3->getUploadStatus());
         echo("</pre>");
     }
 
-    public function schemaStatus() {
+    public function schemaStatus()
+    {
         echo("<pre><div>schemaStatus</div>");
         var_dump($this->schema->getStatus());
         echo("</pre>");
     }
 
-    public function datasetStatus() {
+    public function datasetStatus()
+    {
         echo("<pre><div>datasetStatus</div>");
         var_dump($this->dataset->getStatus());
         echo("</pre>");
     }
 
-    public function importJobStatus() {
+    public function importJobStatus()
+    {
         echo("<pre><div>importJobStatus</div>");
         var_dump($this->importjob->getStatus());
         echo("</pre>");
     }
 
-    public function solutionStatus() {
+    public function solutionStatus()
+    {
         echo("<pre><div>importJobStatus</div>");
         var_dump($this->solution->getStatus());
         echo("</pre>");
     }
 
-    public function solutionVersionStatus() {
+    public function solutionVersionStatus()
+    {
         echo("<pre><div>importJobStatus</div>");
         var_dump($this->solutionVersion->getStatus());
         echo("</pre>");

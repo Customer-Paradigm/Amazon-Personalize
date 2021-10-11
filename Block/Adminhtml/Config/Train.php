@@ -8,7 +8,8 @@ use Magento\Backend\Block\Template\Context;
 use Magento\Framework\Module\Dir\Reader;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
 
-class Train  extends Field {
+class Train extends Field
+{
     /**
      * @var string
      */
@@ -80,7 +81,7 @@ class Train  extends Field {
     }
     
     /**
-     * Return ajax url for asset display 
+     * Return ajax url for asset display
      *
      * @return string
      */
@@ -145,43 +146,45 @@ class Train  extends Field {
      * @param  string $type
      * @return string
      */
-    public function getImageUrl($type){
-	$rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/success.gif');
+    public function getImageUrl($type)
+    {
+        $rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/success.gif');
 
-        switch($type) {
-	case 'refresh':
-			$rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/refresh.png');
-            break;
-	case 'info':
-			$rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/info.png');
-            break;
-        case 'pending':
-			$rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/pending.png');
-            break;
-        case 'processing':
-			$rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/processing.gif');
-            break;
-        case 'error':
-			$rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/error.gif');
-            break;
-        case 'success':
-			$rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/success.gif');
-            break;
+        switch ($type) {
+            case 'refresh':
+                    $rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/refresh.png');
+                break;
+            case 'info':
+                    $rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/info.png');
+                break;
+            case 'pending':
+                $rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/pending.png');
+                break;
+            case 'processing':
+                $rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/processing.gif');
+                break;
+            case 'error':
+                $rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/error.gif');
+                break;
+            case 'success':
+                $rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/success.gif');
+                break;
         }
         return $rtn;
     }
 
-    public function getProcessStatus() {
+    public function getProcessStatus()
+    {
         return $this->tracking->getProcessStatus()['status'];
     }
 
-    public function needsInteractions() {
-	return $this->tracking->pConfig->needsInteractions();
+    public function needsInteractions()
+    {
+        return $this->tracking->pConfig->needsInteractions();
     }
     
-    public function interactionsCount() {
-	return $this->tracking->pConfig->getInteractionsCount();
+    public function interactionsCount()
+    {
+        return $this->tracking->pConfig->getInteractionsCount();
     }
-    
-    
 }

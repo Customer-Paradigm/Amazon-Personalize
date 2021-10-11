@@ -13,7 +13,7 @@ class PruneAbTrackingTable extends Command
 
     public function __construct(
         AbTracking $abTracking
-    ){
+    ) {
         $this->abTracking = $abTracking;
         parent::__construct();
     }
@@ -33,7 +33,7 @@ class PruneAbTrackingTable extends Command
     {
         $output->writeln("Pruning table aws_ab_tracking...");
         try {
-            // prune aws_ab_tracking table 
+            // prune aws_ab_tracking table
             $this->abTracking->pruneData();
             $output->writeln('<info>COMPLETE</info>');
         } catch (\Exception $e) {

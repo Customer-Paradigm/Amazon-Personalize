@@ -12,8 +12,7 @@ class WizardRunStepsAfterObserver implements ObserverInterface
     public function __construct(
         \CustomerParadigm\AmazonPersonalize\Model\Events $awsEvents,
         \Magento\Framework\App\Request\Http $request
-    )
-    {
+    ) {
         $this->awsEvents = $awsEvents;
         $this->request = $request;
     }

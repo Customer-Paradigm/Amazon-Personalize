@@ -4,7 +4,8 @@ namespace CustomerParadigm\AmazonPersonalize\Api\Personalize;
 use Aws\PersonalizeEvents\PersonalizeEventsClient;
 use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 
-class EventsClient implements EventsClientInterface {
+class EventsClient implements EventsClientInterface
+{
     
     protected $pEventsClient;
     protected $pConfig;
@@ -19,9 +20,9 @@ class EventsClient implements EventsClientInterface {
 
         putenv("HOME=$homedir");
 
-		// TODO: make this a factory instead of instantiating here
+        // TODO: make this a factory instead of instantiating here
         $this->pEventsClient = new PersonalizeEventsClient(
-            [ 
+            [
             'profile' => 'default',
             'version' => 'latest',
             'region' => "$region" ]
@@ -35,8 +36,8 @@ POST /events HTTP/1.1
 Content-type: application/json
 
 {
-   "eventList": [ 
-      { 
+   "eventList": [
+      {
          "eventId": "string",
          "eventType": "string",
          "properties": "string",
@@ -53,9 +54,10 @@ Content-type: application/json
      * @api
      * @param array $eventlist
      */
-    public function putEvents($eventlist) {
-        if( $this->pConfig->isEnabled() ) {
-                $this->pEventsClient->putEvents( $eventlist );
+    public function putEvents($eventlist)
+    {
+        if ($this->pConfig->isEnabled()) {
+                $this->pEventsClient->putEvents($eventlist);
         }
     }
 }

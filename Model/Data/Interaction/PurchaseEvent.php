@@ -2,8 +2,7 @@
 
 namespace CustomerParadigm\AmazonPersonalize\Model\Data\Interaction;
 
-class PurchaseEvent extends \Magento\Framework\Model\AbstractModel
-    implements \Magento\Framework\DataObject\IdentityInterface
+class PurchaseEvent extends \Magento\Framework\Model\AbstractModel implements \Magento\Framework\DataObject\IdentityInterface
 {
     const CACHE_TAG = 'customerparadigm_amazonpersonalize_interaction_purchaseevent';
 

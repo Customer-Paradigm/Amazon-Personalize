@@ -88,20 +88,20 @@ class CoreConfigExtend extends \Magento\Config\Model\Config
         ScopeTypeNormalizer $scopeTypeNormalizer = null,
         \Magento\Framework\MessageQueue\PoisonPill\PoisonPillPutInterface $pillPut = null
     ) {
-    	parent::__construct(
-		$config,
-		$eventManager,
-		$configStructure,
-		$transactionFactory,
-		$configLoader,
-		$configValueFactory,
-		$storeManager,
-		$settingChecker,
-		$data,
-		$scopeResolverPool,
-		$scopeTypeNormalizer,
-		$pillPut 
-    	);
+        parent::__construct(
+            $config,
+            $eventManager,
+            $configStructure,
+            $transactionFactory,
+            $configLoader,
+            $configValueFactory,
+            $storeManager,
+            $settingChecker,
+            $data,
+            $scopeResolverPool,
+            $scopeTypeNormalizer,
+            $pillPut
+        );
         $this->settingChecker = $settingChecker
             ?? ObjectManager::getInstance()->get(SettingChecker::class);
         $this->scopeResolverPool = $scopeResolverPool
@@ -276,20 +276,20 @@ class CoreConfigExtend extends \Magento\Config\Model\Config
         \Magento\Framework\DB\Transaction $saveTransaction,
         \Magento\Framework\DB\Transaction $deleteTransaction
     ) {
-	    if(! ($sectionPath == "awsp_settings" || $sectionPath == "awsp_wizard")) {
-	        return parent::_processGroup(
-			$groupId,
-			$groupData,
-			$groups,
-			$sectionPath,
-			$extraOldGroups,
-			$oldConfig,
-			$saveTransaction,
-			$deleteTransaction
-	        );
-	    }
+        if (! ($sectionPath == "awsp_settings" || $sectionPath == "awsp_wizard")) {
+            return parent::_processGroup(
+                $groupId,
+                $groupData,
+                $groups,
+                $sectionPath,
+                $extraOldGroups,
+                $oldConfig,
+                $saveTransaction,
+                $deleteTransaction
+            );
+        }
 
-	    $groupPath = $sectionPath . '/' . $groupId;
+        $groupPath = $sectionPath . '/' . $groupId;
 
         if (isset($groupData['fields'])) {
             /** @var \Magento\Config\Model\Config\Structure\Element\Group $group */
@@ -302,7 +302,7 @@ class CoreConfigExtend extends \Magento\Config\Model\Config
                 $fieldsetData[$fieldId] = $fieldData['value'] ?? null;
             }
 
-	    foreach ($groupData['fields'] as $fieldId => $fieldData) {
+            foreach ($groupData['fields'] as $fieldId => $fieldData) {
                 $isReadOnly = $this->settingChecker->isReadOnly(
                     $groupPath . '/' . $fieldId,
                     $this->getScope(),
@@ -313,16 +313,16 @@ class CoreConfigExtend extends \Magento\Config\Model\Config
                     continue;
                 }
 
-                $field = $this->getField($sectionPath, $groupId, $fieldId);
-                /** @var \Magento\Framework\App\Config\ValueInterface $backendModel */
-                $backendModel = $field->hasBackendModel()
-                    ? $field->getBackendModel()
-                    : $this->_configValueFactory->create();
+                       $field = $this->getField($sectionPath, $groupId, $fieldId);
+                       /** @var \Magento\Framework\App\Config\ValueInterface $backendModel */
+                       $backendModel = $field->hasBackendModel()
+                           ? $field->getBackendModel()
+                           : $this->_configValueFactory->create();
 
-                $existingConfigVal = $this->getConfigDataValue($groupPath . "/" . $fieldId);
-		if (array_key_exists('value',$fieldData) && ($fieldData['value'] == "saved"
-		    || $fieldData['value'] == "testing")
-		) {
+                       $existingConfigVal = $this->getConfigDataValue($groupPath . "/" . $fieldId);
+                if (array_key_exists('value', $fieldData) && ($fieldData['value'] == "saved"
+                || $fieldData['value'] == "testing")
+                ) {
                     $fieldData['value'] = $existingConfigVal;
                 }
 

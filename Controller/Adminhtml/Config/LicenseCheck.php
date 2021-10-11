@@ -9,7 +9,6 @@ use Psr\Log\LoggerInterface;
 use CustomerParadigm\AmazonPersonalize\Model\Error;
 use CustomerParadigm\AmazonPersonalize\Helper\Db;
 
- 
 class LicenseCheck extends Action
 {
     protected $resultJsonFactory;
@@ -26,11 +25,10 @@ class LicenseCheck extends Action
     public function __construct(
         Context $context,
         JsonFactory $resultJsonFactory,
-	LoggerInterface $loggerInterface,
-	Db $calc,
-	Error $errorLog
-    )
-    {
+        LoggerInterface $loggerInterface,
+        Db $calc,
+        Error $errorLog
+    ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->loggerInterface = $loggerInterface;
         $this->calc = $calc;
@@ -44,8 +42,8 @@ class LicenseCheck extends Action
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
-	$data = $this->calc->checkAndUpdate();
-	$result->setData($data);
+        $data = $this->calc->checkAndUpdate();
+        $result->setData($data);
         return $result;
     }
  

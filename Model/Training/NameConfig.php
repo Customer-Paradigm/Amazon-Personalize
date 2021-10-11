@@ -37,10 +37,10 @@ class NameConfig extends PersonalizeConfig
         ErrorLogger $errorLogger,
         StoreManagerInterface $storeManager,
         DirectoryList $directoryList,
-	Data $helper,
-	Aws $awsHelper,
-	InteractionCheck $interactionCheck,
-	AwsSdkClient $sdkClient
+        Data $helper,
+        Aws $awsHelper,
+        InteractionCheck $interactionCheck,
+        AwsSdkClient $sdkClient
     ) {
         $this->configWriter = $configWriter;
         $this->scopeConfig = $this->getScopeConfig();
@@ -52,48 +52,56 @@ class NameConfig extends PersonalizeConfig
         parent::__construct($configWriter, $infoLogger, $errorLogger, $storeManager, $directoryList, $helper, $awsHelper, $interactionCheck, $sdkClient);
     }
 
-    public function buildName($type) {
-	$storeName = $this->getStoreName();
-	if($type !== 'personalize-s3bucket') { // replace period with underscore for all but S3 bucket name
-		$storeName = preg_replace('/\./', '_',$storeName);
-	}
-	return 'cprdgm-' . $storeName . '-' . $type;
+    public function buildName($type)
+    {
+        $storeName = $this->getStoreName();
+        if ($type !== 'personalize-s3bucket') { // replace period with underscore for all but S3 bucket name
+            $storeName = preg_replace('/\./', '_', $storeName);
+        }
+        return 'cprdgm-' . $storeName . '-' . $type;
     }
     
-    public function buildArn($type,$name,$suffix = null) {
+    public function buildArn($type, $name, $suffix = null)
+    {
         $prefix = "arn:aws:personalize:";
         $region = $this->getAwsRegion();
         $acct = $this->getAwsAccount();
         $rtn = $prefix . "$region:" . "$acct:" . "$type/" . $name;
-        if( $suffix ) {
+        if ($suffix) {
             $rtn .= "/$suffix";
         }
         return $rtn;
     }
 
-    public function saveName($type_name, $value) {
+    public function saveName($type_name, $value)
+    {
         $this->configWriter->save("awsp_wizard/data_type_name/$type_name", $value);
     }
     
-    public function saveArn($arn_name, $value) {
+    public function saveArn($arn_name, $value)
+    {
         $this->configWriter->save("awsp_wizard/data_type_arn/$arn_name", $value);
     }
     
-    public function getConfigVal($config_path) {
+    public function getConfigVal($config_path)
+    {
         return $this->scopeConfig->getValue($config_path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
     }
     
-    public function getArn($arn_name) {
+    public function getArn($arn_name)
+    {
         $config_path = "awsp_wizard/data_type_arn/$arn_name";
-        return $this->scopeConfig->getValue( $config_path, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE);
+        return $this->scopeConfig->getValue($config_path, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE);
     }
     
-    public function getName($name) {
+    public function getName($name)
+    {
         $config_path = "awsp_wizard/data_type_name/$name";
-        return $this->scopeConfig->getValue( $config_path, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE);
+        return $this->scopeConfig->getValue($config_path, \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITE);
     }
 
-    public function getVarDir() {
+    public function getVarDir()
+    {
         return $this->directoryList->getPath('var');
     }
 }

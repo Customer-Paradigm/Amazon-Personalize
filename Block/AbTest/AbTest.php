@@ -4,7 +4,8 @@ namespace CustomerParadigm\AmazonPersonalize\Block\AbTest;
 
 use Magento\Framework\View\Element\Template;
 
-class AbTest  extends Template {
+class AbTest extends Template
+{
 
     protected $customerSession;
     protected $abTracking;
@@ -24,23 +25,26 @@ class AbTest  extends Template {
         $this->pConfig = $pConfig;
     }
 
-    public function getAbTrackingType() {
+    public function getAbTrackingType()
+    {
         $sid =  $this->customerSession->getSessionId();
         return $this->abTracking->getTrackingType($sid);
     }
     
-    public function getGaAccountNum() {
+    public function getGaAccountNum()
+    {
         $acctnum = $this->pConfig->getMagentoGaAccountNum();
         return $acctnum;
     }
     
-    public function getGaAbEnabled() {
+    public function getGaAbEnabled()
+    {
         $acctnum = $this->pConfig->getGaAbEnabled();
         return $acctnum;
     }
 
-    public function hasGlobalSiteTag() {
+    public function hasGlobalSiteTag()
+    {
         return $this->pConfig->checkHeaderSiteTag();
     }
-
 }

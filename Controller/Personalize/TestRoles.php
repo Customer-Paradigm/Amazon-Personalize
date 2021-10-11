@@ -1,7 +1,8 @@
 <?php
 namespace CustomerParadigm\AmazonPersonalize\Controller\Personalize;
 
-class TestRoles extends \Magento\Framework\App\Action\Action {
+class TestRoles extends \Magento\Framework\App\Action\Action
+{
 
     protected $pRuntimeClient;
     protected $nameConfig;
@@ -23,9 +24,9 @@ class TestRoles extends \Magento\Framework\App\Action\Action {
         \CustomerParadigm\AmazonPersonalize\Model\ResultFactory $awsResultFactory,
         \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig,
         \CustomerParadigm\AmazonPersonalize\Block\Widget\Display $prodDisplay,
-	\CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
-	\CustomerParadigm\AmazonPersonalize\Model\Training\Iam $iam,
-	\CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
+        \CustomerParadigm\AmazonPersonalize\Helper\Data $pHelper,
+        \CustomerParadigm\AmazonPersonalize\Model\Training\Iam $iam,
+        \CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking $wizardTracking,
         \CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient $sdkClient
     ) {
         $this->resultJsonFactory = $resultJsonFactory;
@@ -46,33 +47,35 @@ class TestRoles extends \Magento\Framework\App\Action\Action {
         putenv("HOME=$this->homedir");
 
         parent::__construct($context);
-	$this->region = $this->nameConfig->getAwsRegion();
+        $this->region = $this->nameConfig->getAwsRegion();
         $this->personalizeClient = $this->sdkClient->getClient('Personalize');
     }
 
     public function execute()
     {
-/* Comment out this redirect to homepage to use the test controller 
+/* Comment out this redirect to homepage to use the test controller
 */
             $resultRedirect = $this->resultRedirectFactory->create();
            $resultRedirect->setPath('');
-	    return $resultRedirect;
+        return $resultRedirect;
 
-	//$this->testAssumeRole();
-	$this->testListRoles();
+    //$this->testAssumeRole();
+        $this->testListRoles();
         echo("\n--------end tests---------");
     }
 
-    public function testAssumeRole() {
-	echo("<pre><div>assume role</div>");
+    public function testAssumeRole()
+    {
+        echo("<pre><div>assume role</div>");
         var_dump($this->iam->assumeRole());
-	echo("</pre>");
+        echo("</pre>");
     }
     
-    public function testListRoles() {
-	echo("<pre><div>list roles</div>");
+    public function testListRoles()
+    {
+        echo("<pre><div>list roles</div>");
         $this->iam->assumeRole();
         var_dump($this->iam->listRoles());
-	echo("</pre>");
+        echo("</pre>");
     }
 }

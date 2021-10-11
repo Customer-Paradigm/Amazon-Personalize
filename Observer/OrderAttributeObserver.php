@@ -11,15 +11,14 @@ class OrderAttributeObserver implements ObserverInterface
     public function __construct(
         \CustomerParadigm\AmazonPersonalize\Model\Events $awsEvents,
         \CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig $pConfig
-    )
-    {
+    ) {
         $this->awsEvents = $awsEvents;
         $this->pConfig = $pConfig;
     }
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        if($this->pConfig->getGaAbEnabled()) {
+        if ($this->pConfig->getGaAbEnabled()) {
             $user_type = $this->awsEvents->personalizeAbType();
             $observer->getOrder()->setAbCustomerType($user_type);
         }
