@@ -75,8 +75,8 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
                 }
             }
         } catch (Exception $e) {
-                $this->errorLogger->error("\nassetExists() error. Message:\n" . print_r($e->getMessage(), true));
-                exit;
+		$this->errorLogger->error("\nassetExists() error. Message:\n" . print_r($e->getMessage(), true));
+		return false;
         }
             return false;
     }
@@ -99,7 +99,7 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
             }
         } catch (Exception $e) {
                 $this->errorLogger->error("\nassetExists() error. Message:\n" . print_r($e->getMessage(), true));
-                exit;
+                return false;
         }
             return false;
     }

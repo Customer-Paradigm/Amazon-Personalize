@@ -250,7 +250,6 @@ class Data extends AbstractHelper
             $this->inlineTranslation->resume();
         } catch (\Exception $e) {
             $this->_logger->info($e->getMessage());
-            die($e->getMessage());
         }
     }
 }

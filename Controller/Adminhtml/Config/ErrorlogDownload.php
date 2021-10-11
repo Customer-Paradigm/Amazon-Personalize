@@ -72,7 +72,7 @@ class ErrorlogDownload extends Action
         fclose($handle);
 
         // use exit to get rid of unexpected output afterward
-        exit();
+        return null;
     }
  
  

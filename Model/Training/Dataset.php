@@ -124,8 +124,7 @@ class Dataset extends PersonalizeBase
                 }
             }
         } catch (Exception $e) {
-            $this->errorLogger->error("\ndatasetExists() error. Message: " . print_r($e->getMessage(), true));
-            exit;
+		$this->errorLogger->error("\ndatasetExists() error. Message: " . print_r($e->getMessage(), true));
         }
         return false;
     }
