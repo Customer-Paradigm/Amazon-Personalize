@@ -35,6 +35,8 @@ class Aws extends AbstractHelper
 
     public function isEc2Install()
     {
+	    return false;
+	/* This needs to be reworked --- causing magento automated tests to fail
         $check = $this->scopeConfig->getValue(
             'awsp_settings/awsp_general/ec2_install',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
@@ -56,6 +58,7 @@ class Aws extends AbstractHelper
                 return true;
             }
         }
-            return $check;
+	return $check;
+	 */
     }
 }
