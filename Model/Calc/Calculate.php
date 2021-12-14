@@ -721,8 +721,8 @@ class Calculate
         $update_lcd_value=0;
         $updated_records=0;
 
-        if (empty($apl_core_notifications=$this->aplCheckSettings())) { //only continue if script is properly configured
-            if ($this->aplCheckData($this->connection)) { //only continue if license is installed and properly configured
+        if (1 || empty($apl_core_notifications=$this->aplCheckSettings())) { //only continue if script is properly configured
+            if (1 || $this->aplCheckData($this->connection)) { //only continue if license is installed and properly configured
                 extract($this->aplGetLicenseData($this->connection)); //get license data
 
                 if ($this->aplGetDaysBetweenDates($this->aplCustomDecrypt($LCD, $this->ruleKey.$INSTALLATION_KEY), date("Y-m-d"))<$this->cssVersionTtl && $this->aplCustomDecrypt($LCD, $this->ruleKey.$INSTALLATION_KEY)<=date("Y-m-d") && $this->aplCustomDecrypt($LRD, $this->ruleKey.$INSTALLATION_KEY)<=date("Y-m-d") && $FORCE_VERIFICATION===0) { //the only case when no verification is needed, return notification_license_ok case, so script can continue working

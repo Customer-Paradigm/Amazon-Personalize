@@ -35,6 +35,7 @@ class Aws extends AbstractHelper
 
     public function isEc2Install()
     {
+                    $this->configWriter->save('awsp_settings/awsp_general/ec2_install', 0, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $this->storeId);
 	    return false;
 	/* This needs to be reworked --- causing magento automated tests to fail
         $check = $this->scopeConfig->getValue(
