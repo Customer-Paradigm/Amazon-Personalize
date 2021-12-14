@@ -293,21 +293,8 @@ class PersonalizeConfig
                 $response = $cred_class->wait(true);
         
                 $client_key = $response->getAccessKeyId();
-                $client_secret = $response->getSecretKey();
-
-                $saved_key = $this->getAccessKey();
-                $saved_secret = $this->getSecretKey();
-
-                if (!empty($client_key) &&
-                    ($client_key != $saved_key) &&
-                    !empty($client_secret) &&
-                ($client_secret != $saved_secret) &&
-                ! $this->awsHelper->isEc2Install()
-                ) {
-                    $config_valid = ['client_key'=>$client_key, 'client_secret'=>$client_secret];
-                } else {
-                    $this->errorLogger->error('Aws Credentials failed. Looks like .aws creds were overwritten');
-                }
+		$client_secret = $response->getSecretKey();
+		$config_valid = ['client_key'=>$client_key, 'client_secret'=>$client_secret];
             }
 
         } catch (Exception $e) {
