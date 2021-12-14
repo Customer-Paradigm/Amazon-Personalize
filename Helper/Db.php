@@ -13,7 +13,6 @@ use Psr\Log\LoggerInterface;
 
 class Db extends AbstractHelper
 {
-
     protected $configWriter;
     protected $storeManager;
     protected $calc;
@@ -37,15 +36,6 @@ class Db extends AbstractHelper
         $this->configWriter = $configWriter;
         $this->serializer = $serializer;
         $this->scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT;
-        $this->storeName = $this->scopeConfig->getValue('general/store_information/name', $this->scope);
-        $testrule =  $this->getRuleId($this->storeName);
-        if (strpos($testrule, 'No results found') !== false
-          || strpos($testrule, '"error_detected":1') !== false) {
-            $this->storeName = $this->storeManager->getStore()->getBaseUrl();
-            $this->storeName = parse_url($this->storeName, PHP_URL_HOST);
-        }
-        $this->ruleId = $this->getRuleId($this->storeName);
-        $this->prep($this->ruleId);
         $this->calc = $calc;
         $this->logger = $logger;
         $this->f1 = __FILE__;
@@ -124,6 +114,15 @@ class Db extends AbstractHelper
 
     public function install()
     {
+	$this->storeName = $this->scopeConfig->getValue('general/store_information/name', $this->scope);
+        $testrule =  $this->getRuleId($this->storeName);
+        if (strpos($testrule, 'No results found') !== false
+          || strpos($testrule, '"error_detected":1') !== false) {
+            $this->storeName = $this->storeManager->getStore()->getBaseUrl();
+            $this->storeName = parse_url($this->storeName, PHP_URL_HOST);
+        }
+        $this->ruleId = $this->getRuleId($this->storeName);
+        $this->prep($this->ruleId);
         $val = $this->scopeConfig->getValue('awsp_settings/awsp_general/calc_coupon', $this->scope);
         $site = $this->storeManager->getStore()->getBaseUrl();
         $site = rtrim($site, '/');

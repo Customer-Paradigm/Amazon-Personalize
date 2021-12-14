@@ -12,30 +12,12 @@ use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
-use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
-use CustomerParadigm\AmazonPersonalize\Helper\Db;
 
 /**
  * @codeCoverageIgnore
  */
 class InstallSchema implements InstallSchemaInterface
 {
-    /**
-     * @var CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig
-     */
-    protected $pConfig;
-    
-    protected $ruleId;
-    
-    protected $db;
-
-    public function __construct(
-        PersonalizeConfig $pConfig,
-        Db $db
-    ) {
-        $this->pConfig = $pConfig;
-        $this->db = $db;
-    }
 
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
@@ -74,8 +56,7 @@ class InstallSchema implements InstallSchemaInterface
             'Updated At'
         );
         $installer->getConnection()->createTable($table);
-        $installer->endSetup();
+	$installer->endSetup();
 
-        $this->db->install();
     }
 }
