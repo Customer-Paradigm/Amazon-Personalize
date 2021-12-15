@@ -215,6 +215,11 @@ class Data extends AbstractHelper
         $sql = "update aws_wizard_steps set $set_column = '$value' where step_name = '$step_name'";
         $this->connection->exec($sql);
     }
+   /* 
+    public function writeSetupVar($filename,$contents) {
+	file_put_contents($filename,$contents);
+}
+    */
 
     public function sendEmail()
     {

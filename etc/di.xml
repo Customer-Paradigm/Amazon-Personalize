@@ -25,8 +25,8 @@
             <argument name="pRuntimeClient" xsi:type="object">Aws\PersonalizeRuntime\PersonalizeRuntimeClient</argument>
         </arguments>
 	</type>
--->
     <preference for="Magento\Framework\View\Design\Theme\FlyweightFactory" type="CustomerParadigm\AmazonPersonalize\Override\View\Design\Theme\FlyweightFactory"  />
+-->
     <type name="Magento\Framework\Console\CommandListInterface">
         <arguments>
             <argument name="commands" xsi:type="array">
