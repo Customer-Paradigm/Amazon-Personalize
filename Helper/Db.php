@@ -45,6 +45,9 @@ class Db extends AbstractHelper
 
     public function enabled($test = 'no')
     {
+	// Temp bypass of license checks
+	return true;
+
         // testing
         if ($test == 'uninst') {
             $this->calc->calcUninstall(null, true);
@@ -80,6 +83,8 @@ class Db extends AbstractHelper
 
     public function checkAndUpdate()
     {
+	// Temp bypass of license checks
+	return true;
         $canCalc = $this->calc->canCalc(null, true);
         if ($this->db() && ($canCalc['notification_case']=="notification_license_ok")) {
             $this->configWriter->save('awsp_settings/awsp_general/calc_active', 1, $this->scope);
