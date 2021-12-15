@@ -13,11 +13,33 @@ use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
 
+use \Magento\Store\Model\StoreManagerInterface;
+use \Magento\Framework\App\Config\ScopeConfigInterface;
+use \Magento\Framework\App\Config\Storage\WriterInterface;
+
+
 /**
  * @codeCoverageIgnore
  */
 class InstallSchema implements InstallSchemaInterface
 {
+
+	protected $scopeConfig;
+	protected $storeManager;
+	protected $configWriter;
+	protected $storeId;
+
+    public function __construct(
+        ScopeConfigInterface $scopeConfig,
+        StoreManagerInterface $storeManager,
+        WriterInterface $configWriter
+    ) {
+        $this->scopeConfig = $scopeConfig;
+        $this->storeManager = $storeManager;
+        $this->storeId = $this->storeManager->getStore()->getId();
+        $this->configWriter = $configWriter;
+    }
+
 
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
@@ -57,6 +79,8 @@ class InstallSchema implements InstallSchemaInterface
         );
         $installer->getConnection()->createTable($table);
 	$installer->endSetup();
+	$this->configWriter->save('awsp_settings/awsp_general/ec2_install', 0, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $this->storeId);
+
 
     }
 }
