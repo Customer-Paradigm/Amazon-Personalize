@@ -12,10 +12,7 @@ use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
-
-use \Magento\Framework\App\Config\ScopeConfigInterface;
-use \Magento\Framework\App\Config\Storage\WriterInterface;
-
+use CustomerParadigm\AmazonPersonalize\Helper\Aws;
 
 /**
  * @codeCoverageIgnore
@@ -23,15 +20,12 @@ use \Magento\Framework\App\Config\Storage\WriterInterface;
 class InstallSchema implements InstallSchemaInterface
 {
 
-	protected $scopeConfig;
-	protected $configWriter;
+	protected $awsHelper;
 
     public function __construct(
-        ScopeConfigInterface $scopeConfig,
-        WriterInterface $configWriter
+        Aws $awsHelper
     ) {
-        $this->scopeConfig = $scopeConfig;
-        $this->configWriter = $configWriter;
+        $this->awsHelper = $awsHelper;
     }
 
 
@@ -73,8 +67,8 @@ class InstallSchema implements InstallSchemaInterface
         );
         $installer->getConnection()->createTable($table);
 	$installer->endSetup();
-	$this->configWriter->save('awsp_settings/awsp_general/ec2_install', 0, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
-
+	//$this->configWriter->save('awsp_settings/awsp_general/ec2_install', 0, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
+	$this->awsHelper->populateEc2CheckVal();
 
     }
 }
