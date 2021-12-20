@@ -43,10 +43,17 @@ class Db extends AbstractHelper
     }
 
 
+    public function preInstalled() {
+	$rulekey = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
+	$homedir = $this->scopeConfig->getValue('awsp_settings/awsp_general/home_dir', $this->scope);
+	$calckey = $this->scopeConfig->getValue('awsp_settings/awsp_general/calc_coupon', $this->scope);
+	return ($rulekey && $homedir && !$calckey);
+    }
+
     public function enabled($test = 'no')
     {
 	// Temp bypass of license checks
-	return true;
+	//return true;
 
         // testing
         if ($test == 'uninst') {
@@ -72,7 +79,7 @@ class Db extends AbstractHelper
                         $this->setError($canCalc['notification_text']);
                     }
                 } else {
-                          $this->logger->error("License Error this->db() returns false");
+                    $this->logger->error("License Error this->db() returns false");
                     $this->setError('License error: License file creation date changed');
                 }
                 return false;
@@ -83,8 +90,9 @@ class Db extends AbstractHelper
 
     public function checkAndUpdate()
     {
-	// Temp bypass of license checks
-	return true;
+	if($this->preInstalled()) {
+		    return array('notification_case'=>'notification_key_not_checked','notification_text'=>'License not installed yet');
+	}
         $canCalc = $this->calc->canCalc(null, true);
         if ($this->db() && ($canCalc['notification_case']=="notification_license_ok")) {
             $this->configWriter->save('awsp_settings/awsp_general/calc_active', 1, $this->scope);
@@ -170,8 +178,10 @@ class Db extends AbstractHelper
         $exists = true;
         $ft1 = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_ft1', $this->scope);
         $ft2 = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_ft2', $this->scope);
-
-        if (filemtime($this->f1) !== $ft1 || filemtime($this->f2) !== $ft2) {
+	if(empty($ft1) || empty($ft2)) {
+		// bypass any error for this is variables haven't been created yet
+		$exists = true;
+	} else if (filemtime($this->f1) !== $ft1 || filemtime($this->f2) !== $ft2) {
             $fh1 = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_fh1', $this->scope);
             $fh2 = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_fh2', $this->scope);
             if (hash_file("haval160,4", $this->f1) !== $fh1

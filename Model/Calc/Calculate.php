@@ -27,6 +27,7 @@ define("APL_CORE_NOTIFICATION_INVALID_ROOT_IP", "Configuration error: invalid IP
 define("APL_CORE_NOTIFICATION_INVALID_ROOT_NAMESERVERS", "Configuration error: invalid nameservers of your Auto PHP Licenser installation");
 define("APL_CORE_NOTIFICATION_INVALID_DNS", "License error: actual IP address and/or nameservers of your Auto PHP Licenser installation don't match specified IP address and/or nameservers");
 define("APL_DELETE_CANCELLED", "NO");
+define("APL_CHECK_CRACKED", "NO");
 define("APL_DELETE_CRACKED", "YES");
 
 use \Magento\Framework\Stdlib\DateTime\DateTime;
@@ -596,25 +597,27 @@ class Calculate
                 $error_detected=1;
             }
 
-            //check for possible cracking attempts - starts
-            if ($this->aplVerifyDateTime($LCD, "Y-m-d") && $LCD>date("Y-m-d", strtotime("+1 day"))) { //last check date is VALID, but higher than current date (someone manually decrypted and overwrote it or changed system time back). Allow 1 day difference in case user changed his timezone and current date went 1 day back
-                $error_detected=1;
-                $cracking_detected=1;
-            }
+	    //check for possible cracking attempts - starts
+	    if(APL_CHECK_CRACKED === "YES") {
+		    if ($this->aplVerifyDateTime($LCD, "Y-m-d") && $LCD>date("Y-m-d", strtotime("+1 day"))) { //last check date is VALID, but higher than current date (someone manually decrypted and overwrote it or changed system time back). Allow 1 day difference in case user changed his timezone and current date went 1 day back
+			$error_detected=1;
+			$cracking_detected=1;
+		    }
 
-            if ($this->aplVerifyDateTime($LRD, "Y-m-d") && $LRD>date("Y-m-d", strtotime("+1 day"))) { //last run date is VALID, but higher than current date (someone manually decrypted and overwrote it or changed system time back). Allow 1 day difference in case user changed his timezone and current date went 1 day back
-                $error_detected=1;
-                $cracking_detected=1;
-            }
+		    if ($this->aplVerifyDateTime($LRD, "Y-m-d") && $LRD>date("Y-m-d", strtotime("+1 day"))) { //last run date is VALID, but higher than current date (someone manually decrypted and overwrote it or changed system time back). Allow 1 day difference in case user changed his timezone and current date went 1 day back
+			$error_detected=1;
+			$cracking_detected=1;
+		    }
 
-            if ($this->aplVerifyDateTime($LCD, "Y-m-d") && $this->aplVerifyDateTime($LRD, "Y-m-d") && $LCD>$LRD) { //last check date and last run date is VALID, but LCD is higher than LRD (someone manually decrypted and overwrote it or changed system time back)
-                $error_detected=1;
-                $cracking_detected=1;
-            }
+		    if ($this->aplVerifyDateTime($LCD, "Y-m-d") && $this->aplVerifyDateTime($LRD, "Y-m-d") && $LCD>$LRD) { //last check date and last run date is VALID, but LCD is higher than LRD (someone manually decrypted and overwrote it or changed system time back)
+			$error_detected=1;
+			$cracking_detected=1;
+		    }
 
-            if ($cracking_detected==1 && APL_DELETE_CRACKED=="YES") { //delete user data
-                $this->aplDeleteData($this->connection);
-            }
+		    if ($cracking_detected==1 && APL_DELETE_CRACKED=="YES") { //delete user data
+			$this->aplDeleteData($this->connection);
+		    }
+	    }
             //check for possible cracking attempts - ends
 
             if ($error_detected!=1 && $cracking_detected!=1) { //everything OK

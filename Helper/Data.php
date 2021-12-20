@@ -121,19 +121,23 @@ class Data extends AbstractHelper
         $rtn = false;
         $mod_enabled = $this->scopeConfig->isSetFlag('awsp_settings/awsp_general/enable', $this->scope);
         $creds_saved = $this->scopeConfig->isSetFlag('awsp_settings/awsp_general/access_key', $this->scope);
-        $is_ec2 = $this->awsHelper->isEc2Install();
-        $db_enabled = $this->db->enabled();
+	$is_ec2 = $this->awsHelper->isEc2Install();
         if ($is_ec2) {
-            if ($mod_enabled && $db_enabled) {
+            if ($mod_enabled) {
                 $rtn = true;
             }
         } else {
-            if ($mod_enabled && $db_enabled && $creds_saved) {
+            if ($mod_enabled && $creds_saved) {
                 $rtn = true;
             }
         }
 
         return $rtn;
+    }
+
+    public function calcEnabled()
+    {
+	    return $this->db->enabled();
     }
 
     public function getProductOptionsPriceRange($product)
