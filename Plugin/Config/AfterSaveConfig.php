@@ -116,24 +116,12 @@ class AfterSaveConfig
                 }
 
                 $cred_dir = $this->moduleDir->getPath('media');
-                $region = $this->pConfig->getAwsRegion();
+		$region = $this->pConfig->getAwsRegion();
+		// Db stored values
                 $access_key = $this->pConfig->getAccessKey();
-                $secret_key = $this->pConfig->getSecretKey();
-                $client_access_key = $this->pConfig->getClientAccessKey();
-                $client_secret_key = $this->pConfig->getClientSecretKey();
-
-
-                if (!empty($access_key)) {
-                    $save_key = $access_key;
-                } else {
-                    $save_key = $client_access_key;
-                }
-
-                if (!empty($secret_key)) {
-                    $save_secret = $secret_key;
-                } else {
-                    $save_secret = $client_secret_key;
-                }
+		$secret_key = $this->pConfig->getSecretKey();
+		$save_key = $access_key;
+		$save_secret = $secret_key;
 
                 $config_dir = $cred_dir .'/.aws';
                 $cred_file = $cred_dir . '/.aws/credentials';
@@ -148,7 +136,7 @@ class AfterSaveConfig
                 $htaccess_entry = 'Deny from all';
                 $cmd = 'echo "'. $htaccess_entry . '" >' . $htaccess_file;
                 $output = $this->shell->execute($cmd);
-
+	
                 $cred_entry = "[default]
 					aws_access_key_id = $save_key
 					aws_secret_access_key = $save_secret";
@@ -167,7 +155,8 @@ class AfterSaveConfig
                 $this->calc->setRule();
 
                 $procStatus =  $this->wizardTracking->getProcessStatus()['status'];
-                // Enable/disable cron based on process status
+
+		// Enable/disable cron based on process status
                 if ($this->pConfig->isEnabled() == false || $procStatus == 'hasError' || $procStatus == 'finished') {
                     $this->logger->info('Aws plugin data create Cron off -------------');
                     $this->pConfig->setCron('aws_data_setup', 'off');

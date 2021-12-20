@@ -118,7 +118,7 @@ define([
 					html += '<td>Name</td>';
 					html += '<td>Config Path</td>';
 					html += '<td>Value</td>';
-					html += '<td>Last Updated</td>';
+//					html += '<td>Last Updated</td>';
 				   html += '</tr>';
 				// Rows
 				data.each(function( item ) {
@@ -126,7 +126,7 @@ define([
 					html += '<td class="aName-cell">' + item.name + '</td>';
 					html += '<td class="aPath-cell">' + item.path + '</td>';
 					html += '<td class="aValue-cell">' + item.value + '</td>';
-					html += '<td class="aUpdated-cell">' + item.updated_at + '</td>';
+//					html += '<td class="aUpdated-cell">' + item.updated_at + '</td>';
 				   html += '</tr>';
 				});
 				html += '</table>';
@@ -166,9 +166,23 @@ define([
 			bttn.css('display', displaytype);
 		},
 
+		displayAdvSection: function(displaytype) {
+			var section = jQuery('#row_awsp_settings_awsp_training_awsp_training_advanced');
+			section.css('display', displaytype);
+		},
+
 		displayRstBttn: function(displaytype) {
 			var bttn = jQuery('#reset_button');
+			var bttnimg = jQuery('#rst_bttn_info');
 			bttn.css('display', displaytype);
+			bttnimg.css('display', displaytype);
+		},
+		
+		displayRstCampaignBttn: function(displaytype) {
+			var bttn = jQuery('#reset_campaign_button');
+			var bttnimg = jQuery('#rst_cmpn_bttn_info');
+			bttn.css('display', displaytype);
+			bttnimg.css('display', displaytype);
 		},
 
 		resetProcess: function() {
@@ -250,7 +264,9 @@ define([
 				if( data.steps['license'] == false ) {
 					self.hideTrainBttn();
 					self.displayErrorBttn('none');
+					self.displayAdvSection('none');
 					self.displayRstBttn('none');
+					self.displayRstCampaignBttn('none');
 					jQuery('#train_steps').html("<div id='license-error-mssg'>" + data.steps['mssg'] + "</div>");
 					return false;
 				} else {
@@ -279,7 +295,9 @@ define([
 						}
 						self.mssg(html);
 						self.displayErrorBttn('block');
+						self.displayAdvSection('block');
 						self.displayRstBttn('block');
+						self.displayRstCampaignBttn('block');
 					} else if(value.state == 'not started') {
 						imgUrl = self.pendingUrl;
 					} else if(value.state == 'in progress') {
