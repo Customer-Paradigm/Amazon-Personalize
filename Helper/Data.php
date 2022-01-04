@@ -108,10 +108,17 @@ class Data extends AbstractHelper
         return $rtn;
     }
 
-    public function canDisplay()
+    public function moduleEnabled()
     {
         return
-            $this->scopeConfig->isSetFlag('awsp_settings/awsp_general/enable', $this->scope)
+            $this->scopeConfig->isSetFlag('awsp_settings/awsp_general/enable', $this->scope);
+    }
+
+    public function canDisplay()
+    {
+	return
+	    $this->moduleEnabled()
+	    && $this->calcEnabled()
             && $this->scopeConfig->isSetFlag('awsp_settings/awsp_general/campaign_exists', $this->scope)
             && $this->db->enabled();
     }
@@ -119,15 +126,14 @@ class Data extends AbstractHelper
     public function canDisplayAdmin()
     {
         $rtn = false;
-        $mod_enabled = $this->scopeConfig->isSetFlag('awsp_settings/awsp_general/enable', $this->scope);
         $creds_saved = $this->scopeConfig->isSetFlag('awsp_settings/awsp_general/access_key', $this->scope);
 	$is_ec2 = $this->awsHelper->isEc2Install();
         if ($is_ec2) {
-            if ($mod_enabled) {
+            if ($this->moduleEnabled()) {
                 $rtn = true;
             }
         } else {
-            if ($mod_enabled && $creds_saved) {
+            if ($this->moduleEnabled() && $creds_saved) {
                 $rtn = true;
             }
         }
@@ -219,11 +225,6 @@ class Data extends AbstractHelper
         $sql = "update aws_wizard_steps set $set_column = '$value' where step_name = '$step_name'";
         $this->connection->exec($sql);
     }
-   /* 
-    public function writeSetupVar($filename,$contents) {
-	file_put_contents($filename,$contents);
-}
-    */
 
     public function sendEmail()
     {
