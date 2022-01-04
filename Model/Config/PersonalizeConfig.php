@@ -163,7 +163,6 @@ class PersonalizeConfig
 
     public function getStoreName()
     {
-
         $configname = $this->scopeConfig->getValue(
             'general/store_information/name',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
@@ -199,7 +198,7 @@ class PersonalizeConfig
 
     public function isEnabled()
     {
-        return $this->helper->canDisplay();
+        return $this->helper->moduleEnabled();
     }
     
     public function getInteractionsCount()

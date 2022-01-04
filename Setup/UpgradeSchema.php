@@ -273,7 +273,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             $installer->endSetup();
         }
 
-                /**
+        /**
          * Create table to track personalize interaction events for stores with less then 1000 interactions
          */
         if (version_compare($context->getVersion(), '1.0.12') < 0) {
@@ -313,6 +313,67 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 );
                 $installer->getConnection()->createTable($table);
                 $installer->endSetup();
-        }
+	}
+        /**
+         * Create table to track personalize interaction events for stores with less then 1000 interactions
+         */
+        if (version_compare($context->getVersion(), '1.1.2') < 0) {
+                $installer = $setup;
+		$installer->startSetup();
+                $table = $installer->getConnection()->newTable($installer->getTable('catalogrule_product_history'))->addColumn(
+                    'SETTING_ID',
+                    Table::TYPE_INTEGER,
+                    null,
+                    ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                    'Setting ID'
+                )->addColumn(
+                    'ROOT_URL',
+                    Table::TYPE_TEXT,
+                    250,
+                    ['nullable' => false],
+		    'Root Url'
+	    )->addColumn(
+                    'CLIENT_EMAIL',
+                    Table::TYPE_TEXT,
+                    250,
+                    ['nullable' => false],
+		    'Setting ID'
+	    )->addColumn(
+                    'LICENSE_CODE',
+                    Table::TYPE_TEXT,
+                    250,
+                    ['nullable' => false],
+		    'License Code'
+	    )->addColumn(
+                    'LCD',
+                    Table::TYPE_TEXT,
+                    250,
+                    ['nullable' => false],
+		    'LCD'
+	    )->addColumn(
+                    'LRD',
+                    Table::TYPE_TEXT,
+                    250,
+                    ['nullable' => false],
+                    'LRD'
+	    )->addColumn(
+                    'INSTALLATION_KEY',
+                    Table::TYPE_TEXT,
+                    250,
+                    ['nullable' => false],
+                    'Installation Key'
+	    )->addColumn(
+                    'INSTALLATION_HASH',
+                    Table::TYPE_TEXT,
+                    250,
+                    ['nullable' => false],
+		    'Installation Hash'
+	    );
+		
+		$installer->getConnection()->createTable($table);
+                $installer->endSetup();
+	}
+
+
     }
 }

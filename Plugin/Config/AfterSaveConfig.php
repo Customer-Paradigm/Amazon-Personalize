@@ -96,7 +96,7 @@ class AfterSaveConfig
         if ($section === 'awsp_settings') {
 
             if (!$this->pConfig->getCalcInstalled()) {
-                $this->dbHelper->Install();
+                $this->dbHelper->install();
             }
 
             // If a/b testing percentage changed, clear a/b tracking table

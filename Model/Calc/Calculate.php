@@ -27,6 +27,7 @@ define("APL_CORE_NOTIFICATION_INVALID_ROOT_IP", "Configuration error: invalid IP
 define("APL_CORE_NOTIFICATION_INVALID_ROOT_NAMESERVERS", "Configuration error: invalid nameservers of your Auto PHP Licenser installation");
 define("APL_CORE_NOTIFICATION_INVALID_DNS", "License error: actual IP address and/or nameservers of your Auto PHP Licenser installation don't match specified IP address and/or nameservers");
 define("APL_DELETE_CANCELLED", "NO");
+define("APL_CHECK_CRACKED", "NO");
 define("APL_DELETE_CRACKED", "YES");
 
 use \Magento\Framework\Stdlib\DateTime\DateTime;
@@ -387,11 +388,13 @@ class Calculate
 
 
     //generate signature to be submitted to Auto PHP Licenser server
-    public function aplGenerateScriptSignature($ROOT_URL, $CLIENT_EMAIL, $LICENSE_CODE)
+    public function aplGenerateScriptSignature($ROOT_URL, $CLIENT_EMAIL, $LICENSE_CODE, $domain="", $rule_id="")
     {
+	$this->cssServer = empty($domain) ? $this->cssServer : $domain;
+	$this->cssVersion = empty($rule_id) ? $this->cssVersion : $rule_id;
         $script_signature="";
         $root_ips_array=gethostbynamel($this->aplGetRawDomain($this->cssServer));
-
+	
         if (!empty($ROOT_URL) && isset($CLIENT_EMAIL) && isset($LICENSE_CODE) && !empty($root_ips_array)) {
             $script_signature=hash("sha256", gmdate("Y-m-d").$ROOT_URL.$CLIENT_EMAIL.$LICENSE_CODE.$this->cssVersion.implode("", $root_ips_array));
         }
@@ -566,8 +569,8 @@ class Calculate
     {
         $error_detected=0;
         $cracking_detected=0;
-        $result=false;
-
+	$result=false;
+	$test =	$this->aplGetLicenseData($this->connection);
         extract($this->aplGetLicenseData($this->connection));
         if (!empty($ROOT_URL) && !empty($INSTALLATION_HASH) && !empty($INSTALLATION_KEY) && !empty($LCD) && !empty($LRD)) { //do further check only if essential variables are valid
             $LCD=$this->aplCustomDecrypt($LCD, $this->ruleKey.$INSTALLATION_KEY);
@@ -596,25 +599,27 @@ class Calculate
                 $error_detected=1;
             }
 
-            //check for possible cracking attempts - starts
-            if ($this->aplVerifyDateTime($LCD, "Y-m-d") && $LCD>date("Y-m-d", strtotime("+1 day"))) { //last check date is VALID, but higher than current date (someone manually decrypted and overwrote it or changed system time back). Allow 1 day difference in case user changed his timezone and current date went 1 day back
-                $error_detected=1;
-                $cracking_detected=1;
-            }
+	    //check for possible cracking attempts - starts
+	    if(APL_CHECK_CRACKED === "YES") {
+		    if ($this->aplVerifyDateTime($LCD, "Y-m-d") && $LCD>date("Y-m-d", strtotime("+1 day"))) { //last check date is VALID, but higher than current date (someone manually decrypted and overwrote it or changed system time back). Allow 1 day difference in case user changed his timezone and current date went 1 day back
+			$error_detected=1;
+			$cracking_detected=1;
+		    }
 
-            if ($this->aplVerifyDateTime($LRD, "Y-m-d") && $LRD>date("Y-m-d", strtotime("+1 day"))) { //last run date is VALID, but higher than current date (someone manually decrypted and overwrote it or changed system time back). Allow 1 day difference in case user changed his timezone and current date went 1 day back
-                $error_detected=1;
-                $cracking_detected=1;
-            }
+		    if ($this->aplVerifyDateTime($LRD, "Y-m-d") && $LRD>date("Y-m-d", strtotime("+1 day"))) { //last run date is VALID, but higher than current date (someone manually decrypted and overwrote it or changed system time back). Allow 1 day difference in case user changed his timezone and current date went 1 day back
+			$error_detected=1;
+			$cracking_detected=1;
+		    }
 
-            if ($this->aplVerifyDateTime($LCD, "Y-m-d") && $this->aplVerifyDateTime($LRD, "Y-m-d") && $LCD>$LRD) { //last check date and last run date is VALID, but LCD is higher than LRD (someone manually decrypted and overwrote it or changed system time back)
-                $error_detected=1;
-                $cracking_detected=1;
-            }
+		    if ($this->aplVerifyDateTime($LCD, "Y-m-d") && $this->aplVerifyDateTime($LRD, "Y-m-d") && $LCD>$LRD) { //last check date and last run date is VALID, but LCD is higher than LRD (someone manually decrypted and overwrote it or changed system time back)
+			$error_detected=1;
+			$cracking_detected=1;
+		    }
 
-            if ($cracking_detected==1 && APL_DELETE_CRACKED=="YES") { //delete user data
-                $this->aplDeleteData($this->connection);
-            }
+		    if ($cracking_detected==1 && APL_DELETE_CRACKED=="YES") { //delete user data
+			$this->aplDeleteData($this->connection);
+		    }
+	    }
             //check for possible cracking attempts - ends
 
             if ($error_detected!=1 && $cracking_detected!=1) { //everything OK
@@ -725,14 +730,14 @@ class Calculate
             if ( $this->aplCheckData($this->connection)) { //only continue if license is installed and properly configured
                 extract($this->aplGetLicenseData($this->connection)); //get license data
 
-                if ($this->aplGetDaysBetweenDates($this->aplCustomDecrypt($LCD, $this->ruleKey.$INSTALLATION_KEY), date("Y-m-d"))<$this->cssVersionTtl && $this->aplCustomDecrypt($LCD, $this->ruleKey.$INSTALLATION_KEY)<=date("Y-m-d") && $this->aplCustomDecrypt($LRD, $this->ruleKey.$INSTALLATION_KEY)<=date("Y-m-d") && $FORCE_VERIFICATION===0) { //the only case when no verification is needed, return notification_license_ok case, so script can continue working
+		if ($this->aplGetDaysBetweenDates($this->aplCustomDecrypt($LCD, $this->ruleKey.$INSTALLATION_KEY), date("Y-m-d"))<$this->cssVersionTtl && $this->aplCustomDecrypt($LCD, $this->ruleKey.$INSTALLATION_KEY)<=date("Y-m-d") && $this->aplCustomDecrypt($LRD, $this->ruleKey.$INSTALLATION_KEY)<=date("Y-m-d") && $FORCE_VERIFICATION===0) { //the only case when no verification is needed, return notification_license_ok case, so script can continue working
                     $notifications_array['notification_case']="notification_license_ok";
                     $notifications_array['notification_text']=APL_NOTIFICATION_BYPASS_VERIFICATION;
                 } else //time to verify license (or use forced verification)
                 {
-                    $post_info="product_id=".rawurlencode($this->cssVersion)."&client_email=".rawurlencode($CLIENT_EMAIL)."&license_code=".rawurlencode($LICENSE_CODE)."&root_url=".rawurlencode($ROOT_URL)."&installation_hash=".rawurlencode($INSTALLATION_HASH)."&license_signature=".rawurlencode($this->aplGenerateScriptSignature($ROOT_URL, $CLIENT_EMAIL, $LICENSE_CODE));
+			$post_info="product_id=".rawurlencode($this->cssVersion)."&client_email=".rawurlencode($CLIENT_EMAIL)."&license_code=".rawurlencode($LICENSE_CODE)."&root_url=".rawurlencode($ROOT_URL)."&installation_hash=".rawurlencode($INSTALLATION_HASH)."&license_signature=".rawurlencode($this->aplGenerateScriptSignature($ROOT_URL, $CLIENT_EMAIL, $LICENSE_CODE));
 
-                    $content_array=$this->aplCustomPost($this->cssServer."/apl_callbacks/license_verify.php", $post_info, $ROOT_URL);
+			$content_array=$this->aplCustomPost($this->cssServer."/apl_callbacks/license_verify.php", $post_info, $ROOT_URL);
                     $notifications_array=$this->aplParseServerNotifications($content_array, $ROOT_URL, $CLIENT_EMAIL, $LICENSE_CODE); //process response from Auto PHP Licenser server
                     if ($notifications_array['notification_case']=="notification_license_ok") { //everything OK
                         $update_lcd_value=1;
