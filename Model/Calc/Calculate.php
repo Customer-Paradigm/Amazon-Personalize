@@ -570,7 +570,6 @@ class Calculate
         $error_detected=0;
         $cracking_detected=0;
 	$result=false;
-	$test =	$this->aplGetLicenseData($this->connection);
         extract($this->aplGetLicenseData($this->connection));
         if (!empty($ROOT_URL) && !empty($INSTALLATION_HASH) && !empty($INSTALLATION_KEY) && !empty($LCD) && !empty($LRD)) { //do further check only if essential variables are valid
             $LCD=$this->aplCustomDecrypt($LCD, $this->ruleKey.$INSTALLATION_KEY);
