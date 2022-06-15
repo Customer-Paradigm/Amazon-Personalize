@@ -73,7 +73,7 @@
 					<label>Export data and train campaign</label>
 				</field>
 				<group id="awsp_training_advanced" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="0" showInStore="0">
-					<label>Advanced</label>
+					<label>Reset Options</label>
 					<field id="training_advanced_display" translate="label" type="hidden" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 						<frontend_model>CustomerParadigm\AmazonPersonalize\Block\Adminhtml\Config\TrainAdvanced</frontend_model>
 					</field>

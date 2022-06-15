@@ -139,7 +139,6 @@ class s3
 
     public function getUploadStatus()
     {
-        $this->s3BucketName = 'calibrated-power-solutions-personalize-s3bucket';
         $result = $this->s3Client->listObjects([
             'Bucket' => $this->s3BucketName,
             'Delimiter' => ',',

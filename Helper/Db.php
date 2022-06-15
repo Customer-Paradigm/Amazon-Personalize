@@ -244,7 +244,6 @@ class Db extends AbstractHelper
 
     public function getStoreName() {
 	$this->storeName = $this->storeManager->getStore()->getBaseUrl();
-	$this->scopeConfig->getValue('awsp_settings/awsp_general/name', $this->scope);
 	return parse_url($this->storeName, PHP_URL_HOST);
     }
 
