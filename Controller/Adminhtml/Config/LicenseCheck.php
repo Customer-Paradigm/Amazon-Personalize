@@ -42,7 +42,12 @@ class LicenseCheck extends Action
     public function execute()
     {
         $result = $this->resultJsonFactory->create();
-        $data = $this->calc->checkAndUpdate();
+	$data = $this->calc->checkAndUpdate();
+	// If license corrupted, try clearing and re-running install()
+	if($data['notification_case'] = "notification_license_corrupted") {
+		$this->calc->resetRuleTable();
+		$data = $this->calc->install();
+	}
         $result->setData($data);
         return $result;
     }
