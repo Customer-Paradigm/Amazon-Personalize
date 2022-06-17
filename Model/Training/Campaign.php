@@ -37,6 +37,24 @@ class Campaign extends PersonalizeBase
         }
         return $result;
     }
+    
+    public function updateCampaign()
+    {
+        $result = [];
+        if (! $this->checkAssetCreatedAndSync('', 'campaign', $this->campaignName, $this->campaignArn)) {
+            $this->infoLogger->info("\ncampaign createCampaign() checkAssetCreatedAndSync returns false, camapaign: " . $this->campaignName);
+
+            $solutionVersionArn = $this->nameConfig->getArn('solutionVersionArn');
+            $result = $this->personalizeClient->{$this->apiUpdate}([
+                'minProvisionedTPS' => 1,
+                'campaignArn' => $this->campaignArn,
+                'solutionVersionArn' => $solutionVersionArn,
+            ])->wait();
+            $this->nameConfig->saveName('campaignName', $this->campaignName);
+            $this->nameConfig->saveArn('campaignArn', $result['campaignArn']);
+        }
+        return $result;
+    }
 
     public function getStatus()
     {
