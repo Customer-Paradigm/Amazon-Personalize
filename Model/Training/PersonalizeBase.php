@@ -12,6 +12,7 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
     protected $baseName;
     protected $sdkClient;
     protected $apiCreate;
+    protected $apiUpdate;
     protected $apiDescribe;
     protected $infoLogger;
     protected $errorLogger;
@@ -22,6 +23,7 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
     ) {
         $this->baseName = (new \ReflectionClass($this))->getShortName();
         $this->apiCreate = 'create' . $this->baseName . 'Async';
+        $this->apiUpdate = 'update' . $this->baseName . 'Async';
         $this->apiDescribe = 'describe' . $this->baseName;
         $this->nameConfig = $nameConfig;
         $this->region = $this->nameConfig->getAwsRegion();

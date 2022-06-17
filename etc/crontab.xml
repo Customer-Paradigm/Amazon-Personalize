@@ -17,5 +17,13 @@
 			<!-- every 2 days at 1:05 am -->
 			<schedule>5 1 */2 * *</schedule>
 		</job>
+		<!-- Not fully tested yet. Solution version works, campaign update didn't use the new solution though.
+		<job name="aws_retrain_solution" instance="CustomerParadigm\AmazonPersonalize\Model\Training\SolutionVersion" method="createSolutionVersion">
+			<schedule>25 15 * * *</schedule>
+		</job>
+		<job name="aws_update_campaign" instance="CustomerParadigm\AmazonPersonalize\Model\Training\Campaign" method="updateCampaign">
+			<schedule>00 16 */2 * *</schedule>
+		</job>
+		-->
 	</group>
 </config>

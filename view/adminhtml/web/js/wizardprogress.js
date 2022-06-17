@@ -10,6 +10,7 @@ define([
 			template: 'CustomerParadigm_AmazonPersonalize/system/config/training_section',
 			buttonMssg: "Start Process",
 			initMssg: 'Click \'Start Process\' button to kick off data creation process',
+			resumeProcessMssg: "Make sure cron is running and starts the campaign creation where it left off",
 			resetAllMssg: "Removes all imported data, data group, trained campaign, and event tracker for this website from AWS.<br>Charges will apply if you wish to recreate a campaign.<a href='https://aws.amazon.com/personalize/pricing' target='_blank'> View pricing info</a>",
 			resetCampMssg: "Removes only trained campaign and event tracker for this website from AWS.<br>Charges will apply if you wish to recreate a campaign. <a href='https://aws.amazon.com/personalize/pricing' target='_blank'> View pricing info</a>"
 		},
@@ -20,10 +21,12 @@ define([
 			this.imgUrl = ko.observable('');
 			this.infoUrl = ko.observable(this.infoUrl);
 			this.mssg = ko.observable(this.initMssg);
+			this.rsmProcessMssg = ko.observable(this.resumeProcessMssg);
 			this.rstAllMssg = ko.observable(this.resetAllMssg);
 			this.rstCampMssg = ko.observable(this.resetCampMssg);
 			this.errlog = ko.observable('testing error log');
 			this.buttonStatus = ko.observable('');
+			this.resumeProcessStatus = ko.observable('');
 			this.resetStatus = ko.observable('');
 			this.resetCampStatus = ko.observable('');
 			this.buttonError = ko.observable('');
@@ -65,6 +68,11 @@ define([
 		
 		displayRstAllMssg: function() {
 			var mssg = jQuery('#reset_all_message_wrapper');
+			mssg.css('display', 'block');
+		},
+
+		displayRstAllMssg: function() {
+			var mssg = jQuery('#resume_process_message_wrapper');
 			mssg.css('display', 'block');
 		},
 		
@@ -183,6 +191,15 @@ define([
 			var bttnimg = jQuery('#rst_cmpn_bttn_info');
 			bttn.css('display', displaytype);
 			bttnimg.css('display', displaytype);
+		},
+
+		resumeProcess: function() {
+			if (confirm('Resume campaign training process?')) {
+				this.setBttnMssg("Removing campaign", '#resume_process_button');
+				this.callCampResume();
+			}else {
+				// nada
+			}
 		},
 
 		resetProcess: function() {
@@ -329,6 +346,19 @@ define([
 			.always(function () { 
 				jQuery("#loader").hide(); 
 			});
+		},
+
+		callResume: function(){
+			self = this;
+			var url = self.ajaxResumeUrl;
+			var imgUrl = self.successUrl;
+			var infoUrl = self.infoUrl;
+
+			jQuery.getJSON(url, function(data) { 
+				var imgUrl = '';
+				var infoUrl = '';
+			});
+			return true;
 		},
 
 		callReset: function(){
