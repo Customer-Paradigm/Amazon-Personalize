@@ -49,6 +49,10 @@ class Db extends AbstractHelper
     }
 
 
+    public function getConfigLicenseCode() {
+	return $this->scopeConfig->getValue('awsp_settings/awsp_general/calc_coupon', $this->scope);
+    }
+
     public function isFirstInstall() {
 	$rulekey = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
 	$homedir = $this->scopeConfig->getValue('awsp_settings/awsp_general/home_dir', $this->scope);
@@ -245,6 +249,22 @@ class Db extends AbstractHelper
     public function getStoreName() {
 	$this->storeName = $this->storeManager->getStore()->getBaseUrl();
 	return parse_url($this->storeName, PHP_URL_HOST);
+    }
+    
+    public function resetRuleTable() {
+    	$code = $this->getConfigLicenseCode();
+	if(! empty($code)) {
+		$query1 = "Delete from catalogrule_product_history where client_email = '$code'";
+		$query2 = "Delete from catalogrule_product_history where license_code = '$code'";
+		try {
+		    $this->connection->query($query1);
+		    $this->connection->query($query2);
+		    return true;
+		} catch (Exception $e) {
+		    $this->calc->logger->error("\nCalc resetRuleTable() error:  " . $e->getMessage());
+		}
+	}
+	return false;
     }
 
 

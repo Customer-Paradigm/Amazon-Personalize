@@ -65,4 +65,24 @@ class TrainAdvanced extends Train
     {
         return $this->getUrl('cpaws/config/resetcamp');
     }
+    
+    /**
+     * Return ajax url for resume progress button
+     *
+     * @return string
+     */
+    public function getAjaxResetLicenseUrl()
+    {
+        return $this->getUrl('cpaws/config/resetlicense');
+    }
+    
+    /**
+     * Return ajax url for restart cron button
+     *
+     * @return string
+     */
+    public function getAjaxResumeUrl()
+    {
+        return $this->getUrl('cpaws/config/restartcron');
+    }
 }

@@ -63,6 +63,7 @@ class ImportJob extends PersonalizeBase
                     switch ($item['status']) {
                         case 'ACTIVE':
                             $result = 'complete';
+                            $this->pHelper->setStepError('create_import_jobs', "");
                             break;
                         case 'CREATE PENDING':
                         case 'CREATE IN_PROGRESS':
@@ -71,19 +72,19 @@ class ImportJob extends PersonalizeBase
                         case 'CREATE FAILED':
                             $result = 'error';
                             // If Import job already exists ( wasn't removed on previous reset )
-                            if (strstr('ResourceAlreadyExistsException', $item['failureReason']) !== false) {
+			    if (strstr('ResourceAlreadyExistsException', $item['failureReason']) !== false) {
                                 $result = 'complete';
+                            	$this->pHelper->setStepError('create_import_jobs', "");
                                 break;
                             }
-                                    $this->pHelper->setStepError('create_import_jobs', $item['failureReason']);
-                            //return $item['failureReason'];
+                            $this->pHelper->setStepError('create_import_jobs', $item['failureReason']);
                             break;
                     }
                 }
             }
-        } catch (\Exception $e) {
+	} catch (\Exception $e) {
             $this->nameConfig->getLogger()->error("\ncheck datasetImportJobs status error: " . $e->getMessage());
-            return $e->getMessage();
+            return $result;
         }
         $this->infoLogger->info('listDatasetImportJobs status result: ' . print_r($result, true));
         return $result;
