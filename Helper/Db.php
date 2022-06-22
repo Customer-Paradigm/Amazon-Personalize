@@ -60,6 +60,14 @@ class Db extends AbstractHelper
 	$calcactive = $this->scopeConfig->getValue('awsp_settings/awsp_general/calc_active', $this->scope);
 	return ($rulekey && $homedir && $calcerr === null && $calcactive === null);
     }
+    
+    public function isReInstall() {
+	$rulekey = $this->scopeConfig->getValue('awsp_settings/awsp_general/rule_key', $this->scope);
+	$homedir = $this->scopeConfig->getValue('awsp_settings/awsp_general/home_dir', $this->scope);
+	$calcerr = $this->scopeConfig->getValue('awsp_settings/awsp_general/calc_error', $this->scope);
+	$calcactive = $this->scopeConfig->getValue('awsp_settings/awsp_general/calc_active', $this->scope);
+	return ($rulekey && $homedir && $calcerr !== null && $calcactive == '0');
+    }
 
     public function enabled($test = 'no')
     {
@@ -136,8 +144,10 @@ class Db extends AbstractHelper
         $this->configWriter->save('awsp_settings/awsp_general/rule_table', 'catalogrule_product_history', $this->scope);
     }
     
-    public function initInstall($rule_id,$client_email,$root_url,$license_code) {
-           $this->prep($rule_id);
+    public function initInstall($rule_id,$client_email,$root_url,$license_code,$retryinstall = false) {
+	    if(!$retryinstall) {
+		    $this->prep($rule_id);
+	    }
 	    $this->ruleKey = $this->calc->setRule();
 	    $this->cssVersionTtl = 1;
 	    $this->cssServer = "https://css.customerparadigm.com";
@@ -190,6 +200,8 @@ class Db extends AbstractHelper
 
 	if($this->isFirstInstall()) {
 		$this->initInstall($this->ruleId,$val,$site,$code);
+	} elseif ( $this->isReInstall() ) {
+		$this->initInstall($this->ruleId,$val,$site,$code,true);
 	}
         $installed=$this->calc->calcCoupon($site, $val, "");
         if ($installed['notification_case']=="notification_license_ok") {
