@@ -31,10 +31,10 @@ class Schema extends PersonalizeBase
         $this->usersSchemaArn = $this->nameConfig->buildArn('schema', $this->usersSchemaName);
         $this->itemsSchemaArn = $this->nameConfig->buildArn('schema', $this->itemsSchemaName);
         $this->interactionsSchemaArn = $this->nameConfig->buildArn('schema', $this->interactionsSchemaName);
-                $this->usersConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/usersSchemaName');
-                $this->itemsConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/itemsSchemaName');
-                $this->interactionsConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/interactionsSchemaName');
-    }
+	$this->usersConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/usersSchemaName');
+	$this->itemsConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/itemsSchemaName');
+	$this->interactionsConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/interactionsSchemaName');
+}
 
     public function getStatus()
     {

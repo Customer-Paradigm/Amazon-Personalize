@@ -43,15 +43,15 @@ class ImportJob extends PersonalizeBase
     }
 
     public function getStatus()
-    {
+    {   $arnArray = [$this->usersDatasetArn,$this->itemsDatasetArn,$this->interactionsDatasetArn];
         $checkArray = [$this->usersImportJobName,$this->itemsImportJobName,$this->interactionsImportJobName];
         $checklist = [];
-        $rtn = $this->personalizeClient->listDatasetImportJobs();
         $result = 'none found';
         try {
-            foreach ($rtn['datasetImportJobs'] as $idx => $item) {
-                if (in_array($item['jobName'], $checkArray)) {
-                    $checklist[] = $rtn['datasetImportJobs'][$idx];
+            foreach ($arnArray as $item) {
+        	$rtn = $this->personalizeClient->listDatasetImportJobs(array('datasetArn'=>$item));
+                if (in_array($rtn['datasetImportJobs'][0]['jobName'], $checkArray)) {
+                    $checklist[] = $rtn['datasetImportJobs'][0];
                 }
             }
             if (count($checklist) == 0) {
