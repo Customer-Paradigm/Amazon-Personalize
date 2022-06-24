@@ -112,7 +112,7 @@ class StepsReset extends PersonalizeBase
         $this->wizardTracking->clearData();
         $this->errorTable->clearData();
     }
-
+/*
     public function assetExists($name, $arn)
     {
 
@@ -136,6 +136,7 @@ class StepsReset extends PersonalizeBase
         }
         return $rtn;
     }
+ */
 
     public function deleteAsset($name, $arn)
     {

@@ -44,15 +44,17 @@ class DatasetGroup extends PersonalizeBase
     }
 
     public function getStatus()
-    {
+    {   $rslt = [];
         if (! $this->checkAssetCreatedAndSync('', 'datasetGroup', $this->datasetGroupName, $this->datasetGroupArn)) {
             return 'not started';
         }
         try {
-            $arn = $this->nameConfig->getArn('datasetGroupArn');
-            $rslt = $this->personalizeClient->{$this->apiDescribe}([
-                'datasetGroupArn' => $arn,
-            ]);
+	    $arn = $this->nameConfig->getArn('datasetGroupArn');
+	    if(!empty($arn)) {
+            	$rslt = $this->personalizeClient->{$this->apiDescribe}([
+                	'datasetGroupArn' => $arn,
+		]);
+	    }
         } catch (\Exception $e) {
             $this->errorLogger->error("\ndescribe dataset group error: " . $e->getMessage());
             $this->wizardTracking->setStepError('create_dataset_group', $e->getMessage());

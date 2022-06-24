@@ -52,23 +52,26 @@ class Aws extends AbstractHelper
 				$response = $this->curl->getBody();
 				$findLightsail = strpos($response, 'Lightsail');
 				if ($response === false || $findLightsail !== false) {
-					$this->configWriter->save('awsp_settings/awsp_general/ec2_install', 0, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $this->storeId);
+					// We want store scope to always be default(0) on this config value
+					$this->configWriter->save('awsp_settings/awsp_general/ec2_install', 0, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
 				} else {
-					$this->configWriter->save('awsp_settings/awsp_general/ec2_install', 1, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $this->storeId);
+					// We want store scope to always be default(0) on this config value
+					$this->configWriter->save('awsp_settings/awsp_general/ec2_install', 1, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
 				}
 			} catch(\Exception $e) {
 				// Set value to 0 if curl call errors
-				$this->configWriter->save('awsp_settings/awsp_general/ec2_install', 0, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $this->storeId);
+				$this->configWriter->save('awsp_settings/awsp_general/ec2_install', 0, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, 0);
 			}
 		}
 	}
 
 	public function isEc2Install()
 	{
+		// We want store scope to always be default(0) on this config value
 		$installedVal = $this->scopeConfig->getValue(
 			'wsp_settings/awsp_general/ec2_install',
 			\Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-			$this->storeId
+			0
 		);
 		return $installedVal;
 	}
