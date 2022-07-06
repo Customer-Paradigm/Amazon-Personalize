@@ -63,7 +63,9 @@ class PersonalizeConfig
         $this->interactionCheck = $interactionCheck;
         $this->sdkClient = $sdkClient;
         $this->webdir = $this->directoryList->getRoot();
-        $this->storeId = $this->storeManager->getStore()->getId();
+	$this->storeId = $this->storeManager->getStore()->getId();
+	// if this is default store view id (1), make it the same as admin (0)
+	$this->storeId = $this->storeId == 1 ? 0 : $this->storeId;
         $this->scopeConfig = $sdkClient->getScopeConfig();
         $this->homedir = $this->scopeConfig->getValue(
             'awsp_settings/awsp_general/home_dir',
@@ -167,7 +169,7 @@ class PersonalizeConfig
             'general/store_information/name',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $this->storeId
-        );
+    );
         $configname = $this->awsCleanName($configname);
         $s3name = $this->scopeConfig->getValue(
             'awsp_wizard/data_type_name/s3BucketName',
@@ -180,7 +182,7 @@ class PersonalizeConfig
             $url = $this->storeManager->getStore()->getBaseUrl();
             $name = parse_url($url, PHP_URL_HOST);
             $name = $this->awsCleanName($name) . '-' . $this->storeId;
-        }
+	}
         return $name;
     }
 

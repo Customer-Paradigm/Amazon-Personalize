@@ -54,11 +54,15 @@ class NameConfig extends PersonalizeConfig
 
     public function buildName($type)
     {
-        $storeName = $this->getStoreName();
-        if ($type !== 'personalize-s3bucket') { // replace period with underscore for all but S3 bucket name
-            $storeName = preg_replace('/\./', '_', $storeName);
-        }
-        return 'cprdgm-' . $storeName . '-' . $type;
+	    $storeName = $this->getStoreName();
+	    if($type === 'personalize-s3bucket') {
+		    // force default scope number for s3 bucket name	
+		    $storeName = preg_replace('/-1/', '-0', $storeName);
+	    }
+	    else { // replace period with underscore for all but S3 bucket name
+		    $storeName = preg_replace('/\./', '_', $storeName);
+	    }
+	    return 'cprdgm-' . $storeName . '-' . $type;
     }
     
     public function buildArn($type, $name, $suffix = null)

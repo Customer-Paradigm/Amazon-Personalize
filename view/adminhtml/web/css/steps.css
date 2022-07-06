@@ -192,6 +192,7 @@ button.aws-advanced {
 }
 .message-button {
   margin-left: 5px;
+  float: right;
 }
 
 .message-button:hover {

@@ -43,15 +43,15 @@ class ImportJob extends PersonalizeBase
     }
 
     public function getStatus()
-    {
+    {   $arnArray = [$this->usersDatasetArn,$this->itemsDatasetArn,$this->interactionsDatasetArn];
         $checkArray = [$this->usersImportJobName,$this->itemsImportJobName,$this->interactionsImportJobName];
         $checklist = [];
-        $rtn = $this->personalizeClient->listDatasetImportJobs();
         $result = 'none found';
         try {
-            foreach ($rtn['datasetImportJobs'] as $idx => $item) {
-                if (in_array($item['jobName'], $checkArray)) {
-                    $checklist[] = $rtn['datasetImportJobs'][$idx];
+            foreach ($arnArray as $item) {
+        	$rtn = $this->personalizeClient->listDatasetImportJobs(array('datasetArn'=>$item));
+                if (in_array($rtn['datasetImportJobs'][0]['jobName'], $checkArray)) {
+                    $checklist[] = $rtn['datasetImportJobs'][0];
                 }
             }
             if (count($checklist) == 0) {
@@ -63,6 +63,7 @@ class ImportJob extends PersonalizeBase
                     switch ($item['status']) {
                         case 'ACTIVE':
                             $result = 'complete';
+                            $this->pHelper->setStepError('create_import_jobs', "");
                             break;
                         case 'CREATE PENDING':
                         case 'CREATE IN_PROGRESS':
@@ -71,19 +72,19 @@ class ImportJob extends PersonalizeBase
                         case 'CREATE FAILED':
                             $result = 'error';
                             // If Import job already exists ( wasn't removed on previous reset )
-                            if (strstr('ResourceAlreadyExistsException', $item['failureReason']) !== false) {
+			    if (strstr('ResourceAlreadyExistsException', $item['failureReason']) !== false) {
                                 $result = 'complete';
+                            	$this->pHelper->setStepError('create_import_jobs', "");
                                 break;
                             }
-                                    $this->pHelper->setStepError('create_import_jobs', $item['failureReason']);
-                            //return $item['failureReason'];
+                            $this->pHelper->setStepError('create_import_jobs', $item['failureReason']);
                             break;
                     }
                 }
             }
-        } catch (\Exception $e) {
+	} catch (\Exception $e) {
             $this->nameConfig->getLogger()->error("\ncheck datasetImportJobs status error: " . $e->getMessage());
-            return $e->getMessage();
+            return $result;
         }
         $this->infoLogger->info('listDatasetImportJobs status result: ' . print_r($result, true));
         return $result;
