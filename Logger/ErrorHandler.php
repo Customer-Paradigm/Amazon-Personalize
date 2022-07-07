@@ -26,11 +26,11 @@ class ErrorHandler extends BaseHandler
     protected $dirlist;
 
     public function __construct(
-        DirectoryList $dirlist,
+	DirectoryList $dirlist,
         DriverInterface $filesystem,
         $filePath = null,
         $fileName = null,
-        \CustomerParadigm\AmazonPersonalize\Model\Error $error
+        \CustomerParadigm\AmazonPersonalize\Model\Error $error = null
     ) {
         $this->dirlist = $dirlist;
         $this->error = $error;
@@ -45,7 +45,7 @@ class ErrorHandler extends BaseHandler
     /**
      * @inheritDoc
      */
-    public function write(array $record)
+    public function write(array $record): void
     {
         $this->error->writeError($record);
         parent::write($record);
