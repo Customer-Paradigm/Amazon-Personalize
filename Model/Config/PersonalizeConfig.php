@@ -72,7 +72,7 @@ class PersonalizeConfig
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $this->storeId
         );
-        if (!is_writable($this->homedir)) {
+        if (is_null($this->homedir) || !is_writable($this->homedir)) {
             $this->homedir =  $this->webdir . "/pub/media";
             $this->configWriter->save('awsp_settings/awsp_general/home_dir', $this->homedir);
         }

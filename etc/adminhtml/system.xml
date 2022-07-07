@@ -20,7 +20,7 @@
 				</field>
 				<field id="calc_active" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>License Active</label>
-					<frontend_model>CustomerParadigm\AmazonPersonalize\Block\System\Config\Form\Field\Readonly</frontend_model>
+					<frontend_model>CustomerParadigm\AmazonPersonalize\Block\System\Config\Form\Field\ReadonlyField</frontend_model>
 				</field>
 				<field id="calc_error" translate="label" type="note" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<frontend_model>CustomerParadigm\AmazonPersonalize\Block\System\Config\Form\Field\LicenseMessage</frontend_model>
@@ -31,7 +31,7 @@
 				</field>
 				<field id="campaign_exists" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Campaign Active</label>
-					<frontend_model>CustomerParadigm\AmazonPersonalize\Block\System\Config\Form\Field\Readonly</frontend_model>
+					<frontend_model>CustomerParadigm\AmazonPersonalize\Block\System\Config\Form\Field\ReadonlyField</frontend_model>
 				</field>
 				<field id="aws_region" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Aws Region</label>

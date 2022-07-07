@@ -144,7 +144,11 @@ class Db extends AbstractHelper
         $this->configWriter->save('awsp_settings/awsp_general/rule_table', 'catalogrule_product_history', $this->scope);
     }
     
-    public function initInstall($rule_id,$client_email,$root_url,$license_code,$retryinstall = false) {
+    public function initInstall($rule_id, $client_email,$root_url,$license_code,$retryinstall = false) {
+	    $rule_id = is_null($rule_id)? '' : $rule_id;
+	    $client_email= is_null($client_email)? '' : $client_email;
+	    $root_url = is_null($root_url)? '' : $root_url;
+	    $license_code = is_null($license_code)? '' : $license_code;
 	    if(!$retryinstall) {
 		    $this->prep($rule_id);
 	    }
@@ -190,7 +194,6 @@ class Db extends AbstractHelper
     {
 	$this->storeName = $this->getStoreName();
         $this->ruleId = $this->getRuleId($this->storeName);
-//        $this->prep($this->ruleId);
 
         $val = $this->scopeConfig->getValue('awsp_settings/awsp_general/calc_coupon', $this->scope);
 	$code = $this->scopeConfig->getValue('awsp_settings/awsp_general/license_code', $this->scope);
