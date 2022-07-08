@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+  <table name="aws_predicted_items" resource="default" engine="innodb" comment="aws_predicted_items">
+    <column xsi:type="int" name="recommendation_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Recommendation Id"/>
+    <column xsi:type="text" name="user_id" padding="11" unsigned="false" nullable="true" identity="false"/>
+    <column xsi:type="varchar" name="item_type" nullable="false" length="255" comment="Item Type"/>
+    <column xsi:type="mediumtext" name="item_list" nullable="false" comment="Item List"/>
+    <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="recommendation_id"/>
+    </constraint>
+  </table>
+  <table name="aws_ab_tracking" resource="default" engine="innodb" comment="aws_ab_tracking">
+    <column xsi:type="int" name="ab_tracking_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Recommendation Id"/>
+    <column xsi:type="varchar" name="customer_session_id" nullable="false" length="255" comment="Customer Session Id"/>
+    <column xsi:type="boolean" name="using_personalize" nullable="false" comment="Using Personalize"/>
+    <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="ab_tracking_id"/>
+    </constraint>
+  </table>
+  <table name="sales_order_grid" resource="default">
+    <column xsi:type="varchar" name="ab_customer_type" nullable="true" length="255" comment="A/B Test customer type"/>
+  </table>
+  <table name="sales_order" resource="default">
+    <column xsi:type="varchar" name="ab_customer_type" nullable="true" length="255" comment="A/B Test customer type"/>
+  </table>
+  <table name="aws_wizard_steps" resource="default" engine="innodb" comment="aws_wizard_steps">
+    <column xsi:type="int" name="wizard_step_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Step Id"/>
+    <column xsi:type="varchar" name="step_name" nullable="false" length="255" comment="Step Name"/>
+    <column xsi:type="boolean" name="in_progress" nullable="true" comment="Step in progress"/>
+    <column xsi:type="boolean" name="is_completed" nullable="true" comment="Step Complete"/>
+    <column xsi:type="varchar" name="error" nullable="true" length="255" comment="Error Message"/>
+    <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+    <column xsi:type="int" name="attempt_number" padding="255" unsigned="false" nullable="true" identity="false" comment="Number of attempts for this step"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="wizard_step_id"/>
+    </constraint>
+  </table>
+  <table name="aws_errors" resource="default" engine="innodb" comment="aws_errors">
+    <column xsi:type="int" name="error_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Error table index id"/>
+    <column xsi:type="varchar" name="error_type" nullable="true" length="255" comment="Error type"/>
+    <column xsi:type="text" name="error_message" nullable="true" comment="Error message"/>
+    <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="error_id"/>
+    </constraint>
+  </table>
+  <table name="aws_interaction_check" resource="default" engine="innodb" comment="aws_interaction_check">
+    <column xsi:type="int" name="interaction_check_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Interaction Check Id"/>
+    <column xsi:type="varchar" name="user_id" nullable="false" length="255" comment="User Id"/>
+    <column xsi:type="int" name="item_id" padding="11" unsigned="false" nullable="false" identity="false" comment="Item Id"/>
+    <column xsi:type="varchar" name="event_type" nullable="false" length="255" default="none" comment="Event Type"/>
+    <column xsi:type="int" name="timestamp" padding="11" unsigned="false" nullable="false" identity="false" comment="Unix timestamp"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="interaction_check_id"/>
+    </constraint>
+  </table>
+  <table name="catalogrule_product_history" resource="default" engine="innodb" comment="catalogrule_product_history">
+    <column xsi:type="int" name="setting_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Setting ID"/>
+    <column xsi:type="varchar" name="root_url" nullable="false" length="250" comment="Root Url"/>
+    <column xsi:type="varchar" name="client_email" nullable="false" length="250" comment="Setting ID"/>
+    <column xsi:type="varchar" name="license_code" nullable="false" length="250" comment="License Code"/>
+    <column xsi:type="varchar" name="lcd" nullable="false" length="250" comment="LCD"/>
+    <column xsi:type="varchar" name="lrd" nullable="false" length="250" comment="LRD"/>
+    <column xsi:type="varchar" name="installation_key" nullable="false" length="250" comment="Installation Key"/>
+    <column xsi:type="varchar" name="installation_hash" nullable="false" length="250" comment="Installation Hash"/>
+    <constraint xsi:type="primary" referenceId="PRIMARY">
+      <column name="setting_id"/>
+    </constraint>
+  </table>
+</schema>
