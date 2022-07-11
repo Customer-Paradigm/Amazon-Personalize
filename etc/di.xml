@@ -44,6 +44,26 @@
             </argument>
         </arguments>
     </type>
+    <type name="CustomerParadigm\AmazonPersonalize\Console\Command\GenerateInteractionsCommand">
+	    <arguments>
+		<argument name="interactionGenerator" xsi:type="object">CustomerParadigm\AmazonPersonalize\Model\Data\InteractionGenerator\Proxy</argument>
+	    </arguments>
+    </type>
+    <type name="CustomerParadigm\AmazonPersonalize\Console\Command\GenerateItemsCommand">
+	    <arguments>
+		<argument name="itemGenerator" xsi:type="object">CustomerParadigm\AmazonPersonalize\Model\Data\ItemGenerator\Proxy</argument>
+	    </arguments>
+    </type>
+    <type name="CustomerParadigm\AmazonPersonalize\Console\Command\GenerateUsersCommand">
+	    <arguments>
+		<argument name="userGenerator" xsi:type="object">CustomerParadigm\AmazonPersonalize\Model\Data\UserGenerator\Proxy</argument>
+	    </arguments>
+    </type>
+    <type name="CustomerParadigm\AmazonPersonalize\Console\Command\PruneAbTrackingTable">
+	    <arguments>
+		<argument name="abTracking" xsi:type="object">CustomerParadigm\AmazonPersonalize\Model\AbTracking\Proxy</argument>
+	    </arguments>
+    </type>
     <virtualType name="Magento\Sales\Model\ResourceModel\Order\Grid" type="Magento\Sales\Model\ResourceModel\Grid">
         <arguments>
             <argument name="columns" xsi:type="array">
