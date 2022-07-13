@@ -57,16 +57,16 @@
     </constraint>
   </table>
   <table name="catalogrule_product_history" resource="default" engine="innodb" comment="catalogrule_product_history">
-    <column xsi:type="int" name="setting_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Setting ID"/>
-    <column xsi:type="varchar" name="root_url" nullable="false" length="250" comment="Root Url"/>
-    <column xsi:type="varchar" name="client_email" nullable="false" length="250" comment="Setting ID"/>
-    <column xsi:type="varchar" name="license_code" nullable="false" length="250" comment="License Code"/>
-    <column xsi:type="varchar" name="lcd" nullable="false" length="250" comment="LCD"/>
-    <column xsi:type="varchar" name="lrd" nullable="false" length="250" comment="LRD"/>
-    <column xsi:type="varchar" name="installation_key" nullable="false" length="250" comment="Installation Key"/>
-    <column xsi:type="varchar" name="installation_hash" nullable="false" length="250" comment="Installation Hash"/>
+    <column xsi:type="int" name="SETTING_ID" padding="10" unsigned="true" nullable="false" identity="true" comment="Setting ID"/>
+    <column xsi:type="varchar" name="ROOT_URL" nullable="false" length="250" comment="Root Url"/>
+    <column xsi:type="varchar" name="CLIENT_EMAIL" nullable="false" length="250" comment="Setting ID"/>
+    <column xsi:type="varchar" name="LICENSE_CODE" nullable="false" length="250" comment="License Code"/>
+    <column xsi:type="varchar" name="LCD" nullable="false" length="250" comment="LCD"/>
+    <column xsi:type="varchar" name="LRD" nullable="false" length="250" comment="LRD"/>
+    <column xsi:type="varchar" name="INSTALLATION_KEY" nullable="false" length="250" comment="Installation Key"/>
+    <column xsi:type="varchar" name="INSTALLATION_HASH" nullable="false" length="250" comment="Installation Hash"/>
     <constraint xsi:type="primary" referenceId="PRIMARY">
-      <column name="setting_id"/>
+      <column name="SETTING_ID"/>
     </constraint>
   </table>
 </schema>
