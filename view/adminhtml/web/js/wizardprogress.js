@@ -104,13 +104,18 @@ define([
 			var field = jQuery("#row_awsp_settings_awsp_general_calc_error > td.value");
 			var url = self.ajaxLicenseCheckUrl;
 			jQuery.getJSON(url, function(data) { 
-				var mssg = data.notification_text;
+				console.log(data);
+
+				var mssg = "";
+				if(data) {
+				  	mssg = data.notification_text;
+				}
 				field.html('');
 				if(mssg == 'License OK') {
 					jQuery("#awsp_settings_awsp_general_calc_active").val('Yes');
 				} else {
 					jQuery("#awsp_settings_awsp_general_calc_active").val('no');
-					field.append(data.notification_text);
+					field.append(mssg);
 				}
 			});
 		},

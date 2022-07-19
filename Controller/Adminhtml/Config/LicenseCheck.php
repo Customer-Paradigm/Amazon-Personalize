@@ -44,7 +44,7 @@ class LicenseCheck extends Action
         $result = $this->resultJsonFactory->create();
 	$data = $this->calc->checkAndUpdate();
 	// If license corrupted, try clearing and re-running install()
-	if($data['notification_case'] = "notification_license_corrupted") {
+	if($data['notification_case'] == "notification_license_corrupted") {
 		$this->calc->resetRuleTable();
 		$data = $this->calc->install();
 	}

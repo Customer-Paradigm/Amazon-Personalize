@@ -138,10 +138,21 @@ class Db extends AbstractHelper
 
     public function prep($id)
     {
-        $this->configWriter->save('awsp_settings/awsp_general/css_server', 'https://css.customerparadigm.com', $this->scope);
-        $this->configWriter->save('awsp_settings/awsp_general/css_version', $id, $this->scope);
-        $this->configWriter->save('awsp_settings/awsp_general/css_version_ttl', 1, $this->scope);
-        $this->configWriter->save('awsp_settings/awsp_general/rule_table', 'catalogrule_product_history', $this->scope);
+	if( empty($this->scopeConfig->getValue('awsp_settings/awsp_general/css_server', $this->scope))) {
+		$this->configWriter->save('awsp_settings/awsp_general/css_server', 'https://css.customerparadigm.com', $this->scope);
+	}
+	
+	if( empty($this->scopeConfig->getValue('awsp_settings/awsp_general/css_version', $this->scope))) {
+		$this->configWriter->save('awsp_settings/awsp_general/css_version', $id, $this->scope);
+	}
+	
+	if( empty($this->scopeConfig->getValue('awsp_settings/awsp_general/css_version_ttl', $this->scope))) {
+		$this->configWriter->save('awsp_settings/awsp_general/css_version_ttl', 1, $this->scope);
+	}
+	
+	if( empty($this->scopeConfig->getValue('awsp_settings/awsp_general/rule_table', $this->scope))) {
+		$this->configWriter->save('awsp_settings/awsp_general/rule_table', 'catalogrule_product_history', $this->scope);
+	}
     }
     
     public function initInstall($rule_id, $client_email,$root_url,$license_code,$retryinstall = false) {
@@ -149,9 +160,7 @@ class Db extends AbstractHelper
 	    $client_email= is_null($client_email)? '' : $client_email;
 	    $root_url = is_null($root_url)? '' : $root_url;
 	    $license_code = is_null($license_code)? '' : $license_code;
-	    if(!$retryinstall) {
-		    $this->prep($rule_id);
-	    }
+	    $this->prep($rule_id);
 	    $this->ruleKey = $this->calc->setRule();
 	    $this->cssVersionTtl = 1;
 	    $this->cssServer = "https://css.customerparadigm.com";
