@@ -4,7 +4,7 @@ namespace CustomerParadigm\AmazonPersonalize\Model\Data\Interaction;
 
 class ReportEvent extends \Magento\Framework\Model\AbstractModel implements \Magento\Framework\DataObject\IdentityInterface
 {
-    const CACHE_TAG = 'customerparadigm_amazonpersonalize_interaction_reportevent';
+    public const CACHE_TAG = 'customerparadigm_amazonpersonalize_interaction_reportevent';
 
     protected $_cacheTag = 'customerparadigm_amazonpersonalize_interaction_reportevent';
 

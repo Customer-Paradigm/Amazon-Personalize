@@ -82,7 +82,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
             $acount = count($addedInteractions);
 
             $total = (int)$rcount + (int)$pcount + (int)$acount;
-            
+
             $this->infoLogger->info("InteractionGenerator reportInteractions count: $rcount");
             $this->infoLogger->info("InteractionGenerator purchaseInteractions count: $pcount");
             $this->infoLogger->info("InteractionGenerator addedInteractions count: $acount");
@@ -94,7 +94,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
                 ->writeCollectionToCsv($purchaseInteractions)
                 ->writeCollectionToCsv($addedInteractions);
             // pad interactions if fewer than 1000
-    
+
             if ($this->enablePadding && $total < 1000) {
                 $this->infoLogger->info("InteractionGenerator padding enabled");
                 $count = 1;

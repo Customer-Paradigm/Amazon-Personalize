@@ -3,8 +3,8 @@
 namespace CustomerParadigm\AmazonPersonalize\Plugin\Config;
 
 use Psr\Log\LoggerInterface;
-use \Magento\Framework\Shell;
-use \Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Shell;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 use CustomerParadigm\AmazonPersonalize\Model\AbTracking;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
@@ -24,7 +24,7 @@ class AfterSaveConfig
      * @var \Magento\Framework\Shell
      */
     protected $shell;
-    
+
     /**
      * @var \Magento\Framework\Module\Dir
      */
@@ -48,11 +48,11 @@ class AfterSaveConfig
     /**
      * @var CustomerParadigm\AmazonPersonalize\Helper\Db
      */
-    
+
     protected $awsHelper;
-    
+
     protected $sdkClient;
-    
+
     protected $stsClient;
 
     /**
@@ -83,7 +83,6 @@ class AfterSaveConfig
     {
         $section = $subject->getSection();
         if ($section === 'awsp_settings') {
-
             // If a/b testing percentage changed, clear a/b tracking table
             $last_ab_val = $this->pConfig->getLastAbPercent();
             $saved_ab_val = $this->pConfig->getGaAbPercent();
@@ -101,12 +100,12 @@ class AfterSaveConfig
                 }
 
                 $cred_dir = $this->moduleDir->getPath('media');
-		$region = $this->pConfig->getAwsRegion();
-		// Db stored values
+                $region = $this->pConfig->getAwsRegion();
+                // Db stored values
                 $access_key = $this->pConfig->getAccessKey();
-		$secret_key = $this->pConfig->getSecretKey();
-		$save_key = $access_key;
-		$save_secret = $secret_key;
+                $secret_key = $this->pConfig->getSecretKey();
+                $save_key = $access_key;
+                $save_secret = $secret_key;
 
                 $config_dir = $cred_dir .'/.aws';
                 $cred_file = $cred_dir . '/.aws/credentials';
@@ -121,7 +120,7 @@ class AfterSaveConfig
                 $htaccess_entry = 'Deny from all';
                 $cmd = 'echo "'. $htaccess_entry . '" >' . $htaccess_file;
                 $output = $this->shell->execute($cmd);
-	
+
                 $cred_entry = "[default]
 					aws_access_key_id = $save_key
 					aws_secret_access_key = $save_secret";
@@ -140,7 +139,7 @@ class AfterSaveConfig
 
                 $procStatus =  $this->wizardTracking->getProcessStatus()['status'];
 
-		// Enable/disable cron based on process status
+                // Enable/disable cron based on process status
                 if ($this->pConfig->isEnabled() == false || $procStatus == 'hasError' || $procStatus == 'finished') {
                     $this->logger->info('Aws plugin data create Cron off -------------');
                     $this->pConfig->setCron('aws_data_setup', 'off');
@@ -151,7 +150,6 @@ class AfterSaveConfig
             } catch (\Exception $e) {
                 $this->logger->critical('Aws Creds Save Error:', ['exception' => $e]);
             }
-
         }
         return $result;
     }

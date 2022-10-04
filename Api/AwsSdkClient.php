@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Api;
 
 /*
@@ -7,15 +8,14 @@ Use Aws\Personalize\PersonalizeClient;
 Use Aws\Iam\IamClient;
 use Aws\S3\S3Client;
  */
-use \Magento\Store\Model\StoreManagerInterface;
-use \Magento\Framework\App\Config\ScopeConfigInterface;
-use \Magento\Framework\HTTP\Client\Curl;
-use \Magento\Framework\App\Config\Storage\WriterInterface;
-use \CustomerParadigm\AmazonPersonalize\Helper\Aws;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\HTTP\Client\Curl;
+use Magento\Framework\App\Config\Storage\WriterInterface;
+use CustomerParadigm\AmazonPersonalize\Helper\Aws;
 
 class AwsSdkClient implements AwsSdkClientInterface
 {
-
     protected $scopeConfig;
     protected $configWriter;
     protected $storeId;
@@ -41,7 +41,7 @@ class AwsSdkClient implements AwsSdkClientInterface
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $this->storeId
         );
-    
+
         // Set default region for setup:upgrade, when admin settings are not yet populated
         if (empty($this->region)) {
             $this->region = "us-east-1";
@@ -54,7 +54,7 @@ class AwsSdkClient implements AwsSdkClientInterface
         $params = [
                         'version' => 'latest',
             'region' => "$this->region" ];
-        
+
         // if this module's website is not running on ec2 instance
         // check for local credentials
         if (!$this->awsHelper->isEc2Install()) {
@@ -68,7 +68,7 @@ class AwsSdkClient implements AwsSdkClientInterface
     {
         return $this->region;
     }
-    
+
     public function getScopeConfig()
     {
         return $this->scopeConfig;

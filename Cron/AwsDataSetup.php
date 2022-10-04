@@ -9,8 +9,8 @@
 namespace CustomerParadigm\AmazonPersonalize\Cron;
 
 use Psr\Log\LoggerInterface;
-use \Magento\Framework\Filesystem\DirectoryList;
-use \Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Filesystem\DirectoryList;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 
 /**

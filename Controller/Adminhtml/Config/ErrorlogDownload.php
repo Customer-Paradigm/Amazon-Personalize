@@ -1,7 +1,7 @@
 <?php
- 
+
 namespace CustomerParadigm\AmazonPersonalize\Controller\Adminhtml\Config;
- 
+
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
 use CustomerParadigm\AmazonPersonalize\Model\Error;
- 
+
 class ErrorlogDownload extends Action
 {
     protected $resultJsonFactory;
@@ -17,7 +17,7 @@ class ErrorlogDownload extends Action
     protected $helper;
     protected $wizardTracking;
     protected $errorLog;
- 
+
     /**
      * @param Context $context
      * @param JsonFactory $resultJsonFactory
@@ -40,7 +40,7 @@ class ErrorlogDownload extends Action
         $this->errorLog = $errorLog;
         parent::__construct($context);
     }
- 
+
     /**
      * @return \Magento\Framework\Controller\Result\Json
      */
@@ -59,7 +59,7 @@ class ErrorlogDownload extends Action
 
         // clean output buffer
         ob_end_clean();
-    
+
         $handle = fopen('php://output', 'w');
 
         // use keys as column titles
@@ -74,8 +74,8 @@ class ErrorlogDownload extends Action
         // use exit to get rid of unexpected output afterward
         return null;
     }
- 
- 
+
+
     protected function _isAllowed()
     {
         return $this->_authorization->isAllowed('CustomerParadigm_AmazonPersonalize::config');

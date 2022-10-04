@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Model\ResourceModel\Result;
 
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection

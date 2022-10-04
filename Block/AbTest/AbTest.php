@@ -6,7 +6,6 @@ use Magento\Framework\View\Element\Template;
 
 class AbTest extends Template
 {
-
     protected $customerSession;
     protected $abTracking;
     protected $pConfig;
@@ -30,13 +29,13 @@ class AbTest extends Template
         $sid =  $this->customerSession->getSessionId();
         return $this->abTracking->getTrackingType($sid);
     }
-    
+
     public function getGaAccountNum()
     {
         $acctnum = $this->pConfig->getMagentoGaAccountNum();
         return $acctnum;
     }
-    
+
     public function getGaAbEnabled()
     {
         $acctnum = $this->pConfig->getGaAbEnabled();

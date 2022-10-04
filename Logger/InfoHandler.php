@@ -3,6 +3,7 @@
  * * @author Customer Paradigm
  * * @copyright Copyright (c) 2020 Customer Paradigm (https://www.customerparadigm.com/)
  **/
+
 namespace CustomerParadigm\AmazonPersonalize\Logger;
 
 use Magento\Framework\Filesystem\DriverInterface;
@@ -15,35 +16,34 @@ use Magento\Framework\Filesystem\DirectoryList;
  *   */
 class InfoHandler extends BaseHandler
 {
+    /**
+     * * Logging level
+     * *
+     * * @var int
+     **/
+    protected $loggerType = MonologLogger::INFO;
+    protected $dirlist;
 
-	/**
-	 * * Logging level
-	 * *
-	 * * @var int
-	 **/
-	protected $loggerType = MonologLogger::INFO;
-	protected $dirlist;
+    public function __construct(
+        DirectoryList $dirlist,
+        DriverInterface $filesystem,
+        $filePath = null,
+        $fileName = null
+    ) {
+        $this->dirlist = $dirlist;
+        $webroot = $this->dirlist->getRoot();
+        parent::__construct(
+            $filesystem,
+            $webroot . '/var/log/aws_personalize/',
+            'info.log'
+        );
+    }
 
-	public function __construct(
-		DirectoryList $dirlist,
-		DriverInterface $filesystem,
-		$filePath = null,
-		$fileName = null
-	) {
-		$this->dirlist = $dirlist;
-		$webroot = $this->dirlist->getRoot();
-		parent::__construct(
-			$filesystem,
-			$webroot . '/var/log/aws_personalize/',
-			'info.log'
-		);
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	public function write(array $record): void
-	{
-		parent::write($record);
-	}
+    /**
+     * @inheritDoc
+     */
+    public function write(array $record): void
+    {
+        parent::write($record);
+    }
 }

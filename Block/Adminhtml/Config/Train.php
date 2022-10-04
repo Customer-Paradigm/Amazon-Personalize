@@ -59,7 +59,7 @@ class Train extends Field
     {
         return $this->getUrl('cpaws/config/train') . "?isAjax=true";
     }
-    
+
     /**
      * Return ajax url for error log entries
      *
@@ -69,7 +69,7 @@ class Train extends Field
     {
         return $this->getUrl('cpaws/config/errorlog') . "?isAjax=true";
     }
-    
+
     /**
      * Return ajax url for asset display
      *
@@ -79,7 +79,7 @@ class Train extends Field
     {
         return $this->getUrl('cpaws/config/assetdisplay') . "?isAjax=true";
     }
-    
+
     /**
      * Return ajax url for error log entries
      *
@@ -89,7 +89,7 @@ class Train extends Field
     {
         return $this->getUrl('cpaws/config/errorlogdownload') . "?isAjax=true";
     }
-    
+
     /**
      * Return ajax url for interactions progress gauge
      *
@@ -129,7 +129,7 @@ class Train extends Field
 
         return $button->toHtml();
     }
-    
+
     /**
      * Get image Url
      *
@@ -142,10 +142,10 @@ class Train extends Field
 
         switch ($type) {
             case 'refresh':
-                    $rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/refresh.png');
+                $rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/refresh.png');
                 break;
             case 'info':
-                    $rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/info.png');
+                $rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/info.png');
                 break;
             case 'pending':
                 $rtn = $this->getViewFileUrl('CustomerParadigm_AmazonPersonalize::images/pending.png');
@@ -172,7 +172,7 @@ class Train extends Field
     {
         return $this->tracking->pConfig->needsInteractions();
     }
-    
+
     public function interactionsCount()
     {
         return $this->tracking->pConfig->getInteractionsCount();

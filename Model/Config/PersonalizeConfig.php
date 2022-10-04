@@ -2,12 +2,12 @@
 
 namespace CustomerParadigm\AmazonPersonalize\Model\Config;
 
-use \Magento\Framework\App\Config\Storage\WriterInterface;
-use \Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\Config\Storage\WriterInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use Aws\PersonalizeRuntime\PersonalizeRuntimeClient;
 use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
 use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
-use \Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 use CustomerParadigm\AmazonPersonalize\Helper\Aws;
 use CustomerParadigm\AmazonPersonalize\Model\InteractionCheck;
@@ -15,7 +15,6 @@ use CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient;
 
 class PersonalizeConfig
 {
-
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
@@ -63,9 +62,9 @@ class PersonalizeConfig
         $this->interactionCheck = $interactionCheck;
         $this->sdkClient = $sdkClient;
         $this->webdir = $this->directoryList->getRoot();
-	$this->storeId = $this->storeManager->getStore()->getId();
-	// if this is default store view id (1), make it the same as admin (0)
-	$this->storeId = $this->storeId == 1 ? 0 : $this->storeId;
+        $this->storeId = $this->storeManager->getStore()->getId();
+        // if this is default store view id (1), make it the same as admin (0)
+        $this->storeId = $this->storeId == 1 ? 0 : $this->storeId;
         $this->scopeConfig = $sdkClient->getScopeConfig();
         $this->homedir = $this->scopeConfig->getValue(
             'awsp_settings/awsp_general/home_dir',
@@ -83,12 +82,12 @@ class PersonalizeConfig
         $this->pRuntimeClient = $this->sdkClient->getClient('PersonalizeRuntime');
         $this->stsClient = $this->sdkClient->getClient('sts');
     }
-    
+
     public function saveConfigSetting($path, $value)
     {
         $this->configWriter->save($path, $value);
     }
-    
+
     public function deleteConfigSetting($path)
     {
         $this->configWriter->delete($path);
@@ -169,10 +168,10 @@ class PersonalizeConfig
             'general/store_information/name',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $this->storeId
-    	);
-	if( ! empty($configname) ) {
-	    $configname = $this->awsCleanName($configname);
-	}
+        );
+        if (! empty($configname)) {
+            $configname = $this->awsCleanName($configname);
+        }
         $s3name = $this->scopeConfig->getValue(
             'awsp_wizard/data_type_name/s3BucketName',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
@@ -184,7 +183,7 @@ class PersonalizeConfig
             $url = $this->storeManager->getStore()->getBaseUrl();
             $name = parse_url($url, PHP_URL_HOST);
             $name = $this->awsCleanName($name) . '-' . $this->storeId;
-	}
+        }
         return $name;
     }
 
@@ -204,7 +203,7 @@ class PersonalizeConfig
     {
         return $this->helper->moduleEnabled();
     }
-    
+
     public function getInteractionsCount()
     {
         $rtn = 0;
@@ -237,13 +236,13 @@ class PersonalizeConfig
         $filecount = empty($filecount) ? 0 : $filecount;
         return $filecount;
     }
-    
+
     public function needsInteractions()
     {
         if ($count = $this->getInteractionsCount() === false) {
-                $rtn = false;
+            $rtn = false;
         } else {
-                $rtn = $count < 1000;
+            $rtn = $count < 1000;
         }
         return $rtn;
     }
@@ -294,12 +293,11 @@ class PersonalizeConfig
 
             if ($status === 'fulfilled' || $status === 'pending') {
                 $response = $cred_class->wait(true);
-        
-                $client_key = $response->getAccessKeyId();
-		$client_secret = $response->getSecretKey();
-		$config_valid = ['client_key'=>$client_key, 'client_secret'=>$client_secret];
-            }
 
+                $client_key = $response->getAccessKeyId();
+                $client_secret = $response->getSecretKey();
+                $config_valid = ['client_key'=>$client_key, 'client_secret'=>$client_secret];
+            }
         } catch (Exception $e) {
             $this->errorLogger->error('Error checking Aws Creds: ', ['exception' => $e]);
             return false;
@@ -362,7 +360,7 @@ class PersonalizeConfig
 
         // hash
         $key = hash('sha256', $secret_key);
-        
+
         // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
         $iv = substr(hash('sha256', $secret_iv), 0, 16);
 
@@ -374,17 +372,16 @@ class PersonalizeConfig
 
         return $output;
     }
-    
+
     public function getLogger($type = 'error')
     {
         $rtn = $this->errorLogger;
         if ($type == 'info') {
             $rtn = $this->infoLogger;
-
         }
         return $rtn;
     }
-    
+
     public function getScopeConfig()
     {
         return $this->scopeConfig;

@@ -4,7 +4,7 @@ namespace CustomerParadigm\AmazonPersonalize\Model\Training;
 
 class WizardTracking extends \Magento\Framework\Model\AbstractModel
 {
-    const CACHE_TAG = 'customerparadigm_amazonpersonalize_wizardtracking';
+    public const CACHE_TAG = 'customerparadigm_amazonpersonalize_wizardtracking';
     protected $_cacheTag = 'customerparadigm_amazonpersonalize_wizardtracking';
     protected $_eventPrefix = 'customerparadigm_amazonpersonalize_wizardtracking';
     protected $connection;
@@ -33,29 +33,29 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         array $data = []
     ) {
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
-            $this->connection = $this->getResource()->getConnection();
-            $this->pHelper = $pHelper;
-            $this->awsHelper = $awsHelper;
+        $this->connection = $this->getResource()->getConnection();
+        $this->pHelper = $pHelper;
+        $this->awsHelper = $awsHelper;
         $this->infoLogger = $infoLogger;
         $this->errorLogger = $errorLogger;
-            $this->pConfig = $pConfig;
-            $this->eventManager = $eventManager;
-            $this->attempts = 0;
-            $this->maxAttempts = 3;
-            $this->steps = [
-                'create_csv_files',
+        $this->pConfig = $pConfig;
+        $this->eventManager = $eventManager;
+        $this->attempts = 0;
+        $this->maxAttempts = 3;
+        $this->steps = [
+            'create_csv_files',
 //        'create_personalize_s3_role',
-                'create_s3_bucket',
+            'create_s3_bucket',
         'upload_csv_files',
-                'create_schemas',
-                'create_dataset_group',
+            'create_schemas',
+            'create_dataset_group',
         'create_datasets',
-                'create_import_jobs',
-                'create_solution',
-                'create_solution_version',
-                'create_campaign',
+            'create_import_jobs',
+            'create_solution',
+            'create_solution_version',
+            'create_campaign',
         'create_event_tracker'
-            ];
+        ];
     }
 
     protected function _construct()
@@ -79,13 +79,13 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         $sql = "update aws_wizard_steps set $set_column = '$value' where step_name = '$step_name'";
         $this->connection->exec($sql);
     }
-    
+
     public function getStepData($step_name, $column)
     {
         $sql = "select $column value from aws_wizard_steps where step_name = '$step_name'";
         return $this->connection->query($sql)->fetch();
     }
-    
+
     public function stepsInitialized()
     {
         $tabledata = $this->getStepInfo();
@@ -117,17 +117,18 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             $rtn['state'] = $process['state'];
             switch ($process['state']) {
                 case 'error':
-                              $this->errorLogger->error("WizardTracking runSteps() non-exeption error at step:  " . $step);
-                              $this->errorLogger->error("WizardTracking runSteps() error message:  " . $rtn['mssg']);
-                              $this->setStepError($step, $rtn['mssg']);
-                   	      // $this->infoLogger->info("WizardTracking runSteps() error status -- try $step again");
-                              // return $this->tryAgain($step);
+                    $this->errorLogger->error("WizardTracking runSteps() non-exeption error at step:  " . $step);
+                    $this->errorLogger->error("WizardTracking runSteps() error message:  " . $rtn['mssg']);
+                    $this->setStepError($step, $rtn['mssg']);
+                    // $this->infoLogger->info("WizardTracking runSteps() error status -- try $step again");
+                    // return $this->tryAgain($step);
+                    // no break
                 case 'step ready':
                 case 'not started':
                     $fname = $this->stepToFuncName($step);
                     $this->infoLogger->info("WizardTracking runSteps() starting step " . $fname);
                     $this->setStepInprogress($step);
-                        $this->pHelper->saveStepData($step, 'attempt_number', $this->attempts);
+                    $this->pHelper->saveStepData($step, 'attempt_number', $this->attempts);
                     try {
                         $rtn = $wizard->{$fname}();
                         $check = $wizard->checkStatus($step);
@@ -150,11 +151,11 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                     if ($check == 'complete') {
                         $this->setStepComplete($step);
                     }
-           /*
-                    if($check == 'not started') {
-                        $this->setStepReady($step);
-            }
-            */
+                    /*
+                             if($check == 'not started') {
+                                 $this->setStepReady($step);
+                     }
+                     */
                     $rtn['steps'] = $this->displayProgress();
                     $rtn['mssg'] = 'success';
                     $rtn['state'] = 'complete';
@@ -186,13 +187,13 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     {
         $stepinfo = $this->getStepInfo();
     }
-    
+
     public function getStepInfo()
     {
         $sql = "select * from aws_wizard_steps";
         return $this->connection->query($sql)->fetchAll();
     }
-    
+
     public function getAssets()
     {
         $sql = "select path, value from core_config_data where path like '%data_type_%'";
@@ -213,19 +214,19 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                 $state = 'error';
                 $mssg = $step['error'];
             }
-            
+
             if ($step['in_progress']) {
                 $state = 'in progress';
             } elseif ($step['is_completed']) {
                 $state = 'complete';
-	    } elseif ($step['step_name'] == 'create_csv_files' 
-		    && $has_error
-		    && strpos($step['error'], 'you need at least 1000') !== false) {
+            } elseif ($step['step_name'] == 'create_csv_files'
+                && $has_error
+                && strpos($step['error'], 'you need at least 1000') !== false) {
                 $state = 'paused';
             } else {
                 $state = 'not started';
             }
-            
+
             $rtn[] = ['step_name'=>$name,'state'=>$state,'error'=>$has_error,'mssg'=>$mssg];
         }
         return $rtn;
@@ -239,7 +240,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     public function getProcessStatus()
     {
         $rtn = [];
-	$steps = $this->getStepInfo();
+        $steps = $this->getStepInfo();
         if (empty($steps)) {
             $rtn = ['step_name'=>'create_s3_bucket', 'status'=>'notStarted'];
         }
@@ -266,7 +267,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             }
             // Catch holes in logic
             $rtn = ['step_name'=>$step['step_name'], 'status'=>'unknown'];
-	}
+        }
         return $rtn;
     }
 
@@ -301,7 +302,8 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         return ['step'=>'','state'=>'finished', 'mssg'=>''];
     }
 
-    public function displayProgress() {
+    public function displayProgress()
+    {
         if (! $this->pHelper->canDisplayAdmin()) {
             return ['steps'=>[], 'license'=>false, 'stat'=>'error','mssg'=>'Please enter and save your AWS credentials to enable Campaign Setup Wizard'];
         }
@@ -318,11 +320,11 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         $sql = "select * from aws_wizard_steps where is_completed is NULL or is_completed = 0  order by wizard_step_id limit 1";
         return $this->connection->query($sql)->fetch();
     }
-    
+
     public function validateNextStep($step)
     {
         $rtn = [];
-        
+
         $rtn['step_name'] = $step['step_name'];
         $rtn['display_name'] = $this->stepToDisplayName($step['step_name']);
         $rtn['state'] = 'ready';
@@ -383,7 +385,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         $rtn = lcfirst($rtn);
         return $rtn;
     }
-    
+
     protected function stepToDisplayName($string)
     {
         $rtn = [];
@@ -406,7 +408,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         $this->pHelper->saveStepData($step, 'is_completed', true);
         $this->pHelper->saveStepData($step, 'in_progress', false);
     }
-    
+
     public function setStepReady($step)
     {
         $this->pHelper->saveStepData($step, 'is_completed', null);
@@ -418,19 +420,19 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         $this->pHelper->saveStepData($step, 'is_completed', false);
         $this->pHelper->saveStepData($step, 'in_progress', true);
     }
-    
+
     public function setStepError($step, $message)
     {
         $this->pHelper->setStepError($step, $message);
     }
-    
+
     public function resetStep($step)
     {
         $this->pHelper->saveStepData($step, 'error', null);
         $this->pHelper->saveStepData($step, 'in_progress', null);
         $this->pHelper->saveStepData($step, 'is_completed', null);
     }
-   
+
     protected function setStepRetry($step)
     {
         $attempt = $this->getAttemptNum($step);

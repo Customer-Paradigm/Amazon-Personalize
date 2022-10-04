@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Observer;
 
 use Magento\Framework\Event\ObserverInterface;

@@ -9,9 +9,9 @@ use Magento\Framework\Filesystem\File\WriteFactory;
 
 abstract class AbstractGenerator
 {
-    const DEFAULT_EXPORT_SUB_DIR = "export/amazonpersonalize";
+    public const DEFAULT_EXPORT_SUB_DIR = "export/amazonpersonalize";
 
-    const DEFAULT_NULL_DATA_VALUE = "none";
+    public const DEFAULT_NULL_DATA_VALUE = "none";
 
     protected $filename;
 
@@ -113,5 +113,5 @@ abstract class AbstractGenerator
         return $this->dataError;
     }
 
-    abstract function generateCsv();
+    abstract public function generateCsv();
 }

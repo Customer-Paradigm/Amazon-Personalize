@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Model\Training;
 
 use Aws\Exception\AwsException;
@@ -60,7 +61,7 @@ class Wizard
         $this->infoLogger = $infoLogger;
         $this->errorLogger = $errorLogger;
     }
-    
+
     public function execute()
     {
         $this->wizardTracking->initStepsTable();
@@ -88,8 +89,8 @@ class Wizard
 
             $generator = $this->interactionGenerator->generateCsv();
             $interactionRtn = $this->nameConfig->saveName("interactionUserFile", $generator->getFilePath());
-           // if( $generator->checkActualFileCount() < 1001 ) {
-           // }
+            // if( $generator->checkActualFileCount() < 1001 ) {
+            // }
 
             $intTotal = $generator->getItemCount();
             $this->nameConfig->saveConfigSetting("awsp_settings/awsp_general/file-interactions-count", $intTotal);
@@ -101,7 +102,6 @@ class Wizard
                 $this->setStepError('create_csv_files', "Interaction file error: You have $mssg_total interactions--you need at least 1000 to train your model");
                 $this->nameConfig->saveConfigSetting("awsp_settings/awsp_general/file-interactions-count", $mssg_total);
             }
-
         } catch (AwsException $e) {
             $this->setStepError('create_csv_files', $e->getMessage());
         } catch (\Exception $e) {
@@ -109,7 +109,7 @@ class Wizard
         }
         return [];
     }
-    
+
     public function createS3Bucket()
     {
         $result = false;
@@ -145,7 +145,7 @@ class Wizard
             $this->setStepError('create_schemas', $e->getMessage());
         }
     }
-    
+
     public function createDatasetGroup()
     {
         try {
@@ -156,7 +156,7 @@ class Wizard
             $this->setStepError('create_dataset_group', $e->getMessage());
         }
     }
-    
+
     public function createDatasets()
     {
         try {
@@ -167,7 +167,7 @@ class Wizard
             $this->setStepError('create_datasets', $e->getMessage());
         }
     }
-    
+
     public function createImportJobs()
     {
         try {
@@ -178,7 +178,7 @@ class Wizard
             $this->setStepError('create_import_jobs', $e->getMessage());
         }
     }
-    
+
     public function createSolution()
     {
         try {
@@ -189,7 +189,7 @@ class Wizard
             $this->setStepError('create_solution', $e->getMessage());
         }
     }
-    
+
     public function createSolutionVersion()
     {
         try {
@@ -200,7 +200,7 @@ class Wizard
             $this->setStepError('create_solution_version', $e->getMessage());
         }
     }
-    
+
     public function createCampaign()
     {
         $this->infoLogger->info("\nWizardTracking ) createCampaign() called");
@@ -219,7 +219,7 @@ class Wizard
             }
         }
     }
-    
+
     public function createEventTracker()
     {
         if ($tracker = $this->eventTracker->createEventTracker() === true) {

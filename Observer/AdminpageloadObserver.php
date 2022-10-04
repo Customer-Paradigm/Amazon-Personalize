@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
@@ -16,6 +17,6 @@ class AdminpageloadObserver implements ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-	    $this->awsHelper->populateEc2CheckVal();
+        $this->awsHelper->populateEc2CheckVal();
     }
 }

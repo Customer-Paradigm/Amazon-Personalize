@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Api\Personalize;
 
 interface EventsClientInterface

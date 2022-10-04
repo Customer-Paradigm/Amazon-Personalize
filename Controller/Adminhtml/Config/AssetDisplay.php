@@ -1,7 +1,7 @@
 <?php
- 
+
 namespace CustomerParadigm\AmazonPersonalize\Controller\Adminhtml\Config;
- 
+
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
 use CustomerParadigm\AmazonPersonalize\Model\Asset;
- 
+
 class AssetDisplay extends Action
 {
     protected $resultJsonFactory;
@@ -17,7 +17,7 @@ class AssetDisplay extends Action
     protected $helper;
     protected $wizardTracking;
     protected $asset;
- 
+
     /**
      * @param Context $context
      * @param JsonFactory $resultJsonFactory
@@ -40,7 +40,7 @@ class AssetDisplay extends Action
         $this->asset = $asset;
         parent::__construct($context);
     }
- 
+
     /**
      * @return \Magento\Framework\Controller\Result\Json
      */
@@ -60,8 +60,8 @@ class AssetDisplay extends Action
         $result->setData($data);
         return $result;
     }
- 
- 
+
+
     protected function _isAllowed()
     {
         return $this->_authorization->isAllowed('CustomerParadigm_AmazonPersonalize::config');

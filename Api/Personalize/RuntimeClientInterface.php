@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Api\Personalize;
 
 interface RuntimeClientInterface
@@ -11,7 +12,7 @@ interface RuntimeClientInterface
      * @return string (JSON)
      */
     public function getRecommendations($campaignArn, $userId = null, $itemId = null);
-    
+
     /**
      * @api
      * @param string $campaignArn

@@ -115,7 +115,6 @@ class StepsReset extends PersonalizeBase
 
     public function resettableAssetExists($name, $arn)
     {
-
         $this->infoLogger->info("\nresettableAssetExists: $name, $arn");
         $ucname = ucfirst($name);
         $lcname = lcfirst($name);
@@ -125,11 +124,10 @@ class StepsReset extends PersonalizeBase
         }
         $fname = 'list' . $ucname . 's';
         $info = $this->personalizeClient->{$fname}(['maxResults'=>100]);
-                $this->infoLogger->info("\nresettableAssetssetExists key: " . $lcname.'s');
+        $this->infoLogger->info("\nresettableAssetssetExists key: " . $lcname.'s');
         foreach ($info[$lcname.'s'] as $item) {
-
             if (array_key_exists($lcname."Arn", $item) && $item[$lcname."Arn"] == $arn) {
-                  $this->infoLogger->info("\n$arn exists on aws");
+                $this->infoLogger->info("\n$arn exists on aws");
                 $rtn = true;
                 break;
             }
@@ -139,22 +137,22 @@ class StepsReset extends PersonalizeBase
 
     public function deleteAsset($name, $arn)
     {
-	    $this->infoLogger->info("\nDelete asset: $name, $arn");
+        $this->infoLogger->info("\nDelete asset: $name, $arn");
 
-	    $ucname = ucfirst($name);
-	    $lcname = lcfirst($name);
-	    $fname = 'delete' . $ucname . 'Async';
-	    try {
-		    if ($this->resettableAssetExists($name, $arn)) {
-			    $result = $this->personalizeClient->{$fname}([
-				    $lcname . 'Arn' => $arn,
-			    ])->wait();
-			    $this->infoLogger->info("\nDelete asset result: " . print_r($result, true));
-		    }
-	    } catch (\Exception $e) {
-		    $this->errorLogger->error("\n------------deleteAsset() : \n");
-		    $this->errorLogger->error($e->getMessage());
-	    }
+        $ucname = ucfirst($name);
+        $lcname = lcfirst($name);
+        $fname = 'delete' . $ucname . 'Async';
+        try {
+            if ($this->resettableAssetExists($name, $arn)) {
+                $result = $this->personalizeClient->{$fname}([
+                    $lcname . 'Arn' => $arn,
+                ])->wait();
+                $this->infoLogger->info("\nDelete asset result: " . print_r($result, true));
+            }
+        } catch (\Exception $e) {
+            $this->errorLogger->error("\n------------deleteAsset() : \n");
+            $this->errorLogger->error($e->getMessage());
+        }
     }
 
     public function deleteS3Bucket($array)

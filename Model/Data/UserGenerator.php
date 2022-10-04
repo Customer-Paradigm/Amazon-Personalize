@@ -2,8 +2,8 @@
 
 namespace CustomerParadigm\AmazonPersonalize\Model\Data;
 
-use \Magento\Customer\Model\ResourceModel\Customer\CollectionFactory;
-use \Magento\Customer\Api\GroupRepositoryInterface;
+use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory;
+use Magento\Customer\Api\GroupRepositoryInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Filesystem\File\WriteFactory;
@@ -79,15 +79,15 @@ class UserGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
             $city = $this->parseNullData($shipAddress->getCity());
             $state = $this->parseNullData($shipAddress->getRegion());
             $postcode = $this->parseNullData($shipAddress->getPostcode());
-/*
-            $street_array = $shipAddress->getStreet();
-            if (!empty($street_array)) {
-                $street = "";
-                foreach($street_array as $item) {
-                    $street .= $item;
-                }
-            }
-*/
+            /*
+                        $street_array = $shipAddress->getStreet();
+                        if (!empty($street_array)) {
+                            $street = "";
+                            foreach($street_array as $item) {
+                                $street .= $item;
+                            }
+                        }
+            */
         }
 
         $data[] = $country;
@@ -114,7 +114,7 @@ class UserGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
 
         return $data;
     }
-    
+
     private function getPaddedUserDataFromCustomer($num, $customer)
     {
         $data = [];
@@ -133,9 +133,8 @@ class UserGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
         foreach ($customers as $customer) {
             $this->writer->writeCsv($this->getUserDataFromCustomer($customer));
         }
-    // pad customer csv file if fewer than 25 customers
+        // pad customer csv file if fewer than 25 customers
         while ($count < 25) {
-    
             foreach ($customers as $customer) {
                 $this->writer->writeCsv($this->getPaddedUserDataFromCustomer($count, $customer));
                 $count++;

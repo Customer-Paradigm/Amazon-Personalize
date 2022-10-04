@@ -7,7 +7,6 @@ use Magento\Widget\Block\BlockInterface;
 
 class Display extends \Magento\Catalog\Block\Product\AbstractProduct implements BlockInterface
 {
-
     protected $_template = "widget/recommendations.phtml";
     protected $customerSession;
     protected $pHelper;
@@ -40,7 +39,7 @@ class Display extends \Magento\Catalog\Block\Product\AbstractProduct implements 
     {
         $customer = $this->customerSession->create();
         $id = $customer->getId();
-        $id = empty($id) ? 'guest_user': $id;
+        $id = empty($id) ? 'guest_user' : $id;
         return $id;
     }
 
@@ -59,7 +58,7 @@ class Display extends \Magento\Catalog\Block\Product\AbstractProduct implements 
     {
         return $this->pHelper->canDisplay();
     }
-    
+
     public function canDisplay()
     {
         $display = true;

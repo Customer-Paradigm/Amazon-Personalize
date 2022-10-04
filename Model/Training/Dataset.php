@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Model\Training;
 
 use Aws\Personalize\PersonalizeClient;
@@ -28,22 +29,22 @@ class Dataset extends PersonalizeBase
         $this->usersDatasetName = $this->nameConfig->buildName('users-dataset');
         $this->itemsDatasetName = $this->nameConfig->buildName('items-dataset');
         $this->interactionsDatasetName = $this->nameConfig->buildName('interactions-dataset');
-	$this->usersDatasetArn = $this->nameConfig->buildArn('dataset', $this->datasetGroupName) . "/USERS";
-	$this->itemsDatasetArn = $this->nameConfig->buildArn('dataset', $this->datasetGroupName) . "/ITEMS";
+        $this->usersDatasetArn = $this->nameConfig->buildArn('dataset', $this->datasetGroupName) . "/USERS";
+        $this->itemsDatasetArn = $this->nameConfig->buildArn('dataset', $this->datasetGroupName) . "/ITEMS";
         $this->interactionsDatasetArn = $this->nameConfig->buildArn('dataset', $this->datasetGroupName) . "/INTERACTIONS";
 
-	$this->usersSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/usersSchemaName');
-	if(empty($this->usersSchemaName)) {
-		$this->usersSchemaName = $this->nameConfig->buildName('users-schema');
-	}
+        $this->usersSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/usersSchemaName');
+        if (empty($this->usersSchemaName)) {
+            $this->usersSchemaName = $this->nameConfig->buildName('users-schema');
+        }
         $this->itemsSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/itemsSchemaName');
-	if(empty($this->itemsSchemaName)) {
-        	$this->itemsSchemaName = $this->nameConfig->buildName('items-schema');
-	}
+        if (empty($this->itemsSchemaName)) {
+            $this->itemsSchemaName = $this->nameConfig->buildName('items-schema');
+        }
         $this->interactionsSchemaName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/interactionsSchemaName');
-	if(empty($this->interactionsSchemaName)) {
-        	$this->interactionsSchemaName = $this->nameConfig->buildName('interactions-schema');
-	}
+        if (empty($this->interactionsSchemaName)) {
+            $this->interactionsSchemaName = $this->nameConfig->buildName('interactions-schema');
+        }
 
         $this->usersSchemaArn = $this->nameConfig->buildArn('schema', $this->usersSchemaName);
         $this->itemsSchemaArn = $this->nameConfig->buildArn('schema', $this->itemsSchemaName);
@@ -53,27 +54,27 @@ class Dataset extends PersonalizeBase
     public function getStatus()
     {
         $checklist = [];
-                
+
         if ($rtn = $this->datasetExists($this->usersDatasetName)) {
-             $checklist[] = $rtn;
+            $checklist[] = $rtn;
         }
         if ($rtn = $this->datasetExists($this->itemsDatasetName)) {
-             $checklist[] = $rtn;
+            $checklist[] = $rtn;
         }
         if ($rtn = $this->datasetExists($this->interactionsDatasetName)) {
-             $checklist[] = $rtn;
+            $checklist[] = $rtn;
         }
 
         switch (true) {
             case (count($checklist) == 3):
                 return 'complete';
-            break;
+                break;
             case (count($checklist) == 0):
                 return 'not started';
-            break;
+                break;
             case (count($checklist) > 0 && count($checklist) < 3):
                 return 'in progress';
-            break;
+                break;
             default:
                 return  'not defined';
         }
@@ -110,16 +111,16 @@ class Dataset extends PersonalizeBase
         }
 
         try {
-		if (! $this->checkAssetCreatedAndSync('interactions', 'Dataset', $this->interactionsDatasetName, $this->interactionsDatasetArn)) {
+            if (! $this->checkAssetCreatedAndSync('interactions', 'Dataset', $this->interactionsDatasetName, $this->interactionsDatasetArn)) {
                 $result = $this->personalizeClient->{$this->apiCreate}([
                     'name' => $this->interactionsDatasetName,
                     'schemaArn' => $this->interactionsSchemaArn,
                     'datasetGroupArn' => $this->datasetGroupArn,
-		    'datasetType' => 'Interactions'])->wait();
+            'datasetType' => 'Interactions'])->wait();
                 $this->nameConfig->saveName('interactionsDatasetName', $this->interactionsDatasetName);
                 $this->nameConfig->saveArn('interactionsDatasetArn', $result['datasetArn']);
             }
-	} catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->errorLogger->error("\ncreate_interactions_dataset error: " . $e->getMessage());
         }
     }
@@ -134,7 +135,7 @@ class Dataset extends PersonalizeBase
                 }
             }
         } catch (Exception $e) {
-		$this->errorLogger->error("\ndatasetExists() error. Message: " . print_r($e->getMessage(), true));
+            $this->errorLogger->error("\ndatasetExists() error. Message: " . print_r($e->getMessage(), true));
         }
         return false;
     }

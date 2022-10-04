@@ -12,14 +12,13 @@ use Magento\Framework\App\Config\Storage\WriterInterface;
 use CustomerParadigm\AmazonPersonalize\Helper\Aws;
 use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
 use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
-use \Magento\Framework\App\ResourceConnection;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Translate\Inline\StateInterface;
 use Magento\Framework\Mail\Template\TransportBuilder;
 
 class Data extends AbstractHelper
 {
-
     protected $optionFactory;
     protected $cacheTypeList;
     protected $cacheFrontendPool;
@@ -113,16 +112,16 @@ class Data extends AbstractHelper
 
     public function canDisplay()
     {
-	return
-	    $this->moduleEnabled()
-            && $this->scopeConfig->isSetFlag('awsp_settings/awsp_general/campaign_exists', $this->scope);
+        return
+            $this->moduleEnabled()
+                && $this->scopeConfig->isSetFlag('awsp_settings/awsp_general/campaign_exists', $this->scope);
     }
-    
+
     public function canDisplayAdmin()
     {
         $rtn = false;
         $creds_saved = $this->scopeConfig->isSetFlag('awsp_settings/awsp_general/access_key', $this->scope);
-	$is_ec2 = $this->awsHelper->isEc2Install();
+        $is_ec2 = $this->awsHelper->isEc2Install();
         if ($is_ec2) {
             if ($this->moduleEnabled()) {
                 $rtn = true;
@@ -199,10 +198,10 @@ class Data extends AbstractHelper
         );
         return $rtn;
     }
-    
+
     public function setConfigValue($config_path, $value)
     {
-         $this->configWriter->save($config_path, $value, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $scopeId = 0);
+        $this->configWriter->save($config_path, $value, $scope = ScopeConfigInterface::SCOPE_TYPE_DEFAULT, $scopeId = 0);
     }
 
     public function setStepError($step, $message)
@@ -223,7 +222,7 @@ class Data extends AbstractHelper
         $fromEmail = 'owner@domain.com';  // sender Email id
         $fromName = 'Admin';             // sender Name
         $toEmail = 'scott.renick@customerparadigm.com'; // receiver email id
- 
+
         try {
             // template variables pass here
             $templateVars = [
@@ -231,10 +230,10 @@ class Data extends AbstractHelper
                 'msg1' => 'test1'
             ];
             $storeId = $this->storeManager->getStore()->getId();
- 
+
             $from = ['email' => $fromEmail, 'name' => $fromName];
             $this->inlineTranslation->suspend();
- 
+
             $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
             $templateOptions = [
                 'area' => \Magento\Framework\App\Area::AREA_FRONTEND,

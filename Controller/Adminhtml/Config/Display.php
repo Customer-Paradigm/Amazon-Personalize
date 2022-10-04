@@ -1,22 +1,21 @@
 <?php
- 
+
 namespace CustomerParadigm\AmazonPersonalize\Controller\Adminhtml\Config;
- 
+
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Psr\Log\LoggerInterface;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
- 
+
 class Display extends Action
 {
- 
     protected $resultJsonFactory;
     protected $loggerInterface;
     protected $helper;
     protected $wizardTracking;
- 
+
     /**
      * @param Context $context
      * @param JsonFactory $resultJsonFactory
@@ -37,7 +36,7 @@ class Display extends Action
         $this->wizardTracking = $wizardTracking;
         parent::__construct($context);
     }
- 
+
     /**
      * @return \Magento\Framework\Controller\Result\Json
      */
@@ -51,12 +50,10 @@ class Display extends Action
                 $rtn['mssg'] = 'License or AWS credentials are incorrect';
                 $rtn['state'] = 'error';
             } else {
-
                 $rtn['steps'] = $this->wizardTracking->displayProgress();
                 $rtn['mssg'] = '';
                 $rtn['state'] = 'success';
             }
-
         } catch (\Exception $e) {
             $this->loggerInterface->critical($e);
             $rtn['steps'] = $this->wizardTracking->displayProgress();
@@ -71,8 +68,8 @@ class Display extends Action
         $result->setData(['success' => $success, 'mssg' => "$mssg", 'steps'=>$steps]);
         return $result;
     }
- 
- 
+
+
     protected function _isAllowed()
     {
         return $this->_authorization->isAllowed('CustomerParadigm_AmazonPersonalize::config');

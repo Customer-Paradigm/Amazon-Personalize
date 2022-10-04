@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Api\Personalize;
 
 use Aws\PersonalizeEvents\PersonalizeEventsClient;
@@ -6,7 +7,6 @@ use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 
 class EventsClient implements EventsClientInterface
 {
-    
     protected $pEventsClient;
     protected $pConfig;
 
@@ -49,7 +49,7 @@ Content-type: application/json
    "userId": "string"
 }
 */
- 
+
     /**
      * @api
      * @param array $eventlist
@@ -57,7 +57,7 @@ Content-type: application/json
     public function putEvents($eventlist)
     {
         if ($this->pConfig->isEnabled()) {
-                $this->pEventsClient->putEvents($eventlist);
+            $this->pEventsClient->putEvents($eventlist);
         }
     }
 }

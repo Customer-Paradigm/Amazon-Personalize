@@ -3,6 +3,7 @@
  * * @author Customer Paradigm
  * * @copyright Copyright (c) 2020 Customer Paradigm (https://www.customerparadigm.com/)
  **/
+
 namespace CustomerParadigm\AmazonPersonalize\Logger;
 
 use Magento\Framework\Filesystem\DriverInterface;
@@ -15,7 +16,6 @@ use Magento\Framework\Filesystem\DirectoryList;
  *   */
 class ErrorHandler extends BaseHandler
 {
-
     /**
      * * Logging level
      * *
@@ -26,7 +26,7 @@ class ErrorHandler extends BaseHandler
     protected $dirlist;
 
     public function __construct(
-	DirectoryList $dirlist,
+        DirectoryList $dirlist,
         DriverInterface $filesystem,
         $filePath = null,
         $fileName = null,

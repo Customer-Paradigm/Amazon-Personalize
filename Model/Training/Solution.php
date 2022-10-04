@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Model\Training;
 
 use Aws\Personalize\PersonalizeClient;
@@ -21,7 +22,7 @@ class Solution extends PersonalizeBase
 
         $this->solutionVersionName = $this->nameConfig->buildName('solution-version');
         $this->recipeArn = 'arn:aws:personalize:::recipe/aws-user-personalization';
-                $this->pHelper = $pHelper;
+        $this->pHelper = $pHelper;
     }
 
     public function createSolution()
@@ -45,7 +46,6 @@ class Solution extends PersonalizeBase
                 $this->nameConfig->saveName('solutionName', $this->solutionName);
                 $this->nameConfig->saveArn('solutionArn', $result['solutionArn']);
             }
-
         } catch (\Exception $e) {
             $this->errorLogger->error("\ncreate solution error : \n" . $e->getMessage());
             $this->pHelper->setStepError('create_solution', $e->getMessage());
@@ -81,7 +81,7 @@ class Solution extends PersonalizeBase
                 $rtn = 'in progress';
                 break;
             case 'CREATE FAILED':
-                      $this->pHelper->setStepError('create_solution', $rslt['solution']['failureReason']);
+                $this->pHelper->setStepError('create_solution', $rslt['solution']['failureReason']);
                 $rtn = 'error';
                 break;
             default:

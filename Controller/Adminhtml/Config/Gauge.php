@@ -1,21 +1,21 @@
 <?php
- 
+
 namespace CustomerParadigm\AmazonPersonalize\Controller\Adminhtml\Config;
- 
+
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Psr\Log\LoggerInterface;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
- 
+
 class Gauge extends Action
 {
     protected $resultJsonFactory;
     protected $loggerInterface;
     protected $helper;
     protected $wizardTracking;
- 
+
     /**
      * @param Context $context
      * @param JsonFactory $resultJsonFactory
@@ -36,7 +36,7 @@ class Gauge extends Action
         $this->wizardTracking = $wizardTracking;
         parent::__construct($context);
     }
- 
+
     /**
      * @return \Magento\Framework\Controller\Result\Json
      */
@@ -55,8 +55,8 @@ class Gauge extends Action
         }
         return $result;
     }
- 
- 
+
+
     protected function _isAllowed()
     {
         return $this->_authorization->isAllowed('CustomerParadigm_AmazonPersonalize::config');
