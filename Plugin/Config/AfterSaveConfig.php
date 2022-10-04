@@ -10,7 +10,6 @@ use CustomerParadigm\AmazonPersonalize\Model\AbTracking;
 use CustomerParadigm\AmazonPersonalize\Model\Training\WizardTracking;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 use CustomerParadigm\AmazonPersonalize\Helper\Db;
-use CustomerParadigm\AmazonPersonalize\Model\Calc\Calculate;
 use CustomerParadigm\AmazonPersonalize\Helper\Aws;
 use CustomerParadigm\AmazonPersonalize\Api\AwsSdkClient;
 
@@ -49,12 +48,6 @@ class AfterSaveConfig
     /**
      * @var CustomerParadigm\AmazonPersonalize\Helper\Db
      */
-    protected $dbHelper;
-
-    /**
-     * @var CustomerParadigm\AmazonPersonalize\Model\Calc\Calculate
-     */
-    protected $calc;
     
     protected $awsHelper;
     
@@ -72,9 +65,7 @@ class AfterSaveConfig
         PersonalizeConfig $pConfig,
         AbTracking $abTracking,
         WizardTracking $wizardTracking,
-        Db $dbHelper,
         Aws $awsHelper,
-        Calculate $calc,
         AwsSdkClient $sdkClient
     ) {
         $this->logger = $logger;
@@ -83,9 +74,7 @@ class AfterSaveConfig
         $this->pConfig = $pConfig;
         $this->abTracking = $abTracking;
         $this->wizardTracking = $wizardTracking;
-        $this->dbHelper = $dbHelper;
         $this->awsHelper = $awsHelper;
-        $this->calc = $calc;
         $this->sdkClient = $sdkClient;
         $this->stsClient = $this->sdkClient->getClient('sts');
     }
@@ -94,10 +83,6 @@ class AfterSaveConfig
     {
         $section = $subject->getSection();
         if ($section === 'awsp_settings') {
-
-            if (!$this->pConfig->getCalcInstalled()) {
-                $this->dbHelper->install();
-            }
 
             // If a/b testing percentage changed, clear a/b tracking table
             $last_ab_val = $this->pConfig->getLastAbPercent();
@@ -152,7 +137,6 @@ class AfterSaveConfig
                 $output = $this->shell->execute($cmd);
 
                 $this->pConfig->saveKeys($save_key, $save_secret);
-                $this->calc->setRule();
 
                 $procStatus =  $this->wizardTracking->getProcessStatus()['status'];
 

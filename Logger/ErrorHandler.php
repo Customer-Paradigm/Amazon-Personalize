@@ -47,7 +47,6 @@ class ErrorHandler extends BaseHandler
      */
     public function write(array $record): void
     {
-        $this->error->writeError($record);
         parent::write($record);
     }
 }

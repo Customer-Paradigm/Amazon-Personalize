@@ -22,18 +22,15 @@ class InfoHandler extends BaseHandler
 	 * * @var int
 	 **/
 	protected $loggerType = MonologLogger::INFO;
-	protected $error;
 	protected $dirlist;
 
 	public function __construct(
 		DirectoryList $dirlist,
 		DriverInterface $filesystem,
 		$filePath = null,
-		$fileName = null,
-		\CustomerParadigm\AmazonPersonalize\Model\Error $error = null
+		$fileName = null
 	) {
 		$this->dirlist = $dirlist;
-		$this->error = $error;
 		$webroot = $this->dirlist->getRoot();
 		parent::__construct(
 			$filesystem,

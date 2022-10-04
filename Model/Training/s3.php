@@ -123,6 +123,8 @@ class s3
     public function checkBucketExists()
     {
         $buckets = $this->listS3Buckets();
+        $this->nameConfig->getLogger('info')->info("\nCurrent bucket name: \n" . print_r($this->s3BucketName, true));
+        $this->nameConfig->getLogger('info')->info("\nS3Buckets: \n" . print_r($buckets, true));
         foreach ($buckets['Buckets'] as $bucket) {
             if ($bucket['Name'] == $this->s3BucketName) {
                 return true;

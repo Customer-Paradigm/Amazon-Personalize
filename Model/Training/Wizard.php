@@ -232,7 +232,7 @@ class Wizard
 
     public function checkStatus($step_name)
     {
-            $this->infoLogger->info("\nWizardTracking runSteps() checkStatus step: " . $step_name);
+        $this->infoLogger->info("\nWizardTracking runSteps() checkStatus step: " . $step_name);
         $rtn = null;
         switch ($step_name) {
             case 'create_personalize_s3_role':

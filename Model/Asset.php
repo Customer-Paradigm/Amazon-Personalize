@@ -71,10 +71,7 @@ class Asset extends \Magento\Framework\Model\AbstractModel
         $coll->addFieldToFilter('path', ['nlike' => '%css_%']);
         $coll->addFieldToFilter('path', ['nlike' => '%rule_%']);
         $coll->addFieldToFilter('path', ['nlike' => '%crontab%']);
-        $coll->addFieldToFilter('path', ['nlike' => '%calc_error']);
-        $coll->addFieldToFilter('path', ['nlike' => '%calc_coupon']);
         $coll->addFieldToFilter('path', ['nlike' => '%home_dir']);
-//    $coll->addFieldToFilter('path', ['nlike' => '%aws_acct']);
         $coll->addFieldToFilter('path', ['nlike' => '%log_display']);
         $coll->addFieldToFilter('path', ['nlike' => '%last_val']);
         return $coll;
@@ -110,23 +107,21 @@ class Asset extends \Magento\Framework\Model\AbstractModel
     
     protected function getAssetDisplayData($collection)
     {
-        $rtn = [];
-//        $rtn[] = ['name'=>"Name",'path'=>"Config Path",'value'=>"Value",'updated_at'=>"Last Updated"];
-        foreach ($collection as $item) {
-                $data = $item->getData();
-            //$updated_at = '';
-        // for Magento 2.3.x backward compatibility
-            if (array_key_exists('upated_at', $data)) {
-             //   $updated_at = $data['updated_at'];
-            }
-                $rtn[] = [
-                'name' => $this->mapAssetDisplayName($data['path']),
-                'path' => $data['path'],
-                'value' => $data['value'],
-             //   'updated_at' => $updated_at
-                ];
-        }
-        return $rtn;
+	    $rtn = [];
+	    foreach ($collection as $item) {
+		    $data = $item->getData();
+		    $updated_at = '';
+		    if (array_key_exists('upated_at', $data)) {
+			$updated_at = $data['updated_at'];
+		    }
+		    $rtn[] = [
+			    'name' => $this->mapAssetDisplayName($data['path']),
+			    'path' => $data['path'],
+			    'value' => $data['value'],
+			    'updated_at' => $updated_at
+		    ];
+	    }
+	    return $rtn;
     }
     
     protected function mapSettingDisplayName($path)
@@ -134,9 +129,6 @@ class Asset extends \Magento\Framework\Model\AbstractModel
         $rtn = '';
         $origName = $this->getNamePathPart($path);
         switch ($origName) {
-            case "calc_active":
-                $rtn = "License Active";
-                break;
             case "enable":
                 $rtn = "Module Enabled";
                 break;

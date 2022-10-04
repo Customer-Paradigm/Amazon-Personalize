@@ -169,8 +169,10 @@ class PersonalizeConfig
             'general/store_information/name',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $this->storeId
-    );
-        $configname = $this->awsCleanName($configname);
+    	);
+	if( ! empty($configname) ) {
+	    $configname = $this->awsCleanName($configname);
+	}
         $s3name = $this->scopeConfig->getValue(
             'awsp_wizard/data_type_name/s3BucketName',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
@@ -373,26 +375,6 @@ class PersonalizeConfig
         return $output;
     }
     
-    public function getCalcInstalled()
-    {
-        $coupon = $this->scopeConfig->getValue(
-            'awsp_settings/awsp_general/calc_coupon',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-            $this->storeId
-        );
-        $rule = $this->scopeConfig->getValue(
-            'awsp_settings/awsp_general/rule_key',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-            $this->storeId
-        );
-        $table = $this->scopeConfig->getValue(
-            'catalogrule_product_history',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-            $this->storeId
-        );
-        return $coupon && $rule && $table;
-    }
-
     public function getLogger($type = 'error')
     {
         $rtn = $this->errorLogger;

@@ -9,7 +9,6 @@ use Magento\Framework\App\Cache\TypeListInterface;
 use Magento\Framework\App\Cache\Frontend\Pool;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Config\Storage\WriterInterface;
-use CustomerParadigm\AmazonPersonalize\Helper\Db;
 use CustomerParadigm\AmazonPersonalize\Helper\Aws;
 use CustomerParadigm\AmazonPersonalize\Logger\InfoLogger;
 use CustomerParadigm\AmazonPersonalize\Logger\ErrorLogger;
@@ -42,7 +41,6 @@ class Data extends AbstractHelper
         TypeListInterface $cacheTypeList,
         Pool $cacheFrontendPool,
         ResourceConnection $resource,
-        Db $db,
         Aws $awsHelper,
         InfoLogger $infoLogger,
         ErrorLogger $errorLogger,
@@ -57,7 +55,6 @@ class Data extends AbstractHelper
         $this->cacheFrontendPool = $cacheFrontendPool;
         $this->resource = $resource;
         $this->connection = $this->resource->getConnection();
-        $this->db = $db;
         $this->awsHelper = $awsHelper;
         $this->infoLogger = $infoLogger;
         $this->errorLogger = $errorLogger;
@@ -118,9 +115,7 @@ class Data extends AbstractHelper
     {
 	return
 	    $this->moduleEnabled()
-	    && $this->calcEnabled()
-            && $this->scopeConfig->isSetFlag('awsp_settings/awsp_general/campaign_exists', $this->scope)
-            && $this->db->enabled();
+            && $this->scopeConfig->isSetFlag('awsp_settings/awsp_general/campaign_exists', $this->scope);
     }
     
     public function canDisplayAdmin()
@@ -139,11 +134,6 @@ class Data extends AbstractHelper
         }
 
         return $rtn;
-    }
-
-    public function calcEnabled()
-    {
-	    return $this->db->enabled();
     }
 
     public function getProductOptionsPriceRange($product)

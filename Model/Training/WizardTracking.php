@@ -120,7 +120,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                               $this->errorLogger->error("WizardTracking runSteps() non-exeption error at step:  " . $step);
                               $this->errorLogger->error("WizardTracking runSteps() error message:  " . $rtn['mssg']);
                               $this->setStepError($step, $rtn['mssg']);
-                   // $this->infoLogger->info("WizardTracking runSteps() error status -- try $step again");
+                   	      // $this->infoLogger->info("WizardTracking runSteps() error status -- try $step again");
                               // return $this->tryAgain($step);
                 case 'step ready':
                 case 'not started':
@@ -218,7 +218,9 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                 $state = 'in progress';
             } elseif ($step['is_completed']) {
                 $state = 'complete';
-            } elseif ($step['step_name'] == 'create_csv_files' && strpos($step['error'], 'you need at least 1000') !== false) {
+	    } elseif ($step['step_name'] == 'create_csv_files' 
+		    && $has_error
+		    && strpos($step['error'], 'you need at least 1000') !== false) {
                 $state = 'paused';
             } else {
                 $state = 'not started';
@@ -237,7 +239,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
     public function getProcessStatus()
     {
         $rtn = [];
-        $steps = $this->getStepInfo();
+	$steps = $this->getStepInfo();
         if (empty($steps)) {
             $rtn = ['step_name'=>'create_s3_bucket', 'status'=>'notStarted'];
         }
@@ -264,7 +266,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
             }
             // Catch holes in logic
             $rtn = ['step_name'=>$step['step_name'], 'status'=>'unknown'];
-        }
+	}
         return $rtn;
     }
 
@@ -299,14 +301,9 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         return ['step'=>'','state'=>'finished', 'mssg'=>''];
     }
 
-    public function displayProgress()
-    {
+    public function displayProgress() {
         if (! $this->pHelper->canDisplayAdmin()) {
-            if ($this->awsHelper->isEc2Install()) {
-                return ['steps'=>[], 'license'=>false, 'stat'=>'error','mssg'=>'Please enter and save your license key to enable Campaign Setup Wizard'];
-            } else {
-                return ['steps'=>[], 'license'=>false, 'stat'=>'error','mssg'=>'Please enter and save your license key and AWS credentials to enable Campaign Setup Wizard'];
-            }
+            return ['steps'=>[], 'license'=>false, 'stat'=>'error','mssg'=>'Please enter and save your AWS credentials to enable Campaign Setup Wizard'];
         }
 
         $summary = $this->getStepStateSummary();
