@@ -5,7 +5,6 @@
  * @package CustomerParadigm_AmazonPersonalize
  */
 
-
 namespace CustomerParadigm\AmazonPersonalize\Block\Adminhtml\Config;
 
 use Magento\Framework\Data\Form\Element\AbstractElement;

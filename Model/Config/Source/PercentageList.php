@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Model\Config\Source;
 
 class PercentageList implements \Magento\Framework\Option\ArrayInterface

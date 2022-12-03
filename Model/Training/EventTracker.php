@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Model\Training;
 
 use Aws\Personalize\PersonalizeClient;
@@ -81,7 +82,6 @@ class EventTracker extends PersonalizeBase
             default:
                 $rtn = 'not started';
                 break;
-
         }
 
         return $rtn;

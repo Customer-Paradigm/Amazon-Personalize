@@ -7,7 +7,7 @@ use Aws\PersonalizeRuntime\PersonalizeRuntimeClient;
 
 class Result extends \Magento\Framework\Model\AbstractModel
 {
-    const CACHE_TAG = 'customerparadigm_amazonpersonalize_result';
+    public const CACHE_TAG = 'customerparadigm_amazonpersonalize_result';
 
     protected $rtClient;
     protected $_cacheTag = 'customerparadigm_amazonpersonalize_result';
@@ -83,7 +83,7 @@ class Result extends \Magento\Framework\Model\AbstractModel
         $this->save();
         return $rslt['itemList'];
     }
-    
+
     public function updateData($saved)
     {
         $user_id = $saved->getUserId();
@@ -92,16 +92,16 @@ class Result extends \Magento\Framework\Model\AbstractModel
         $target_time = $last_updated->modify('+15 minutes');
         $current_time = $this->dateTime->gmtDate('Y-m-d H:i:s');
         $current = date_create($current_time);
-    
+
         if ($current < $target_time) {
             return json_decode($saved->getItemList(), true);
         }
-    
+
         $rslt = $this->rtClient->getRecommendations($this->campaignArn, $user_id);
         if (empty($rslt)) {
             return json_decode($saved->getItemList(), true);
         }
-       
+
         $rslt = $rslt->toArray();
         $item_list = json_encode($rslt['itemList']);
         $predicted = $this->load($saved->getRecommendationId());

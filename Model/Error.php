@@ -47,7 +47,7 @@ class Error extends \Magento\Framework\Model\AbstractModel
         ]);
         $this->save();
     }
-    
+
     public function getAllErrors()
     {
         $rtn = [];

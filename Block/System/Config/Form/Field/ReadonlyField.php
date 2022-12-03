@@ -1,11 +1,11 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Block\System\Config\Form\Field;
 
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
-class Readonly extends \Magento\Config\Block\System\Config\Form\Field
+class ReadonlyField extends \Magento\Config\Block\System\Config\Form\Field
 {
-
     protected function _getElementHtml(AbstractElement $element)
     {
         $element->setDisabled('disabled');

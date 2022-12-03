@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Model\Training;
 
 use Aws\Personalize\PersonalizeClient;
@@ -31,34 +32,34 @@ class Schema extends PersonalizeBase
         $this->usersSchemaArn = $this->nameConfig->buildArn('schema', $this->usersSchemaName);
         $this->itemsSchemaArn = $this->nameConfig->buildArn('schema', $this->itemsSchemaName);
         $this->interactionsSchemaArn = $this->nameConfig->buildArn('schema', $this->interactionsSchemaName);
-	$this->usersConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/usersSchemaName');
-	$this->itemsConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/itemsSchemaName');
-	$this->interactionsConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/interactionsSchemaName');
-}
+        $this->usersConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/usersSchemaName');
+        $this->itemsConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/itemsSchemaName');
+        $this->interactionsConfigName = $this->nameConfig->getConfigVal('awsp_wizard/data_type_name/interactionsSchemaName');
+    }
 
     public function getStatus()
     {
         $checklist = [];
         if ($rtn = $this->schemaExists($this->usersSchemaName)) {
-                        $checklist[] = $rtn;
+            $checklist[] = $rtn;
         }
         if ($rtn = $this->schemaExists($this->itemsSchemaName)) {
-                        $checklist[] = $rtn;
+            $checklist[] = $rtn;
         }
         if ($rtn = $this->schemaExists($this->interactionsSchemaName)) {
-                        $checklist[] = $rtn;
+            $checklist[] = $rtn;
         }
 
         switch (true) {
             case (count($checklist) == 3):
                 return 'complete';
-            break;
+                break;
             case (count($checklist) == 0):
                 return 'not started';
-            break;
+                break;
             case (count($checklist) > 0 && count($checklist) < 3):
                 return 'in progress';
-            break;
+                break;
             default:
                 return  'not defined';
         }
@@ -66,7 +67,6 @@ class Schema extends PersonalizeBase
 
     public function createSchemas()
     {
-
         $schUser = '{
 		"type": "record",
 			"name": "Users",
@@ -163,44 +163,39 @@ class Schema extends PersonalizeBase
                 $this->nameConfig->saveName('usersSchemaName', $this->usersSchemaName);
                 $this->nameConfig->saveArn('usersSchemaArn', $this->usersSchemaArn);
             }
-
-
         } catch (\Exception $e) {
             $this->errorLogger->error("\ncreate users schema error: " . print_r($e->getMessage(), true));
         }
 
         try {
             if (! $this->checkAssetCreatedAndSync('items', 'Schema', $this->itemsSchemaName, $this->itemsSchemaArn)) {
-                 $result = $this->personalizeClient->{$this->apiCreate}([
-                         'name' => "$this->itemsSchemaName",
-                         'schema' => $schItem,
-                 ])->wait();
-                    $this->itemsSchemaArn = $result['schemaArn'];
-                   $this->nameConfig->saveName('itemsSchemaName', $this->itemsSchemaName);
-                   $this->nameConfig->saveArn('itemsSchemaArn', $this->itemsSchemaArn);
+                $result = $this->personalizeClient->{$this->apiCreate}([
+                        'name' => "$this->itemsSchemaName",
+                        'schema' => $schItem,
+                ])->wait();
+                $this->itemsSchemaArn = $result['schemaArn'];
+                $this->nameConfig->saveName('itemsSchemaName', $this->itemsSchemaName);
+                $this->nameConfig->saveArn('itemsSchemaArn', $this->itemsSchemaArn);
             }
-
-
         } catch (\Exception $e) {
             $this->errorLogger->error("\ncreate items schema error: " . print_r($e->getMessage(), true));
         }
 
         try {
             if (! $this->checkAssetCreatedAndSync('interactions', 'Schema', $this->interactionsSchemaName, $this->interactionsSchemaArn)) {
-                 $result = $this->personalizeClient->{$this->apiCreate}([
-                         'name' => "$this->interactionsSchemaName",
-                         'schema' => $schInt,
-                 ])->wait();
-                    $this->interactionsSchemaArn = $result['schemaArn'];
-                   $this->nameConfig->saveName('interactionsSchemaName', $this->interactionsSchemaName);
-                   $this->nameConfig->saveArn('interactionsSchemaArn', $this->interactionsSchemaArn);
+                $result = $this->personalizeClient->{$this->apiCreate}([
+                        'name' => "$this->interactionsSchemaName",
+                        'schema' => $schInt,
+                ])->wait();
+                $this->interactionsSchemaArn = $result['schemaArn'];
+                $this->nameConfig->saveName('interactionsSchemaName', $this->interactionsSchemaName);
+                $this->nameConfig->saveArn('interactionsSchemaArn', $this->interactionsSchemaArn);
             }
-
         } catch (\Exception $e) {
             $this->errorLogger->error("\ncreate interactions schema error: " . print_r($e->getMessage(), true));
         }
     }
-    
+
     public function schemaExists($schemaName)
     {
         return $this->assetExists('Schemas', $schemaName);

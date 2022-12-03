@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Override\View\Design\Theme;
 
 /**
@@ -35,7 +36,7 @@ class FlyweightFactory extends \Magento\Framework\View\Design\Theme\FlyweightFac
      */
     public function create($themeKey, $area = \Magento\Framework\View\DesignInterface::DEFAULT_AREA)
     {
-    // Bug fix: This module is looking for themeKey when Personalize functions are called via cron.
+        // Bug fix: This module is looking for themeKey when Personalize functions are called via cron.
         // There isn't one in that case, so this sets it to default '3' instead of throwing the error.
         if (!is_numeric($themeKey) && !is_string($themeKey)) {
             if ($area == 'crontab') {

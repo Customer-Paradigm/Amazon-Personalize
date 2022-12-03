@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Model\Training;
 
 use Aws\Personalize\PersonalizeClient;
@@ -69,7 +70,6 @@ class SolutionVersion extends PersonalizeBase
             default:
                 $rtn = 'not started';
                 break;
-
         }
 
         return $rtn;

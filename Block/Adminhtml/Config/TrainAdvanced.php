@@ -55,7 +55,7 @@ class TrainAdvanced extends Train
     {
         return $this->getUrl('cpaws/config/reset');
     }
-    
+
     /**
      * Return ajax url for reset campaign button
      *
@@ -65,7 +65,7 @@ class TrainAdvanced extends Train
     {
         return $this->getUrl('cpaws/config/resetcamp');
     }
-    
+
     /**
      * Return ajax url for resume progress button
      *
@@ -75,7 +75,7 @@ class TrainAdvanced extends Train
     {
         return $this->getUrl('cpaws/config/resetlicense');
     }
-    
+
     /**
      * Return ajax url for restart cron button
      *

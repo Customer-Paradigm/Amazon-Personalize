@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
@@ -27,7 +28,7 @@ class PageViewObserver implements ObserverInterface
 
     protected function _includedEvent($action)
     {
-       // $included = array("catalog_category_view", "catalog_product_view", "catalogsearch_result_index", "checkout_index_index");
+        // $included = array("catalog_category_view", "catalog_product_view", "catalogsearch_result_index", "checkout_index_index");
         $included = ["catalog_category_view", "catalog_product_view", "catalogsearch_result_index"];
         return in_array($action, $included);
     }

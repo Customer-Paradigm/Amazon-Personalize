@@ -4,7 +4,7 @@ namespace CustomerParadigm\AmazonPersonalize\Model;
 
 class AbTracking extends \Magento\Framework\Model\AbstractModel
 {
-    const CACHE_TAG = 'customerparadigm_amazonpersonalize_abtracking';
+    public const CACHE_TAG = 'customerparadigm_amazonpersonalize_abtracking';
     protected $_cacheTag = 'customerparadigm_amazonpersonalize_abtracking';
     protected $_eventPrefix = 'customerparadigm_amazonpersonalize_abtracking';
     protected $controlPercent;
@@ -52,7 +52,7 @@ class AbTracking extends \Magento\Framework\Model\AbstractModel
         $collection = $this->getCollection()
             ->addFieldToFilter('customer_session_id', $session_id);
         $item = $collection->getFirstItem();
-        
+
         // If session id hasn't been tracked, track it
         if (empty($item->getAbTrackingId())) {
             // save the opposite value of getIsControl
@@ -92,14 +92,14 @@ class AbTracking extends \Magento\Framework\Model\AbstractModel
         $this->setUsingPersonalize($is_personalize_user);
         $this->save();
     }
-    
+
     public function clearData()
     {
         $connection = $this->getResource()->getConnection();
         $tableName = $this->getResource()->getMainTable();
         $connection->truncateTable($tableName);
     }
-    
+
     public function pruneData()
     {
         $date = date("Y-m-d H:i:s", strtotime('-2 days'));

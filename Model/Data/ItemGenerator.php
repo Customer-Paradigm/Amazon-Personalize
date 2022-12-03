@@ -2,7 +2,7 @@
 
 namespace CustomerParadigm\AmazonPersonalize\Model\Data;
 
-use \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Filesystem\Driver\File;
 use Magento\Framework\Filesystem\File\WriteFactory;
@@ -91,7 +91,6 @@ class ItemGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Data\Abstr
         } catch (Exception $e) {
             $mssg = $e->getMessage();
             $this->errorLogger->error("Items Generator Processing error: $mssg");
-
         }
 
         return $this;

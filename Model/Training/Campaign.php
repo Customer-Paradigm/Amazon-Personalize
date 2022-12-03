@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Model\Training;
 
 use Aws\Personalize\PersonalizeClient;
@@ -37,7 +38,7 @@ class Campaign extends PersonalizeBase
         }
         return $result;
     }
-    
+
     public function updateCampaign()
     {
         $result = [];
@@ -94,7 +95,6 @@ class Campaign extends PersonalizeBase
             default:
                 $rtn = 'not started';
                 break;
-
         }
         return $rtn;
     }

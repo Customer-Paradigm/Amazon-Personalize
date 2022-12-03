@@ -4,7 +4,7 @@ namespace CustomerParadigm\AmazonPersonalize\Model;
 
 class InteractionCheck extends \Magento\Framework\Model\AbstractModel
 {
-    const CACHE_TAG = 'customerparadigm_amazonpersonalize_interactioncheck';
+    public const CACHE_TAG = 'customerparadigm_amazonpersonalize_interactioncheck';
     protected $_cacheTag = 'customerparadigm_amazonpersonalize_interactioncheck';
     protected $_eventPrefix = 'customerparadigm_amazonpersonalize_interactioncheck';
 
@@ -36,24 +36,24 @@ class InteractionCheck extends \Magento\Framework\Model\AbstractModel
 
     public function saveEvent($event)
     {
-            $user_id = $event["userId"];
+        $user_id = $event["userId"];
         $props = $event["eventList"][0]["properties"];
         $decode = json_decode($props);
         if (!empty($decode)) {
-                $item_id = $decode->itemId;
+            $item_id = $decode->itemId;
         } else { // json_decode choked on a string format, try another way
-                $arr = explode(',', $props);
-                $arr2 = explode(':', $arr[1]);
-                $item_id = $arr2[1];
+            $arr = explode(',', $props);
+            $arr2 = explode(':', $arr[1]);
+            $item_id = $arr2[1];
         }
-            $event_type = $event["eventList"][0]["eventType"];
-            $timestamp = $event["eventList"][0]["sentAt"];
-            $this->setUserId($user_id);
-            $this->setItemId($item_id);
-            $this->setEventType($event_type);
-            $this->setTimestamp($timestamp);
-            $rslt = $this->save();
-            return $rslt;
+        $event_type = $event["eventList"][0]["eventType"];
+        $timestamp = $event["eventList"][0]["sentAt"];
+        $this->setUserId($user_id);
+        $this->setItemId($item_id);
+        $this->setEventType($event_type);
+        $this->setTimestamp($timestamp);
+        $rslt = $this->save();
+        return $rslt;
     }
 
     public function clearData()

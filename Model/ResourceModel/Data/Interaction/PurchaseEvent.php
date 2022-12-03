@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Model\ResourceModel\Data\Interaction;
 
 class PurchaseEvent extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb

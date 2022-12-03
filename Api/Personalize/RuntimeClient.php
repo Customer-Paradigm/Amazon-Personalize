@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Api\Personalize;
 
 use Aws\PersonalizeRuntime\PersonalizeRuntimeClient;
@@ -8,7 +9,6 @@ use CustomerParadigm\AmazonPersonalize\Helper\Data;
 
 class RuntimeClient implements RuntimeClientInterface
 {
-    
     protected $pRuntimeClient;
     protected $pHelper;
     protected $pConfig;
@@ -33,7 +33,7 @@ class RuntimeClient implements RuntimeClientInterface
             'region' => "$region" ]
         );
     }
- 
+
     /**
      * @api
      * @param string $campaignArn
@@ -54,7 +54,7 @@ class RuntimeClient implements RuntimeClientInterface
         }
         return $data;
     }
-    
+
     /**
      * @api
      * @param string $campaignArn

@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Model\Training;
 
 use Aws\Personalize\PersonalizeClient;
@@ -35,22 +36,22 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
 
     public function checkAssetCreatedAndSync($type_name, $step_name, $name_value, $arn_value)
     {
-            $this->infoLogger->info("\n--------checkAssetCreatedAndSync() function called---");
-            $rtn = false;
-            $step_plural = $step_name . "s";
+        $this->infoLogger->info("\n--------checkAssetCreatedAndSync() function called---");
+        $rtn = false;
+        $step_plural = $step_name . "s";
         if ($this->assetExists($step_plural, $name_value, $arn_value)) {
-                $name = $type_name.$step_name;
-                $this->infoLogger->info("\n--------checkAssetCreatedAndSync() function name:\n" . $name);
-                $rtn = true;
+            $name = $type_name.$step_name;
+            $this->infoLogger->info("\n--------checkAssetCreatedAndSync() function name:\n" . $name);
+            $rtn = true;
             if (empty($this->nameConfig->getConfigVal($name."Name"))) {
                 $this->nameConfig->saveName($name."Name", $name_value);
             }
             if (empty($this->nameConfig->getConfigVal($name."Arn"))) {
-                    $this->nameConfig->saveArn($name."Arn", $arn_value);
+                $this->nameConfig->saveArn($name."Arn", $arn_value);
             }
         }
-	    $this->infoLogger->info("\n--------checkAssetCreatedAndSync() function rtn:\n" . $rtn);
-            return $rtn;
+        $this->infoLogger->info("\n--------checkAssetCreatedAndSync() function rtn:\n" . $rtn);
+        return $rtn;
     }
 
     public function assetExists($type, $name, $arn = null)
@@ -58,11 +59,11 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
         try {
             $type = ucfirst($type);
             $func_name = "list" . $type;
-	    $args = ['maxResults'=>100];
-	    if( !empty($arn) ) {
-		    $args = ['datasetArn'=>$arn];
-	    }
-	    $assets = $this->personalizeClient->$func_name($args);
+            $args = ['maxResults'=>100];
+            if (!empty($arn)) {
+                $args = ['datasetArn'=>$arn];
+            }
+            $assets = $this->personalizeClient->$func_name($args);
             if (empty($assets)) {
                 return false;
             }
@@ -76,12 +77,12 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
             }
             foreach ($assets[$type_key] as $idx => $item) {
                 if ($item['name'] === $name) {
-                	return true;
+                    return true;
                 }
             }
         } catch (Exception $e) {
-		$this->errorLogger->error("\nassetExists() error. Message:\n" . print_r($e->getMessage(), true));
-		return false;
+            $this->errorLogger->error("\nassetExists() error. Message:\n" . print_r($e->getMessage(), true));
+            return false;
         }
         return false;
     }
@@ -89,22 +90,22 @@ class PersonalizeBase extends \Magento\Framework\Model\AbstractModel
     public function getAssetArn($type, $name)
     {
         try {
-                $type = ucfirst($type);
-                $func_name = "list" . $type;
-                        
-                $assets = $this->personalizeClient->$func_name(['maxResults'=>100]);
+            $type = ucfirst($type);
+            $func_name = "list" . $type;
+
+            $assets = $this->personalizeClient->$func_name(['maxResults'=>100]);
             if (empty($assets)) {
                 return false;
             }
-                $type_key = array_key_first($assets->toArray());
+            $type_key = array_key_first($assets->toArray());
             foreach ($assets[$type_key] as $idx => $item) {
                 if ($item['name'] === $name) {
                     return $item['eventTrackerArn'];
                 }
             }
         } catch (Exception $e) {
-                $this->errorLogger->error("\nassetExists() error. Message:\n" . print_r($e->getMessage(), true));
-                return false;
+            $this->errorLogger->error("\nassetExists() error. Message:\n" . print_r($e->getMessage(), true));
+            return false;
         }
             return false;
     }

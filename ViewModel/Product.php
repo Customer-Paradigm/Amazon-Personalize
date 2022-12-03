@@ -1,14 +1,15 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\ViewModel;
 
 use Magento\Framework\DataObject;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
-use \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as productCollectionFactory;
+use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as productCollectionFactory;
 
-use \CustomerParadigm\AmazonPersonalize\Helper\Data;
-use \Magento\Catalog\Block\Product\Context;
-use \Magento\ConfigurableProduct\Model\Product\Type\Configurable;
+use CustomerParadigm\AmazonPersonalize\Helper\Data;
+use Magento\Catalog\Block\Product\Context;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 
 class Product extends DataObject implements ArgumentInterface
 {
@@ -21,7 +22,7 @@ class Product extends DataObject implements ArgumentInterface
      * @var ProductRepositoryInterface
      */
     protected $productRepository;
-    
+
     /**
      * @var Configurable
      */
@@ -56,13 +57,13 @@ class Product extends DataObject implements ArgumentInterface
         }
         return $rtn;
     }
-    
+
     public function getAllProductsFromRecommendations($idList)
     {
         $idArray = $this->dataHelper->getIdArrayFromItemList($idList);
         return $this->getProductCollection($idArray);
     }
-    
+
     public function getProductCollection($idArray)
     {
         $collection = $this->productCollectionFactory->create();
@@ -70,7 +71,7 @@ class Product extends DataObject implements ArgumentInterface
         $collection->addFieldToFilter('entity_id', ['in' => $idArray]);
         return $collection;
     }
-    
+
     public function getProductCollectionRand($idArray, $count = null)
     {
         $collection = $this->getProductCollection($idArray);
@@ -81,12 +82,12 @@ class Product extends DataObject implements ArgumentInterface
         $collection->getSelect()->orderRand();
         return $collection;
     }
-   
+
     public function getViewableProducts($idList, $current, $count = 2000)
     {
         return $this->decideViewable($idList, $current, $count);
     }
-    
+
     protected function decideViewable($idList, $current, $count)
     {
         $count = intval($count);
@@ -115,7 +116,7 @@ class Product extends DataObject implements ArgumentInterface
             }
 
             $visible_text = $prod->getAttributeText('visibility');
-            $visible = $visible_text == 'Not Visible Individually'? false : true;
+            $visible = $visible_text == 'Not Visible Individually' ? false : true;
 
             // get parent if this product is not set to Visible
             if (! $visible) {
@@ -139,7 +140,7 @@ class Product extends DataObject implements ArgumentInterface
                     }
                 }
             } elseif (in_array($prod->getId(), $used_parent_ids)) {
-                   continue;
+                continue;
             } else {
                 $idArray[] = $prod->getId();
             }

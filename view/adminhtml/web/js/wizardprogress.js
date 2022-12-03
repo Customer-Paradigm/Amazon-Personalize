@@ -84,10 +84,8 @@ define([
 		closeErrorMssg: function() {
 			var mssg = jQuery('#train_message_wrapper');
 			mssg.css('display', 'none');
-	//		if(self.needsInteractions) {
-			   location.reload();
-			   return false;
-	//		}
+			location.reload();
+			return false;
 		},
 		
 		closeRstAllMssg: function() {
@@ -98,21 +96,6 @@ define([
 		closeRstCampMssg: function() {
 			var mssg = jQuery('#reset_camp_message_wrapper');
 			mssg.css('display', 'none');
-		},
-
-		displayLicenseStatus: function() {
-			var field = jQuery("#row_awsp_settings_awsp_general_calc_error > td.value");
-			var url = self.ajaxLicenseCheckUrl;
-			jQuery.getJSON(url, function(data) { 
-				var mssg = data.notification_text;
-				field.html('');
-				if(mssg == 'License OK') {
-					jQuery("#awsp_settings_awsp_general_calc_active").val('Yes');
-				} else {
-					jQuery("#awsp_settings_awsp_general_calc_active").val('no');
-					field.append(data.notification_text);
-				}
-			});
 		},
 
 		displayAssets: function() {
@@ -126,7 +109,6 @@ define([
 					html += '<td>Name</td>';
 					html += '<td>Config Path</td>';
 					html += '<td>Value</td>';
-//					html += '<td>Last Updated</td>';
 				   html += '</tr>';
 				// Rows
 				data.each(function( item ) {
@@ -134,7 +116,6 @@ define([
 					html += '<td class="aName-cell">' + item.name + '</td>';
 					html += '<td class="aPath-cell">' + item.path + '</td>';
 					html += '<td class="aValue-cell">' + item.value + '</td>';
-//					html += '<td class="aUpdated-cell">' + item.updated_at + '</td>';
 				   html += '</tr>';
 				});
 				html += '</table>';
@@ -195,7 +176,7 @@ define([
 
 		resumeProcess: function() {
 			if (confirm('Resume campaign training process?')) {
-				this.setBttnMssg("Removing campaign", '#resume_process_button');
+				this.setBttnMssg("Resuming campaign", '#resume_process_button');
 				this.callCampResume();
 			}else {
 				// nada
@@ -259,7 +240,7 @@ define([
 		showProgress: function(startProcess){
 			jQuery("#loader").show();
 			self = this;
-			self.displayLicenseStatus();
+//			self.displayLicenseStatus();
 			var url = self.ajaxDisplayUrl;
 			var imgUrl = self.successUrl;
 			var infoUrl = self.infoUrl;
@@ -278,17 +259,7 @@ define([
 				var imgUrl = '';
 				var infoUrl = '';
 				self.steps([]);
-				if( data.steps['license'] == false ) {
-					self.hideTrainBttn();
-					self.displayErrorBttn('none');
-					self.displayAdvSection('none');
-					self.displayRstBttn('none');
-					self.displayRstCampaignBttn('none');
-					jQuery('#train_steps').html("<div id='license-error-mssg'>" + data.steps['mssg'] + "</div>");
-					return false;
-				} else {
-					self.showTrainBttn();
-				}
+				self.showTrainBttn();
 				jQuery.each(data.steps,function(idx,value){
 					if(value.error) {
 						self.disableTrainBttn(true);

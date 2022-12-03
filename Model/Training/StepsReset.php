@@ -112,11 +112,10 @@ class StepsReset extends PersonalizeBase
         $this->wizardTracking->clearData();
         $this->errorTable->clearData();
     }
-/*
-    public function assetExists($name, $arn)
-    {
 
-                $this->infoLogger->info("\nassetExists: $name, $arn");
+    public function resettableAssetExists($name, $arn)
+    {
+        $this->infoLogger->info("\nresettableAssetExists: $name, $arn");
         $ucname = ucfirst($name);
         $lcname = lcfirst($name);
         $rtn = false;
@@ -125,28 +124,26 @@ class StepsReset extends PersonalizeBase
         }
         $fname = 'list' . $ucname . 's';
         $info = $this->personalizeClient->{$fname}(['maxResults'=>100]);
-                $this->infoLogger->info("\nassetExists key: " . $lcname.'s');
+        $this->infoLogger->info("\nresettableAssetssetExists key: " . $lcname.'s');
         foreach ($info[$lcname.'s'] as $item) {
-
             if (array_key_exists($lcname."Arn", $item) && $item[$lcname."Arn"] == $arn) {
-                  $this->infoLogger->info("\n$arn exists on aws");
+                $this->infoLogger->info("\n$arn exists on aws");
                 $rtn = true;
                 break;
             }
         }
         return $rtn;
     }
- */
 
     public function deleteAsset($name, $arn)
     {
-                $this->infoLogger->info("\nDelete asset: $name, $arn");
+        $this->infoLogger->info("\nDelete asset: $name, $arn");
 
         $ucname = ucfirst($name);
         $lcname = lcfirst($name);
         $fname = 'delete' . $ucname . 'Async';
         try {
-            if ($this->assetExists($name, $arn)) {
+            if ($this->resettableAssetExists($name, $arn)) {
                 $result = $this->personalizeClient->{$fname}([
                     $lcname . 'Arn' => $arn,
                 ])->wait();
@@ -154,7 +151,7 @@ class StepsReset extends PersonalizeBase
             }
         } catch (\Exception $e) {
             $this->errorLogger->error("\n------------deleteAsset() : \n");
-                        $this->errorLogger->error($e->getMessage());
+            $this->errorLogger->error($e->getMessage());
         }
     }
 

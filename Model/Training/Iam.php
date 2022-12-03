@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Model\Training;
 
 /*
@@ -59,7 +60,7 @@ class Iam extends PersonalizeBase
         try {
             $arn = $this->nameConfig->getArn('userPolicyArn');
         } catch (\Exception $e) {
-                $this->wizardTracking->setStepError('create_personalize_s3_role', $e->getMessage());
+            $this->wizardTracking->setStepError('create_personalize_s3_role', $e->getMessage());
         }
         if (empty($arn)) {
             return 'not started';

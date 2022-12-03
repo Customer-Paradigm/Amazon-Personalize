@@ -3,19 +3,20 @@
 namespace CustomerParadigm\AmazonPersonalize\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
+use CustomerParadigm\AmazonPersonalize\Helper\Aws;
 
-class PurchaseObserver implements ObserverInterface
+class AdminpageloadObserver implements ObserverInterface
 {
-    protected $awsEvents;
+    protected $awsHelper;
 
     public function __construct(
-        \CustomerParadigm\AmazonPersonalize\Model\Events $awsEvents
+        Aws $awsHelper
     ) {
-        $this->awsEvents = $awsEvents;
+        $this->awsHelper = $awsHelper;
     }
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        $this->awsEvents->putObsPurchase($observer);
+        $this->awsHelper->populateEc2CheckVal();
     }
 }

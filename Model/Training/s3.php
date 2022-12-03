@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Model\Training;
 
 use Aws\S3\S3Client;
@@ -53,7 +54,7 @@ class s3
         }
     }
 */
-    
+
     public function createS3Bucket()
     {
         try {
@@ -123,6 +124,8 @@ class s3
     public function checkBucketExists()
     {
         $buckets = $this->listS3Buckets();
+        $this->nameConfig->getLogger('info')->info("\nCurrent bucket name: \n" . print_r($this->s3BucketName, true));
+        $this->nameConfig->getLogger('info')->info("\nS3Buckets: \n" . print_r($buckets, true));
         foreach ($buckets['Buckets'] as $bucket) {
             if ($bucket['Name'] == $this->s3BucketName) {
                 return true;
@@ -133,8 +136,8 @@ class s3
 
     public function listS3Buckets()
     {
-            return $this->s3Client->listBuckets([
-            ]);
+        return $this->s3Client->listBuckets([
+        ]);
     }
 
     public function getUploadStatus()
@@ -159,14 +162,14 @@ class s3
         }
     }
 
-    
+
     public function deleteS3Bucket($name)
     {
         return $this->s3Client->deleteBucket([
             'Bucket' => $name,
         ]);
     }
-    
+
     public function deleteCsvs($bucketname)
     {
         return $this->s3Client->deleteObjects([

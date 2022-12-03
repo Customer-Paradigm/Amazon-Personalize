@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace CustomerParadigm\AmazonPersonalize\Model;
 
 use Magento\Config\Model\Config\Reader\Source\Deployed\SettingChecker;
@@ -38,7 +39,6 @@ use Magento\Store\Model\ScopeTypeNormalizer;
  */
 class CoreConfigExtend extends \Magento\Config\Model\Config
 {
-
     /**
      * @var Config\Reader\Source\Deployed\SettingChecker
      */
@@ -313,13 +313,13 @@ class CoreConfigExtend extends \Magento\Config\Model\Config
                     continue;
                 }
 
-                       $field = $this->getField($sectionPath, $groupId, $fieldId);
-                       /** @var \Magento\Framework\App\Config\ValueInterface $backendModel */
-                       $backendModel = $field->hasBackendModel()
-                           ? $field->getBackendModel()
-                           : $this->_configValueFactory->create();
+                $field = $this->getField($sectionPath, $groupId, $fieldId);
+                /** @var \Magento\Framework\App\Config\ValueInterface $backendModel */
+                $backendModel = $field->hasBackendModel()
+                    ? $field->getBackendModel()
+                    : $this->_configValueFactory->create();
 
-                       $existingConfigVal = $this->getConfigDataValue($groupPath . "/" . $fieldId);
+                $existingConfigVal = $this->getConfigDataValue($groupPath . "/" . $fieldId);
                 if (array_key_exists('value', $fieldData) && ($fieldData['value'] == "saved"
                 || $fieldData['value'] == "testing")
                 ) {
@@ -329,11 +329,11 @@ class CoreConfigExtend extends \Magento\Config\Model\Config
                 if (!isset($fieldData['value'])) {
                     $fieldData['value'] = null;
                 }
-                
+
                 if ($field->getType() == 'multiline' && is_array($fieldData['value'])) {
                     $fieldData['value'] = trim(implode(PHP_EOL, $fieldData['value']));
                 }
-                
+
                 $data = [
                     'field' => $fieldId,
                     'groups' => $groups,

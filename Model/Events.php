@@ -89,7 +89,6 @@ class Events
                     file_put_contents($this->debugLogFile, print_r($eventsList, true), FILE_APPEND);
                 }
             }
-
         } catch (\Exception $e) {
             $this->logger->critical('Error message', ['exception' => $e]);
         }

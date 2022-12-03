@@ -1,4 +1,5 @@
 <?php
+
 namespace CustomerParadigm\AmazonPersonalize\Model\ResourceModel\Data\Interaction;
 
 class ReportEvent extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
