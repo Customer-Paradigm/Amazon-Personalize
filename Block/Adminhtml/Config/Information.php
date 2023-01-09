@@ -30,12 +30,7 @@ class Information extends \Magento\Config\Block\System\Config\Form\Fieldset
     public function render(AbstractElement $element)
     {
         $this->content = "<span id='personalize-system-message'><div>Deliver personalized, real-time recommendations using Amazon Personalize - a machine learning system.</div>
-                <div class='personalize-message-line'>Free 15 day trial, A-B Split testing built in, no design file changes are needed.</div>
-                <div class='personalize-message-line'> More details / get license key: </div>
-		<div class='personalize-message-link'>$this->licenseLink</div>
-		<div>&nbsp;</div>
-                <div class='personalize-message-line note'>Note: If you reinstall or update the Amazon Personalize extension and then encounter license errors</div>
-                <div class='personalize-message-line note'>please click on the license key link above and re-submit your key request.</div>
+                <div class='personalize-message-line'>A-B Split testing built in, no design file changes are needed.</div>
 		</span>";
         $html = $this->_getHeaderHtml($element);
         $this->setContent(__("$this->content"));
@@ -53,6 +48,7 @@ class Information extends \Magento\Config\Block\System\Config\Form\Fieldset
             'CustomerParadigm_information]" type="hidden" value="1"',
             $html
         );
+
         $html = preg_replace('(onclick=\"Fieldset.toggleCollapse.*?\")', '', $html);
 
         return $html;
@@ -73,8 +69,6 @@ class Information extends \Magento\Config\Block\System\Config\Form\Fieldset
     {
         $this->LicenseLink = $licenseLink;
     }
-
-
 
     /**
      * @return string
