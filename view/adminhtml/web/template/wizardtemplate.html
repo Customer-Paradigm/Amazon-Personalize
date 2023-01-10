@@ -1,6 +1,6 @@
-<img id="loader" src="pub/static/adminhtml/Magento/backend/en_US/images/loader-2.gif"/>
+<img id="loader" src="/pub/static/adminhtml/Magento/backend/en_US/images/loader-2.gif"/>
 <div class="label" id='train_steps_container'>
-<button id="train_button" title="Start Process" type="button" style="display:none" class="action-default scalable" data-bind=", click: startProcess, css: buttonStatus"> 
+<button id="train_button" title="Start Process" type="button" style="display:none" class="action-default scalable" data-bind=", click: startProcess, css: buttonStatus">
         <span>Start Process</span>
 </button>
 <div class="interaction-wrapper" data-bind="if: needsInteractions">
@@ -15,7 +15,7 @@
 
     <table id="train_steps">
           <tbody data-bind="foreach: steps">
-            <tr>
+            <tr data-bind="attr:{class: status}">
               <td>
                 <img width="16px" height="16px" data-bind="attr:{src: imgUrl}" />
               </td>

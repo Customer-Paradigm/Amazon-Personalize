@@ -19,6 +19,7 @@ define([
 			this._super();
 			this.steps = ko.observableArray([]);
 			this.imgUrl = ko.observable('');
+            this.status = ko.observable('');
 			this.infoUrl = ko.observable(this.infoUrl);
 			this.mssg = ko.observable(this.initMssg);
 			this.rsmProcessMssg = ko.observable(this.resumeProcessMssg);
@@ -50,12 +51,12 @@ define([
 			var bttn = jQuery('#train_button');
 			bttn.prop('disabled', disabled);
 		},
-		
+
 		hideTrainBttn: function() {
 			var bttn = jQuery('#train_button');
 			bttn.css('display', 'none');
 		},
-		
+
 		showTrainBttn: function() {
 			var bttn = jQuery('#train_button');
 			bttn.css('display', 'block');
@@ -65,7 +66,7 @@ define([
 			var mssg = jQuery('#train_message_wrapper');
 			mssg.css('display', 'block');
 		},
-		
+
 		displayRstAllMssg: function() {
 			var mssg = jQuery('#reset_all_message_wrapper');
 			mssg.css('display', 'block');
@@ -75,7 +76,7 @@ define([
 			var mssg = jQuery('#resume_process_message_wrapper');
 			mssg.css('display', 'block');
 		},
-		
+
 		displayRstCampMssg: function() {
 			var mssg = jQuery('#reset_camp_message_wrapper');
 			mssg.css('display', 'block');
@@ -87,12 +88,12 @@ define([
 			location.reload();
 			return false;
 		},
-		
+
 		closeRstAllMssg: function() {
 			var mssg = jQuery('#reset_all_message_wrapper');
 			mssg.css('display', 'none');
 		},
-		
+
 		closeRstCampMssg: function() {
 			var mssg = jQuery('#reset_camp_message_wrapper');
 			mssg.css('display', 'none');
@@ -102,7 +103,7 @@ define([
 			var field = jQuery("#row_awsp_settings_awsp_assets_asset_display > td.value > p");
 			var url = self.ajaxAssetDisplayUrl;
 			var link = '<a id="asset_download_link" href="' + self.ajaxErrorlogDownloadUrl + '"><span>Download</span> </a>'
-			jQuery.getJSON(url, function(data) { 
+			jQuery.getJSON(url, function(data) {
 				var html = '<table id="asset_display_table">';
 				// Header
 				   html += '<tr class="asset-header">';
@@ -128,7 +129,7 @@ define([
 			var field = jQuery("#row_awsp_settings_awsp_logs_log_display > td.value > p");
 			var url = self.ajaxErrorlogUrl;
 			var link = '<a id="errorlog_download_link" href="' + self.ajaxErrorlogDownloadUrl + '"><span>Download</span> </a>'
-			jQuery.getJSON(url, function(data) { 
+			jQuery.getJSON(url, function(data) {
 				var hasItems = false;
 				var html = '<table id="error_log_table">';
 				data.each(function( item ) {
@@ -144,7 +145,7 @@ define([
 				field.append(html);
 			});
 		},
-		
+
 		closeErrorLog: function() {
 			var mssg = jQuery('#error_log_wrapper');
 			mssg.css('display', 'none');
@@ -166,7 +167,7 @@ define([
 			bttn.css('display', displaytype);
 			bttnimg.css('display', displaytype);
 		},
-		
+
 		displayRstCampaignBttn: function(displaytype) {
 			var bttn = jQuery('#reset_campaign_button');
 			var bttnimg = jQuery('#rst_cmpn_bttn_info');
@@ -190,11 +191,12 @@ define([
 			if (confirm('Are you sure? This will remove your running campaign and ALL associated data for this website from AWS Personalize.')) {
 				this.setBttnMssg("Removing all", '#reset_button');
 				this.callReset();
-			}else {
+                location.reload();
+			} else {
 				// nada
 			}
 		},
-		
+
 		resetCampaign: function() {
 			if (confirm('Are you sure? This will remove only the current campaign and event tracker, but there will be charges if you wish to retrain a campaign.')) {
 				this.setBttnMssg("Removing campaign", '#reset_campaign_button');
@@ -213,7 +215,7 @@ define([
 			var gauge = jQuery('.interaction-wrapper');
 			gauge.hide()
 		},
-		
+
 		showGauge: function() {
 			var gauge = jQuery('.interaction-wrapper');
 			gauge.show()
@@ -223,7 +225,7 @@ define([
 			var gauge = jQuery('#interaction-count');
 			var number = jQuery('#interaction-number');
 			var url = self.ajaxInteractionUrl;
-			jQuery.getJSON(url, function(data) { 
+			jQuery.getJSON(url, function(data) {
 				if( data.paused ) {
 				//	self.showProgress();
 					var pct = (data.value / 1000) * 100;
@@ -237,31 +239,54 @@ define([
 			});
 		},
 
+        goToNextStep: function() {
+            if (jQuery('#train_button span').text() !== 'Start Process') {
+                if (jQuery('#train_steps tbody tr').length === 0) {
+                    location.reload();
+                }
+            }
+            jQuery('#train_steps > tbody  > tr').each(function(index, tr) {
+                if (self.processStatus === 'hasError') {
+                    return false;
+                }
+                if (jQuery(this).attr('class') === 'notStarted') {
+                    self.disableTrainBttn(false);
+                    setTimeout(
+                        function() {
+                            jQuery('#train_button').trigger('click');
+                        }, 3000);
+                    self.disableTrainBttn(true);
+                }
+            });
+        },
+
 		showProgress: function(startProcess){
 			jQuery("#loader").show();
 			self = this;
-//			self.displayLicenseStatus();
+            // self.displayLicenseStatus();
 			var url = self.ajaxDisplayUrl;
 			var imgUrl = self.successUrl;
 			var infoUrl = self.infoUrl;
 
-			if(typeof startProcess !== "undefined") { 
-				url = self.ajaxRunUrl; 
+			if (typeof startProcess !== "undefined") {
+				url = self.ajaxRunUrl;
 				// clear steps
 				self.steps([]);
 				self.disableTrainBttn(true);
 			}
+
 			self.hideGauge();
 			self.displayAssets();
 			self.displayErrorLog();
 
-			jQuery.getJSON(url).done( function(data) { 
+			jQuery.getJSON(url).done( function(data) {
 				var imgUrl = '';
+                var status = '';
 				var infoUrl = '';
 				self.steps([]);
 				self.showTrainBttn();
 				jQuery.each(data.steps,function(idx,value){
-					if(value.error) {
+					if (value.error) {
 						self.disableTrainBttn(true);
 						imgUrl = self.errUrl;
 						infoUrl = self.infoUrl;
@@ -288,34 +313,39 @@ define([
 						self.displayRstCampaignBttn('block');
 					} else if(value.state == 'not started') {
 						imgUrl = self.pendingUrl;
+                        status = 'notStarted';
 					} else if(value.state == 'in progress') {
 						self.buttonStatus('inProgress');
 						self.setBttnMssg("In Progress");
 						imgUrl = self.processingUrl;
+                        status = 'inProgress';
 					} else if(self.processStatus == 'ready') {
 						self.buttonStatus('inProgress');
 						self.setBttnMssg("In Progress");
 						imgUrl = self.successUrl;
+                        status = 'ready';
 					} else if(self.processStatus == "finished") {
 						self.disableTrainBttn(true);
 						self.setBttnMssg("Campaign Created");
 						imgUrl = self.successUrl;
+                        status = 'finished';
 						return false;
 					} else {
 						imgUrl = self.successUrl;
 					}
 
 					value.imgUrl = imgUrl;
+                    value.status = status;
 					value.infoUrl = infoUrl;
 					self.steps.push(value);
 				});
-				
 
 				self.buttonStatus(self.processStatus);
 				return true
 			})
-			.always(function () { 
-				jQuery("#loader").hide(); 
+			.always(function () {
+				jQuery("#loader").hide();
+                self.goToNextStep();
 			});
 		},
 
@@ -325,7 +355,7 @@ define([
 			var imgUrl = self.successUrl;
 			var infoUrl = self.infoUrl;
 
-			jQuery.getJSON(url, function(data) { 
+			jQuery.getJSON(url, function(data) {
 				var imgUrl = '';
 				var infoUrl = '';
 			});
@@ -338,20 +368,20 @@ define([
 			var imgUrl = self.successUrl;
 			var infoUrl = self.infoUrl;
 
-			jQuery.getJSON(url, function(data) { 
+			jQuery.getJSON(url, function(data) {
 				var imgUrl = '';
 				var infoUrl = '';
 			});
 			return true;
 		},
-		
+
 		callCampReset: function(){
 			self = this;
 			var url = self.ajaxResetCampUrl;
 			var imgUrl = self.successUrl;
 			var infoUrl = self.infoUrl;
 
-			jQuery.getJSON(url, function(data) { 
+			jQuery.getJSON(url, function(data) {
 				var imgUrl = '';
 				var infoUrl = '';
 			});
