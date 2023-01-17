@@ -1,4 +1,14 @@
 <?xml version="1.0"?>
+<!--
+/**
+ * CustomerParadigm_AmazonPersonalize
+ *
+ * @category   CustomerParadigm
+ * @package    CustomerParadigm_AmazonPersonalize
+ * @copyright  Copyright (c) 2023 Customer Paradigm (https://customerparadigm.com/)
+ * @license    https://github.com/Customer-Paradigm/Amazon-Personalize/blob/master/LICENSE.md
+ */
+-->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
    <head>
      <css src="CustomerParadigm_AmazonPersonalize::css/steps.css"/>

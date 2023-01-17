@@ -1,13 +1,21 @@
 <?php
+/**
+ * CustomerParadigm_AmazonPersonalize
+ *
+ * @category   CustomerParadigm
+ * @package    CustomerParadigm_AmazonPersonalize
+ * @copyright  Copyright (c) 2023 Customer Paradigm (https://customerparadigm.com/)
+ * @license    https://github.com/Customer-Paradigm/Amazon-Personalize/blob/master/LICENSE.md
+ */
 $id = $block->getId();
 $price = $block->getPrice();
 ?>
-<div class="price-box price-final_price" data-product-id="<?php echo($id) ?>" 
+<div class="price-box price-final_price" data-product-id="<?php echo($id) ?>"
      data-price-box="product-id-<?php echo($id)?>">
-    
+
     <span class="price-container price-final_price tax weee" itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
-        <span id="product-price-<?php echo($id) ?>" data-price-amount="<?php echo($price) ?>" 
-              data-price-type="finalPrice" class="price-wrapper " from-price="<?php echo($price) ?>" 
+        <span id="product-price-<?php echo($id) ?>" data-price-amount="<?php echo($price) ?>"
+              data-price-type="finalPrice" class="price-wrapper " from-price="<?php echo($price) ?>"
               data-base-price-present="">
             <span class="price"><?php echo($price) ?></span>
         </span>
