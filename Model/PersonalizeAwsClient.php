@@ -10,12 +10,13 @@
 
 declare(strict_types=1);
 
-namespace CustomerParadigm\AmazonPersonalize\Api\Personalize;
+namespace CustomerParadigm\AmazonPersonalize\Model;
 
-use Aws\PersonalizeEvents\PersonalizeEventsClient;
+use Aws\CommandInterface;
+use Aws\PersonalizeRuntime\PersonalizeRuntimeClient as PersonalizeRuntimeClientAws;
 use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 
-class EventsClient implements EventsClientInterface
+class PersonalizeAwsClient extends PersonalizeRuntimeClientAws
 {
     protected PersonalizeConfig $pConfig;
 
@@ -23,33 +24,29 @@ class EventsClient implements EventsClientInterface
      * @param PersonalizeConfig $pConfig
      */
     public function __construct(
-        PersonalizeConfig $pConfig
+        PersonalizeConfig $pConfig,
     ) {
         $this->pConfig = $pConfig;
     }
 
     /**
-     * @api
-     * @param array $eventlist
+     * @return PersonalizeRuntimeClientAws
      */
-    public function putEvents($eventlist)
+    public function pRuntimeClient(): PersonalizeRuntimeClientAws
     {
         $homedir = $this->pConfig->getUserHomeDir();
         $region = $this->pConfig->getAwsRegion();
 
         putenv("HOME=$homedir");
 
-        // TODO: make this a factory instead of instantiating here
-        $this->pEventsClient = new PersonalizeEventsClient(
+        $this->pRuntimeClient = new PersonalizeRuntimeClientAws(
             [
-            'profile' => 'default',
-            'version' => 'latest',
-            'region' => "$region"
+                'profile' => 'default',
+                'version' => 'latest',
+                'region' => "$region"
             ]
         );
 
-        if ($this->pConfig->isEnabled()) {
-            $this->pEventsClient->putEvents($eventlist);
-        }
+        return $this->pRuntimeClient;
     }
 }

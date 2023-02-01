@@ -1,4 +1,12 @@
 <?php
+/**
+ * CustomerParadigm_AmazonPersonalize
+ *
+ * @category   CustomerParadigm
+ * @package    CustomerParadigm_AmazonPersonalize
+ * @copyright  Copyright (c) 2023 Customer Paradigm (https://customerparadigm.com/)
+ * @license    https://github.com/Customer-Paradigm/Amazon-Personalize/blob/master/LICENSE.md
+ */
 // Check if enabled, only display if true
 if (! $block->getGaAbEnabled()) { return false; }
 ?>
@@ -14,8 +22,8 @@ if (! $block->getGaAbEnabled()) { return false; }
     gtag('config', '<?php echo($block->getGaAccountNum()) ?>');
 
     <?php
-} else { ?> 
-    
+} else { ?>
+
 <script>
 
     <?php // End global site tag check

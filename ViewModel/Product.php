@@ -1,4 +1,14 @@
 <?php
+/**
+ * CustomerParadigm_AmazonPersonalize
+ *
+ * @category   CustomerParadigm
+ * @package    CustomerParadigm_AmazonPersonalize
+ * @copyright  Copyright (c) 2023 Customer Paradigm (https://customerparadigm.com/)
+ * @license    https://github.com/Customer-Paradigm/Amazon-Personalize/blob/master/LICENSE.md
+ */
+
+declare(strict_types=1);
 
 namespace CustomerParadigm\AmazonPersonalize\ViewModel;
 
@@ -14,40 +24,26 @@ use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 class Product extends DataObject implements ArgumentInterface
 {
     /**
-     * @var productCollectionFactory
-     */
-    private $productCollectionFactory;
-
-    /**
-     * @var ProductRepositoryInterface
-     */
-    protected $productRepository;
-
-    /**
-     * @var Configurable
-     */
-    protected $configurable;
-
-
-    /**
-     * @param SchematicRepositoryInterface $schematicData
-     * @param ScopeConfigInterface $scopeConfig
+     * @param productCollectionFactory $productCollectionFactory
+     * @param ProductRepositoryInterface $productRepository
+     * @param Configurable $configurable
+     * @param Data $dataHelper
      */
     public function __construct(
-        ProductCollectionFactory $productCollectionFactory,
-        ProductRepositoryInterface $productRepository,
-        Configurable $configurable,
-        Data $dataHelper
+        private readonly ProductCollectionFactory $productCollectionFactory,
+        protected readonly ProductRepositoryInterface $productRepository,
+        protected readonly Configurable $configurable,
+        private readonly Data $dataHelper
     ) {
         parent::__construct();
-
-        $this->productCollectionFactory = $productCollectionFactory;
-        $this->productRepository = $productRepository;
-        $this->configurable = $configurable;
-        $this->dataHelper = $dataHelper;
     }
 
-    public function getProducts($idList)
+    /**
+     * @param $idList
+     * @return array
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
+    public function getProducts($idList): array
     {
         $rtn = [];
         foreach ($idList as $item) {
@@ -58,12 +54,20 @@ class Product extends DataObject implements ArgumentInterface
         return $rtn;
     }
 
+    /**
+     * @param $idList
+     * @return mixed
+     */
     public function getAllProductsFromRecommendations($idList)
     {
         $idArray = $this->dataHelper->getIdArrayFromItemList($idList);
         return $this->getProductCollection($idArray);
     }
 
+    /**
+     * @param $idArray
+     * @return mixed
+     */
     public function getProductCollection($idArray)
     {
         $collection = $this->productCollectionFactory->create();
@@ -72,6 +76,11 @@ class Product extends DataObject implements ArgumentInterface
         return $collection;
     }
 
+    /**
+     * @param $idArray
+     * @param $count
+     * @return mixed
+     */
     public function getProductCollectionRand($idArray, $count = null)
     {
         $collection = $this->getProductCollection($idArray);
@@ -83,11 +92,24 @@ class Product extends DataObject implements ArgumentInterface
         return $collection;
     }
 
+    /**
+     * @param $idList
+     * @param $current
+     * @param $count
+     * @return mixed
+     */
     public function getViewableProducts($idList, $current, $count = 2000)
     {
         return $this->decideViewable($idList, $current, $count);
     }
 
+    /**
+     * @param $idList
+     * @param $current
+     * @param $count
+     * @return mixed
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
     protected function decideViewable($idList, $current, $count)
     {
         $count = intval($count);

@@ -1,37 +1,41 @@
 <?php
+/**
+ * CustomerParadigm_AmazonPersonalize
+ *
+ * @category   CustomerParadigm
+ * @package    CustomerParadigm_AmazonPersonalize
+ * @copyright  Copyright (c) 2023 Customer Paradigm (https://customerparadigm.com/)
+ * @license    https://github.com/Customer-Paradigm/Amazon-Personalize/blob/master/LICENSE.md
+ */
+
+declare(strict_types=1);
 
 namespace CustomerParadigm\AmazonPersonalize\Api\Personalize;
 
-use Aws\PersonalizeRuntime\PersonalizeRuntimeClient;
+use CustomerParadigm\AmazonPersonalize\Model\PersonalizeAwsClient;
 use Aws\PersonalizeEvents\PersonalizeEventsClient;
 use CustomerParadigm\AmazonPersonalize\Model\Config\PersonalizeConfig;
 use CustomerParadigm\AmazonPersonalize\Helper\Data;
 
 class RuntimeClient implements RuntimeClientInterface
 {
-    protected $pRuntimeClient;
-    protected $pHelper;
-    protected $pConfig;
+    protected PersonalizeConfig $pConfig;
+    protected PersonalizeAwsClient $pRuntimeClient;
+    protected Data $pHelper;
 
+    /**
+     * @param PersonalizeConfig $pConfig
+     * @param PersonalizeAwsClient $pRuntimeClient
+     * @param Data $pHelper
+     */
     public function __construct(
-        // PersonalizeRuntimeClient $pRuntimeClient
         PersonalizeConfig $pConfig,
+        PersonalizeAwsClient $pRuntimeClient,
         Data $pHelper
     ) {
         $this->pConfig = $pConfig;
-        $homedir = $this->pConfig->getUserHomeDir();
-        $region = $this->pConfig->getAwsRegion();
-
-        putenv("HOME=$homedir");
-
-        // TODO: make this a factory instead of instantiating here
+        $this->pRuntimeClient = $pRuntimeClient;
         $this->pHelper = $pHelper;
-        $this->pRuntimeClient = new PersonalizeRuntimeClient(
-            [
-            // 'profile' => 'default',
-            'version' => 'latest',
-            'region' => "$region" ]
-        );
     }
 
     /**
@@ -43,10 +47,12 @@ class RuntimeClient implements RuntimeClientInterface
      */
     public function getRecommendations($campaignArn, $userId = null, $count = 30, $itemId = null)
     {
+        $pRuntimeClient = $this->pRuntimeClient->pRuntimeClient();
+
         $data = [];
         if ($this->pHelper->canDisplay()) {
             $count = intval($count);
-            $data = $this->pRuntimeClient->getRecommendations([
+            $data = $pRuntimeClient->getRecommendations([
                 'campaignArn' => $campaignArn, // REQUIRED
                 'numResults' => $count,
                 'userId' => "$userId",
@@ -54,13 +60,4 @@ class RuntimeClient implements RuntimeClientInterface
         }
         return $data;
     }
-
-    /**
-     * @api
-     * @param string $campaignArn
-     * @param array $inputList
-     * @param string $usrId
-     * @return string (JSON)
-     */
-//    public function getPersonalizedRanking($campaignArn,$inputList,$userId);
 }
