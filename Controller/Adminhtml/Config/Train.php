@@ -84,11 +84,15 @@ class Train extends Action
             $rtn = ['mssg'=>$err_mssg,'steps'=>[], 'state'=>'error'];
         }
         /* @var \Magento\Framework\Controller\Result\Json $result */
-        $result = $this->resultJsonFactory->create();
+	$result = $this->resultJsonFactory->create();
+	if(!empty($rtn)) {
         $mssg = $rtn['mssg'];
         $steps = $rtn['steps'];
         $success = $rtn['state'] == 'error' ? false : true;
-        $result->setData(['success' => $success, 'mssg' => "$mssg", 'steps'=>$steps]);
+	$result->setData(['success' => $success, 'mssg' => "$mssg", 'steps'=>$steps]);
+	} else {
+		$result->setData(['success' => false, 'mssg' => "Unknown creation error", 'steps'=>[]]);
+	}
 
         return $result;
     }

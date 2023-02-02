@@ -24,7 +24,7 @@ class PersonalizeAwsClient extends PersonalizeRuntimeClientAws
      * @param PersonalizeConfig $pConfig
      */
     public function __construct(
-        PersonalizeConfig $pConfig,
+        PersonalizeConfig $pConfig
     ) {
         $this->pConfig = $pConfig;
     }

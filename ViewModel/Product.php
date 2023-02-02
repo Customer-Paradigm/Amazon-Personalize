@@ -30,10 +30,10 @@ class Product extends DataObject implements ArgumentInterface
      * @param Data $dataHelper
      */
     public function __construct(
-        private readonly ProductCollectionFactory $productCollectionFactory,
-        protected readonly ProductRepositoryInterface $productRepository,
-        protected readonly Configurable $configurable,
-        private readonly Data $dataHelper
+        ProductCollectionFactory $productCollectionFactory,
+        ProductRepositoryInterface $productRepository,
+        Configurable $configurable,
+        Data $dataHelper
     ) {
         parent::__construct();
     }
