@@ -35,7 +35,9 @@ $_helper = $this->helper('Magento\Catalog\Helper\Output');
                     if ($pos != null) {
                         $position = ' style="left:' . $productImage->getWidth() . 'px;'
                             . 'top:' . $productImage->getHeight() . 'px;"';
-                    }
+		    } else {
+			$pos = "";
+		    }
                     ?>
                     <?php // Product Image ?>
                     <a href="<?= /* @escapeNotVerified */ $_product->getProductUrl() ?>" class="product photo product-item-photo" tabindex="-1">

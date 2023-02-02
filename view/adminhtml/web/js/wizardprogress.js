@@ -39,6 +39,11 @@ define([
 		startProcess: function() {
 			this.setBttnMssg("In Progress");
 			this.showProgress(true);
+			this.initAutoReload();
+		},
+
+		initAutoReload: function() {
+			setInterval(() => this.showProgress(false), 10000);
 		},
 
 		setBttnMssg: function(txt, el = '#train_button') {
