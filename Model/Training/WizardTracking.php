@@ -151,7 +151,10 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                     } catch (\Exception $e) {
                         $this->setStepError($step, $e->getMessage());
                         $this->errorLogger->error("WizardTracking runSteps() error at step:  " . $step);
-                        $this->errorLogger->error("WizardTracking runSteps() error message:  " . $e);
+			$this->errorLogger->error("WizardTracking runSteps() error message:  " . $e);
+			if(empty($rtn)) {
+				$rtn = [];
+			}
                         $rtn['mssg'] = 'run step error';
                         $rtn['is_success'] = false;
                     }
