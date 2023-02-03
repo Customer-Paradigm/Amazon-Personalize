@@ -23,6 +23,12 @@ use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 
 class Product extends DataObject implements ArgumentInterface
 {
+     private $productCollectionFactory;
+     private $productRepository;
+     private $configurable;
+     private $dataHelper;
+     
+
     /**
      * @param productCollectionFactory $productCollectionFactory
      * @param ProductRepositoryInterface $productRepository
@@ -35,7 +41,11 @@ class Product extends DataObject implements ArgumentInterface
         Configurable $configurable,
         Data $dataHelper
     ) {
-        parent::__construct();
+	    parent::__construct();
+	    $this->productCollectionFactory = $productCollectionFactory;
+	    $this->productRepository = $productRepository;
+	    $this->configurable = $configurable;
+	    $this->dataHelper = $dataHelper;
     }
 
     /**
