@@ -2,7 +2,7 @@
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
   <table name="aws_predicted_items" resource="default" engine="innodb" comment="aws_predicted_items">
     <column xsi:type="int" name="recommendation_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Recommendation Id"/>
-    <column xsi:type="text" name="user_id" nullable="true" comment="User ID"/>
+    <column xsi:type="text" name="user_id" nullable="true" />
     <column xsi:type="varchar" name="item_type" nullable="false" length="255" comment="Item Type"/>
     <column xsi:type="mediumtext" name="item_list" nullable="false" comment="Item List"/>
     <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
