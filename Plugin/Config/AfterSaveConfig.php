@@ -1,14 +1,4 @@
 <?php
-/**
- * CustomerParadigm_AmazonPersonalize
- *
- * @category   CustomerParadigm
- * @package    CustomerParadigm_AmazonPersonalize
- * @copyright  Copyright (c) 2023 Customer Paradigm (https://customerparadigm.com/)
- * @license    https://github.com/Customer-Paradigm/Amazon-Personalize/blob/master/LICENSE.md
- */
-
-declare(strict_types=1);
 
 namespace CustomerParadigm\AmazonPersonalize\Plugin\Config;
 
@@ -100,7 +90,6 @@ class AfterSaveConfig
                 $this->abTracking->clearData();
                 $this->pConfig->setLastAbPercent($saved_ab_val);
             }
-
             // Set credentials for aws php sdk
             try {
                 if ($this->awsHelper->isEc2Install()) { // Save account numeber but not other creds if module is installed on an EC2 instance
@@ -111,11 +100,24 @@ class AfterSaveConfig
 
                 $cred_dir = $this->moduleDir->getPath('media');
                 $region = $this->pConfig->getAwsRegion();
-                // Db stored values
-                $access_key = $this->pConfig->getAccessKey();
-                $secret_key = $this->pConfig->getSecretKey();
+		// Db stored values
+		$access_key = $this->pConfig->getAccessKey();
+		$secret_key = $this->pConfig->getSecretKey();
+		// is key encrypted?
+		if(substr($access_key, -2) == '==') {
+			// pull again with decrypt
+			$access_key = $this->pConfig->getAccessKey();
+		}
+		// is key encrypted?
+		if(substr($secret_key, -2) == '==') {
+			// pull again with decrypt
+			$secret_key = $this->pConfig->getSecretKey();
+		}
+
+
                 $save_key = $access_key;
-                $save_secret = $secret_key;
+		$save_secret = $secret_key;
+		$this->pConfig->saveKeys($access_key, $secret_key);
 
                 $config_dir = $cred_dir .'/.aws';
                 $cred_file = $cred_dir . '/.aws/credentials';
@@ -145,7 +147,6 @@ class AfterSaveConfig
                 $cmd = 'echo "'. $config_entry . '" >' . $config_file;
                 $output = $this->shell->execute($cmd);
 
-                $this->pConfig->saveKeys($save_key, $save_secret);
 
                 $procStatus =  $this->wizardTracking->getProcessStatus()['status'];
 
