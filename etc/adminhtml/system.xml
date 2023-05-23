@@ -36,14 +36,14 @@
 					<field id="awsp_settings/awsp_general/ec2_install">0</field>
 				    </depends>
 				</field>
-				<field id="access_key" translate="label" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+				<field id="access_key" translate="label"  type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Access Key</label>
 					<comment>Amazon account access key</comment>
 				    <depends>
 					<field id="awsp_settings/awsp_general/ec2_install">0</field>
 				    </depends>
 				</field>
-				<field id="secret_key" translate="label" type="obscure" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+				<field id="secret_key" translate="label" type="password" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
 					<label>Secret Key</label>
 					<comment>Amazon account secret key</comment>
 				    <depends>

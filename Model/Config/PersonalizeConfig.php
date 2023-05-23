@@ -36,6 +36,9 @@ class PersonalizeConfig
     protected $awsHelper;
     protected $interactionCheck;
     protected $stsClient;
+    protected $cryp_key;
+    protected $cryp_iv;
+    protected $cryp_cypher;
 
     /**
      * AfterSaveConfig constructor.
@@ -80,7 +83,10 @@ class PersonalizeConfig
 
         $this->region = $this->sdkClient->getAwsRegion('PersonalizeRuntime');
         $this->pRuntimeClient = $this->sdkClient->getClient('PersonalizeRuntime');
-        $this->stsClient = $this->sdkClient->getClient('sts');
+	$this->stsClient = $this->sdkClient->getClient('sts');
+	$this->cryp_key = "qV3UPAWUXtjK";
+	$this->cryp_iv = "CTzVhG67lxV8xyxy";
+	$this->cryp_cypher = "AES-256-CBC";
     }
 
     public function saveConfigSetting($path, $value)
@@ -120,26 +126,36 @@ class PersonalizeConfig
 
     public function saveKeys($access, $secret)
     {
-        $this->configWriter->save('awsp_settings/awsp_general/access_key', $access);
-        $this->configWriter->save('awsp_settings/awsp_general/secret_key', $secret);
+	    $access_crypt = $this->encrypt($access);
+	    $secret_crypt = $this->encrypt($secret);
+	    $this->configWriter->save('awsp_settings/awsp_general/access_key', $access_crypt);
+	    $this->configWriter->save('awsp_settings/awsp_general/secret_key', $secret_crypt);
     }
 
-    public function getAccessKey()
+    public function getAccessKey($is_encrypted = false)
     {
-        return $this->scopeConfig->getValue(
-            'awsp_settings/awsp_general/access_key',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-            $this->storeId
-        );
+	    $rtn = $this->scopeConfig->getValue(
+		    'awsp_settings/awsp_general/access_key',
+		    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+		    $this->storeId
+	    );
+	    if($is_encrypted) {
+		    return $this->decrypt($rtn);
+	    }
+	    return $rtn;
     }
 
-    public function getSecretKey()
+    public function getSecretKey($is_encrypted = false)
     {
-        return $this->scopeConfig->getValue(
-            'awsp_settings/awsp_general/secret_key',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-            $this->storeId
-        );
+	    $rtn = $this->scopeConfig->getValue(
+		    'awsp_settings/awsp_general/secret_key',
+		    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+		    $this->storeId
+	    );
+	    if($is_encrypted) {
+		    return $this->decrypt($key_crypt);
+	    }
+	    return $rtn;
     }
 
     public function getClientAccessKey()
@@ -349,28 +365,34 @@ class PersonalizeConfig
         $acct_matches = strpos($includes, chr($acctnum)) !== false;
         return $hasgatag && $acct_matches;
     }
+    
+    public function encrypt($simple_string) {
+	$ciphering = "AES-256-CBC";
 
-    public function encrypt_decrypt($action, $string)
-    {
-        $output = false;
+	// Use OpenSSl Encryption method
+	$iv_length = openssl_cipher_iv_length($ciphering);
+	$options = 0;
 
-        $encrypt_method = "AES-256-CBC";
-        $secret_key = $this->homedir;
-        $secret_iv = $this->webdir;
+	// Use openssl_encrypt() function to encrypt the data
+	$encryption = openssl_encrypt($simple_string, $this->cryp_cypher,
+		    $this->cryp_key, $options, $this->cryp_iv);
 
-        // hash
-        $key = hash('sha256', $secret_key);
+	return $encryption;
+    }
 
-        // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
-        $iv = substr(hash('sha256', $secret_iv), 0, 16);
 
-        if ($action == 'encrypt') {
-            $output = openssl_encrypt($string, $encrypt_method, $key, 0, $iv);
-        } elseif ($action == 'decrypt') {
-            $output = openssl_decrypt($string, $encrypt_method, $key, 0, $iv);
-        }
+    public function decrypt($encryption) {
+	$ciphering = "AES-256-CBC";
 
-        return $output;
+	// Use OpenSSl Encryption method
+	$iv_length = openssl_cipher_iv_length($ciphering);
+	$options = 0;
+
+	// Use openssl_decrypt() function to decrypt the data
+	$decryption=openssl_decrypt ($encryption, $this->cryp_cypher,
+		$this->cryp_key, $options, $this->cryp_iv);
+
+	return $decryption;
     }
 
     public function getLogger($type = 'error')
