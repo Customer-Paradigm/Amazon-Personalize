@@ -30,10 +30,10 @@ class Result extends \Magento\Framework\Model\AbstractModel
         \CustomerParadigm\AmazonPersonalize\Api\Personalize\RuntimeClient $rtClient,
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         \CustomerParadigm\AmazonPersonalize\Model\Training\NameConfig $nameConfig,
         \Magento\Framework\Stdlib\DateTime\DateTime $dateTime,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->rtClient = $rtClient;

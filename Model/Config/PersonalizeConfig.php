@@ -333,7 +333,7 @@ class PersonalizeConfig
 
     public function getGaAbPercent()
     {
-        return $this->scopeConfig->getValue(
+        return $this->getGaAbEnabled() && $this->scopeConfig->getValue(
             'awsp_settings/awsp_abtesting/percentage',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $this->storeId
@@ -342,7 +342,7 @@ class PersonalizeConfig
 
     public function getMagentoGaAccountNum()
     {
-        return $this->scopeConfig->getValue(
+        return $this->getGaAbEnabled() && $this->scopeConfig->getValue(
             'google/analytics/account',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $this->storeId
@@ -356,11 +356,7 @@ class PersonalizeConfig
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $this->storeId
         );
-        $acctnum = $this->scopeConfig->getValue(
-            'google/analytics/account',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-            $this->storeId
-        );
+	$acctnum = $this->getMagentoGaAccountNum();
         $hasgatag = strpos($includes, "www.googletagmanager.com/gtag/js?") !== false;
         $acct_matches = strpos($includes, chr($acctnum)) !== false;
         return $hasgatag && $acct_matches;
