@@ -54,6 +54,11 @@ class AfterSaveConfig
     protected $sdkClient;
 
     protected $stsClient;
+    
+    protected $config_dir;
+    protected $cred_file;
+    protected $config_file;
+    protected $htaccess_file;
 
     /**
      * AfterSaveConfig constructor.
@@ -77,6 +82,11 @@ class AfterSaveConfig
         $this->awsHelper = $awsHelper;
         $this->sdkClient = $sdkClient;
         $this->stsClient = $this->sdkClient->getClient('sts');
+	$this->cred_dir = $this->moduleDir->getPath('media');
+	$this->config_dir = $this->cred_dir .'/.aws';
+	$this->cred_file = $this->cred_dir . '/.aws/credentials';
+	$this->config_file = $this->cred_dir . '/.aws/config';
+	$this->htaccess_file = $this->cred_dir . '/.aws/.htaccess';
     }
 
     public function afterSave(\Magento\Config\Model\Config $subject, $result)
@@ -98,20 +108,19 @@ class AfterSaveConfig
                     return $result;
                 }
 
-                $cred_dir = $this->moduleDir->getPath('media');
                 $region = $this->pConfig->getAwsRegion();
 		// Db stored values
 		$access_key = $this->pConfig->getAccessKey();
 		$secret_key = $this->pConfig->getSecretKey();
 		// is key encrypted?
-		if(substr($access_key, -2) == '==') {
+		if($this->pConfig->isEncrypted($access_key,$this->cred_file)) {
 			// pull again with decrypt
-			$access_key = $this->pConfig->getAccessKey();
+			$access_key = $this->pConfig->getAccessKey(true);
 		}
 		// is key encrypted?
-		if(substr($secret_key, -2) == '==') {
+		if($this->pConfig->isEncrypted($secret_key,$this->cred_file)) {
 			// pull again with decrypt
-			$secret_key = $this->pConfig->getSecretKey();
+			$secret_key = $this->pConfig->getSecretKey(true);
 		}
 
 
@@ -119,15 +128,11 @@ class AfterSaveConfig
 		$save_secret = $secret_key;
 		$this->pConfig->saveKeys($access_key, $secret_key);
 
-                $config_dir = $cred_dir .'/.aws';
-                $cred_file = $cred_dir . '/.aws/credentials';
-                $config_file = $cred_dir . '/.aws/config';
-                $htaccess_file = $cred_dir . '/.aws/.htaccess';
-                $cmd = "mkdir -p $config_dir && touch $config_file";
+                $cmd = "mkdir -p $this->config_dir && touch $this->config_file";
                 $output = $this->shell->execute($cmd);
                 $cmd = "touch $cred_file";
                 $output = $this->shell->execute($cmd);
-                $cmd = "touch $htaccess_file";
+                $cmd = "touch $this->htaccess_file";
                 $output = $this->shell->execute($cmd);
                 $htaccess_entry = 'Deny from all';
                 $cmd = 'echo "'. $htaccess_entry . '" >' . $htaccess_file;
@@ -137,14 +142,14 @@ class AfterSaveConfig
 					aws_access_key_id = $save_key
 					aws_secret_access_key = $save_secret";
 
-                $cmd = 'echo "'. $cred_entry . '" >' . $cred_file;
+                $cmd = 'echo "'. $cred_entry . '" >' . $this->cred_file;
                 $output = $this->shell->execute($cmd);
 
                 $config_entry = "[default]
 					region=$region
 					output=json";
 
-                $cmd = 'echo "'. $config_entry . '" >' . $config_file;
+                $cmd = 'echo "'. $config_entry . '" >' . $this->config_file;
                 $output = $this->shell->execute($cmd);
 
 

@@ -152,6 +152,7 @@ class PersonalizeConfig
 		    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
 		    $this->storeId
 	    );
+	    return $rtn;
 	    if($is_encrypted) {
 		    return $this->decrypt($key_crypt);
 	    }
@@ -362,6 +363,25 @@ class PersonalizeConfig
         return $hasgatag && $acct_matches;
     }
     
+    public function isEncrypted($key, $file) {
+	    // if creds file exists and is populated,
+	    // and db value $key is equal to either saved value
+	    // then db value is not yet encrypted.
+	    if(! file_exists($file)){
+		    return false;
+	    }
+	    if(empty(file_get_contents($file))) {
+		    return false;
+	    }
+	    $saved_creds = preg_split('/\s+/', file_get_contents($file));
+	    $access = $saved_creds[3];
+	    $secret = $saved_creds[6];
+	    if($key == $access || $key == $secret) {
+		    return false;
+	    }
+	    return true;
+    }
+
     public function encrypt($simple_string) {
 	$ciphering = "AES-256-CBC";
 
