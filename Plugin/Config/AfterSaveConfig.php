@@ -108,34 +108,23 @@ class AfterSaveConfig
                     return $result;
                 }
 
-                $region = $this->pConfig->getAwsRegion();
+		$region = $this->pConfig->getAwsRegion();
 		// Db stored values
-		$access_key = $this->pConfig->getAccessKey();
-		$secret_key = $this->pConfig->getSecretKey();
-		// is key encrypted?
-		if($this->pConfig->isEncrypted($access_key,$this->cred_file)) {
-			// pull again with decrypt
-			$access_key = $this->pConfig->getAccessKey(true);
-		}
-		// is key encrypted?
-		if($this->pConfig->isEncrypted($secret_key,$this->cred_file)) {
-			// pull again with decrypt
-			$secret_key = $this->pConfig->getSecretKey(true);
-		}
+		$access_key = $this->pConfig->checkAkEncrypted($this->pConfig->getAccessKey(),$this->cred_file);
+		$secret_key = $this->pConfig->checkSkEncrypted($this->pConfig->getSecretKey(),$this->cred_file);
 
-
-                $save_key = $access_key;
+		$save_key = $access_key;
 		$save_secret = $secret_key;
 		$this->pConfig->saveKeys($access_key, $secret_key);
 
                 $cmd = "mkdir -p $this->config_dir && touch $this->config_file";
                 $output = $this->shell->execute($cmd);
-                $cmd = "touch $cred_file";
+                $cmd = "touch $this->cred_file";
                 $output = $this->shell->execute($cmd);
                 $cmd = "touch $this->htaccess_file";
                 $output = $this->shell->execute($cmd);
                 $htaccess_entry = 'Deny from all';
-                $cmd = 'echo "'. $htaccess_entry . '" >' . $htaccess_file;
+                $cmd = 'echo "'. $htaccess_entry . '" >' . $this->htaccess_file;
                 $output = $this->shell->execute($cmd);
 
                 $cred_entry = "[default]
