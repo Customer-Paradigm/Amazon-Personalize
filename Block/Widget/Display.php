@@ -55,7 +55,7 @@ class Display extends \Magento\Catalog\Block\Product\AbstractProduct implements 
 
     public function isControlUser()
     {
-        $user_type = $this->awsEvents->personalizeAbType();
+	$user_type = $this->awsEvents->personalizeAbType();
         return $user_type === 'control';
     }
 
@@ -71,12 +71,18 @@ class Display extends \Magento\Catalog\Block\Product\AbstractProduct implements 
 
     public function canDisplay()
     {
-        $display = true;
-        if (! $this->isEnabled()) {
+	$display = true;
+
+	if (! $this->isEnabled()) {
             $display = false;
-        } elseif ($this->pConfig->getGaAbEnabled() && $this->isControlUser()) {
-            $display = false;
-        }
+	}
+	if ($this->pConfig->getGaAbEnabled()) {
+	    if($this->isControlUser()) {
+		    $display = false;
+	    } else {
+		    $display = true;
+	    }
+	}
         return $display;
     }
 
