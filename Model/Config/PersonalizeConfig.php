@@ -152,9 +152,8 @@ class PersonalizeConfig
 		    \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
 		    $this->storeId
 	    );
-	    return $rtn;
 	    if($is_encrypted) {
-		    return $this->decrypt($key_crypt);
+		    return $this->decrypt($rtn);
 	    }
 	    return $rtn;
     }
@@ -362,25 +361,63 @@ class PersonalizeConfig
         $acct_matches = strpos($includes, chr($acctnum)) !== false;
         return $hasgatag && $acct_matches;
     }
-    
-    public function isEncrypted($key, $file) {
-	    // if creds file exists and is populated,
-	    // and db value $key is equal to either saved value
-	    // then db value is not yet encrypted.
-	    if(! file_exists($file)){
-		    return false;
-	    }
-	    if(empty(file_get_contents($file))) {
-		    return false;
-	    }
-	    $saved_creds = preg_split('/\s+/', file_get_contents($file));
-	    $access = $saved_creds[3];
-	    $secret = $saved_creds[6];
-	    if($key == $access || $key == $secret) {
-		    return false;
-	    }
-	    return true;
+
+    public function getCredFileKeys($file) {
+            // if creds file doesn't exist or is not populated,
+            // then db value is not yet encrypted.
+            if(! file_exists($file)){
+                    return false;
+            }
+            $file_contents = file_get_contents($file);
+            if(empty($file_contents)) {
+                    return false;
+            }
+	    
+	    $rtn = [];
+            $creds_parts = preg_split('/\t+/', $file_contents);
+	    
+	    $rtn_a = explode('=',$creds_parts[1])[1];
+	    $rtn_s= explode('=',$creds_parts[2])[1];
+	    $rtn['access'] = preg_split('/\s+/', $rtn_a)[1];
+	    $rtn['secret'] = preg_split('/\s+/', $rtn_s)[1];
+
+	    return $rtn;
     }
+
+    public function checkAkEncrypted($key, $file) {
+	    $file_keys = $this->getCredFileKeys($file);
+	    $access = $file_keys['access'];
+	    if($key == $access) {
+		    return $key;
+	    }
+	    // check decrypted values against file to see if already saved
+	    $access_decrypted = $this->getAccessKey(true);
+	    if($access_decrypted === false) {
+		    return $key;
+            } else if ($access_decrypted == $access) {
+	    	    return $access_decrypted;
+	    }
+
+	    return $access_decrypted;
+    }
+
+    public function checkSkEncrypted($key, $file) {
+	    $file_keys = $this->getCredFileKeys($file);
+	    $secret = $file_keys['secret'];
+            if($key == $secret) {
+		    return $key;
+            }
+            // check decrypted values against file to see if already saved
+            $secret_decrypted = $this->getSecretKey(true);
+            if($secret_decrypted === false) {
+		    return $key;
+            } else if ($secret_decrypted == $secret) {
+            	return $secret_decrypted;
+	    }
+
+            return $secret_decrypted;
+    }
+
 
     public function encrypt($simple_string) {
 	$ciphering = "AES-256-CBC";
@@ -407,7 +444,6 @@ class PersonalizeConfig
 	// Use openssl_decrypt() function to decrypt the data
 	$decryption=openssl_decrypt ($encryption, $this->cryp_cypher,
 		$this->cryp_key, $options, $this->cryp_iv);
-
 	return $decryption;
     }
 
