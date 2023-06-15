@@ -333,7 +333,7 @@ class PersonalizeConfig
 
     public function getGaAbPercent()
     {
-        return $this->getGaAbEnabled() && $this->scopeConfig->getValue(
+        return $this->scopeConfig->getValue(
             'awsp_settings/awsp_abtesting/percentage',
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             $this->storeId
