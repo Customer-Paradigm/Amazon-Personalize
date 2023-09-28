@@ -142,7 +142,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
         $current_file_path = $this->pHelper->getConfigValue('awsp_wizard/data_type_name/interactionUserFile');
         if (!empty($current_file_path)) {
             // Don't include header in data count
-            $linecount = count(file($current_file_path) - 1);
+            $linecount = count(file($current_file_path)) - 1;
             $this->setItemCount($linecount);
         }
         $this->infoLogger->info("InteractionGenerator file path: $current_file_path");

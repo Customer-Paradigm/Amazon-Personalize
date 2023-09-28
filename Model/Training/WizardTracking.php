@@ -312,6 +312,11 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
         }
 
         $summary = $this->getStepStateSummary();
+
+        if(empty($summary)) {
+                return [];
+        }
+
         foreach ($summary as $idx => $info) {
             $summary[$idx]['step_name'] = $this->stepToDisplayName($info['step_name']);
         }
