@@ -131,6 +131,10 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                     $this->pHelper->saveStepData($step, 'attempt_number', $this->attempts);
                     try {
                         $rtn = $wizard->{$fname}();
+                        if(empty($rtn) || $rtn == false) {
+                            $rtn = [];
+                        }
+
                         $check = $wizard->checkStatus($step);
                         if ($check == 'complete') {
                             $this->setStepComplete($step);
@@ -141,10 +145,7 @@ class WizardTracking extends \Magento\Framework\Model\AbstractModel
                     } catch (\Exception $e) {
                         $this->setStepError($step, $e->getMessage());
                         $this->errorLogger->error("WizardTracking runSteps() error at step:  " . $step);
-			$this->errorLogger->error("WizardTracking runSteps() error message:  " . $e);
-			if(empty($rtn)) {
-				$rtn = [];
-			}
+                        $this->errorLogger->error("WizardTracking runSteps() error message:  " . $e);
                         $rtn['mssg'] = 'run step error';
                         $rtn['is_success'] = false;
                     }
