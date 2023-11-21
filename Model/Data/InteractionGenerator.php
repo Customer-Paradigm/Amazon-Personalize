@@ -43,12 +43,16 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
     protected $errorLogger;
     protected $pHelper;
     protected $itemCount;
+    protected $customers;
+    protected $products;
 
 
     private $interactionPurchaseCollectionFactory;
     private $interactionReportCollectionFactory;
 
     public function __construct(
+	\Magento\Customer\Model\ResourceModel\Customer\CollectionFactory $customers,
+	\Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $products,
         InteractionReportCollectionFactory $interactionReportCollectionFactory,
         InteractionPurchaseCollectionFactory $interactionPurchaseCollectionFactory,
         InteractionCheckCollectionFactory $interactionCheckCollectionFactory,
@@ -66,6 +70,8 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
         $this->infoLogger = $infoLogger;
         $this->errorLogger = $errorLogger;
         $this->pHelper = $pHelper;
+        $this->customers = $customers;
+        $this->products = $products;
     }
 
     public function generateCsv()
@@ -78,7 +84,7 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
 
             // bypass all the collection counting if file is already created with > 1000 entries
             $file_total = $this->checkActualFileCount();
-            if ($file_total > 1001) {
+            if (0 && $file_total > 1001) {
                 $this->setDataError(null);
                 return $this;
             }
@@ -109,16 +115,29 @@ class InteractionGenerator extends \CustomerParadigm\AmazonPersonalize\Model\Dat
                 $this->infoLogger->info("InteractionGenerator padding enabled");
                 $count = 1;
                 $diff = 1010 - $total; // a few extra
-            //    $total = 0; // reset
-                while ($diff > 0) {
-                    $user_id = 1000 % $diff;
-                    $item_id = 1010 - $diff;
-                    $timestamp = time();
-                    $this->writer->writeCsv([$user_id,$item_id,'none',$timestamp]);
-                    $diff--;
-                    $count++;
-                }
-                $total += $count;
+		$custCollection = $this->customers->create();
+		$prodCollection = $this->products->create()->addAttributeToSelect('*') // Select all attributes
+			->addAttributeToFilter('status', \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED); // Filter by product status (enabled)
+		$productArray = $prodCollection->toArray();
+		$cust_count = count($custCollection);
+		$prod_per_cust = ceil(1010/$cust_count);
+		$prod_count = count($prodCollection);
+		$prod_idx = 1;
+                foreach($custCollection as $c) {
+                        $prod_internal_count = 1;
+                        while($prod_internal_count <= $prod_per_cust) {
+                            $user_id =  $c->getId();
+                            $item_id = $productArray[$prod_idx]['entity_id'];
+                            $timestamp = time();
+			    $this->writer->writeCsv([$user_id,$item_id,'product-view',$timestamp]);
+			    if($count % 3 == 0) { // add 3 views of product
+				    $prod_idx++;
+			    }
+                            $prod_internal_count++;
+                            $count++;
+                        }
+               }
+               $total += $count;
             }
             $this->setItemCount($total);
             $this->writer->close();
